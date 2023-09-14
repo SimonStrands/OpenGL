@@ -24,7 +24,7 @@ void setUniform(std::string uniformName, const unsigned int uniformBuffer)
     glBindBufferBase(GL_UNIFORM_BUFFER, 0, uniformBuffer);
     GLint v;
 	glGetIntegerv(GL_CURRENT_PROGRAM, &v);
-
+    
     GLuint bindingIndex = 0;
 	GLuint blockIndex = glGetUniformBlockIndex(v, uniformName.c_str());
 	glBindBufferBase(GL_UNIFORM_BUFFER, 0, uniformBuffer);

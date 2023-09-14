@@ -16,10 +16,7 @@ public:
 	void addBehavior(const std::string& behaviorName, Behavior* behavior, std::vector<std::pair<std::string, void*>>* variables = nullptr);
 	void update(float dt);
 	
-	template <typename T>
-	T* getComponent(std::string componentName){
-		return dynamic_cast<T*>(components.find(componentName)->second);
-	}
+	Components* getComponent(std::string componentName);
 
 private:
 	Model* model;

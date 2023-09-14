@@ -5,9 +5,11 @@
 
 
 struct Transform : public Components{
-	Transform(){
-		scale = glm::vec3(1.0f);
-	}
+	Transform():
+	position(0),
+	rotation(0),
+	scale(1){}
+
 	glm::vec3 position;
 	glm::vec3 rotation;
 	glm::vec3 scale;

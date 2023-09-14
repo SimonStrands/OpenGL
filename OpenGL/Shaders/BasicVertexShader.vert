@@ -17,11 +17,14 @@ layout (std140, binding = 0) uniform Matrices
     mat4 view;
 };
 
-uniform mat4 transform;
+//layout (std140, binding = 1) uniform Transform
+//{
+//    mat4 transform;
+//};
 
 void main()
 {
-	mat4 MVP = view * projection;
+	mat4 MVP = (view) * projection;
 	gl_Position = vec4(vertexInput.position.xyz, 1.0) * MVP;
 	CPosition = vec4(vertexInput.position.xyz, 1.0);
 	

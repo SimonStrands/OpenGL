@@ -21,7 +21,8 @@ void Model::DirectRender()
 
 void Model::setTransform(Transform transform)
 {
-    UpdateUniformBuffer(glm::transpose(transform.toMat4()), TransformBuffer);
+    //UpdateUniformBuffer(glm::transpose(transform.toMat4()), TransformBuffer);
+    //setUniform("transform", TransformBuffer);
 }
 
 Mesh::Mesh()

@@ -24,7 +24,7 @@ void GameObject::SetShaderProgram(unsigned int shaderProgram)
 void GameObject::directRender()
 {
 	glUseProgram(shaderProgram);
-	//model->setTransform(*(Transform*)components["Transform"]);
+	model->setTransform(*(Transform*)components["Transform"]);
 	if(model != nullptr){
 		model->DirectRender();
 	}
@@ -54,4 +54,9 @@ void GameObject::update(float dt)
 	if(components.find("BehaviorList") != components.end()){
 		((BehaviorList*)components.find("BehaviorList")->second)->update(dt);
 	}
+}
+
+Components* GameObject::getComponent(std::string componentName)
+{
+	return components.find(componentName)->second;
 }

@@ -22,13 +22,13 @@ void TestScene::init()
 	test->addModel(rm->getModel("Objects/Human_806polys.fbx"));
 	Sponza->addModel(rm->getModel("Objects/Camera.obj"));
 	cam.init();
-	
+	//
 	player = new GameObject(rm);
 	std::vector<std::pair<std::string, void*>> playerComponents;
 	playerComponents.push_back(std::pair("cam", &cam));
 	playerComponents.push_back(std::pair("mouse", mouse));
 	playerComponents.push_back(std::pair("keyboard", keyboard));
-	playerComponents.push_back(std::pair("Transform", player->getComponent<void>("Transform")));
+	playerComponents.push_back(std::pair("Transform", player->getComponent("Transform")));
 	player->addBehavior("playerUpdate", new Player(), &playerComponents);
 }
 
@@ -38,7 +38,7 @@ SceneHandlerCalls TestScene::update(float dt)
 	//std::cout << "update()" << std::endl;
 
 	cam.Update();
-	//test->getComponent<Transform>("Transform")->rotation.y += 0.01;
+	((Transform*)test->getComponent("Transform"))->rotation.y += 0.01;
 	player->update(dt);
 	return theReturn;
 }
