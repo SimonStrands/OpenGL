@@ -13,9 +13,12 @@ unsigned int CreateVertexBuffer(std::vector<T>& vertecies, GLenum type = GL_FLOA
     
     
     GLTest(glEnableVertexAttribArray(0));
-    int nrOfThings = sizeof(T) / sizeof(float);
-    //is 3 wrong need to check later
     GLTest(glVertexAttribPointer(0, 3, type, GL_FALSE, sizeof(T), 0));
+    GLTest(glEnableVertexAttribArray(1));
+    GLTest(glVertexAttribPointer(1, 3, type, GL_FALSE, sizeof(T), (void*)offsetof(T, m_normals)));
+    GLTest(glEnableVertexAttribArray(2));
+    GLTest(glVertexAttribPointer(2, 2, type, GL_FALSE, sizeof(T), (void*)offsetof(T, m_texChoords)));
+
     GLTest(glBindBuffer(GL_ARRAY_BUFFER, buffer));
 
     return buffer;
@@ -45,4 +48,6 @@ void UpdateUniformBuffer(const T data, unsigned int buff){
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
-void setUniform(std::string uniformName, const unsigned int uniformBuffer);
+void setUniform(std::string uniformName, const unsigned int uniformBuffer, GLuint bindingIndex = 0);
+
+void createDepthStencil(unsigned int Width, unsigned int Height, unsigned int &depthBufferFBO, unsigned int &depthBuffer);

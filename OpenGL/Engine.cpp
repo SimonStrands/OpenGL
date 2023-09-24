@@ -6,28 +6,54 @@ Engine::Engine():
 	m_gameOver(false)
 {
 	dt.restartClock();
-	rm = new ResourceManager;
-	mouse = new Mouse(gfx.getCurrentActiveWindow());
-	keyboard = new Keyboard(gfx.getCurrentActiveWindow());
-	m_sceneHandler.setResourceManager(rm);
-	m_sceneHandler.setMouseandKeyboard(mouse, keyboard);
+	basicToScene.rm = new ResourceManager();
+	basicToScene.mouse = new Mouse(gfx.getCurrentActiveWindow());
+	basicToScene.keyboard = new Keyboard(gfx.getCurrentActiveWindow());
+	basicToScene.camera = new Camera();
+	//basicToScene.shadowMap = new ShadowMap();
+
+	//unsigned int shadowVertex = basicToScene.rm->getShader("ShadowMapVertexShader.vert");
+	//unsigned int shadowPixel = basicToScene.rm->getShader("ShadowMapPixelShader.frag");
+	//basicToScene.shadowMap->addShaderProgram(basicToScene.rm->createShaderProgram("ShadowMapProgram", shadowVertex, shadowPixel));
+
+	m_sceneHandler.setBasicDefaultVariables(basicToScene);
+	basicToScene.camera->init();
 	m_sceneHandler.sceneInit();
-	glUseProgram(rm->getShaderProgram("defShaderProgram"));
+	
 	//Graphics Creates Window on it's own first
+
+	gfx.vSync(false);
 }
 
 Engine::~Engine()
 {
-	delete rm;
-	delete mouse;
-	delete keyboard;
+	delete basicToScene.camera;
+	delete basicToScene.keyboard;
+	delete basicToScene.mouse;
+	delete basicToScene.rm;
+	delete basicToScene.shadowMap;
 }
 
 void Engine::Run()
 {
+	float currentTimeToUpdateFPS = 0;
+	float TimeToUpdateFPS = 0.3f;
+	unsigned int counter = 0;
 	while(!m_gameOver){
 	
 		dt.restartClock();
+
+		currentTimeToUpdateFPS += dt.dt();
+		counter++;
+		if(currentTimeToUpdateFPS >= TimeToUpdateFPS){
+			float fps = 1/(currentTimeToUpdateFPS / (float)counter);
+			glfwSetWindowTitle(gfx.getWindowByIndex(0), std::to_string((int)fps).c_str());
+
+
+			currentTimeToUpdateFPS -= TimeToUpdateFPS;
+			counter = 0;
+		}
+
         #ifdef TurnOfWithWindow
 		if(gfx.GetNrOfWindows() <= 0){
 			m_gameOver = true;
@@ -37,14 +63,16 @@ void Engine::Run()
 		    
         #endif // TurnOfWithWindow
 		
-			if(keyboard->getKeyDown(GLFW_KEY_ESCAPE)){
+			if(basicToScene.keyboard->getKeyDown(GLFW_KEY_ESCAPE)){
 				m_gameOver = true;
 			}
-			glClearColor(0,0,0,255);
+			glClearColor(0.1,0.1,0.1,1);
 			glClear(GL_COLOR_BUFFER_BIT);
+			glClear(GL_DEPTH_BUFFER_BIT);
 	
-			mouse->Update();
+			basicToScene.mouse->Update();
 			m_sceneHandler.Update(dt.dt());
+			//basicToScene.shadowMap->renderShadow();
 			m_sceneHandler.Render();
 	
 			glfwSwapBuffers(gfx.getCurrentActiveWindow());

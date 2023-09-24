@@ -24,6 +24,10 @@ struct Material{
 	float d;
 	MaterialFlags materialFlags;
 	Material(){
+		Albedo = 0;
+		AmbientOcclusion = 0;
+		HeightMap = 0;
+		NormalMap = 0;
 		materialFlags = MaterialFlags::NONE;
 		Ns = 100.0f; 
 		Ka = glm::vec3(0.5f,0.5f,0.5f);

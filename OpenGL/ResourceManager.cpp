@@ -57,6 +57,13 @@ unsigned int ResourceManager::getTexture(const std::string& FileName)
     return Textures.find(FileName)->second;
 }
 
+unsigned int ResourceManager::createShaderProgram(const std::string& ShaderProgramName, unsigned int vertex, unsigned int pixel)
+{
+    unsigned int shaderProgram = attachShaders(vertex, pixel);
+    ShaderProgram.insert(std::make_pair(ShaderProgramName, shaderProgram));
+    return shaderProgram;
+}
+
 
 void ResourceManager::loadDef()
 {
@@ -98,6 +105,8 @@ void ResourceManager::loadDef()
     else{ 
         std::cout << "error couldn't load defTexture" << std::endl;
     }
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, Textures["def"]);
 }
 
 

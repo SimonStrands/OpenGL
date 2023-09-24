@@ -11,19 +11,24 @@ static glm::vec2 AssimpToOpenGL(const aiVector2D& aVec2)
 	return glm::vec2(aVec2.x,aVec2.y);
 }
 
-void loadMaterial(const aiScene* pScene){
+void loadMaterial(const aiScene* pScene, std::vector<Material>& material){
+    material.resize(pScene->mNumMaterials);
     for(unsigned int i = 0; i < pScene->mNumMaterials; i++){
         const aiMaterial* pMaterial = pScene->mMaterials[i];
         if(pMaterial->GetTextureCount(aiTextureType_DIFFUSE) > 0){
             aiString path;
             if(pMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &path, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS){
                 //load diffuse Texture
+                ReadImage(path.C_Str(), material[i].Albedo);
+                material[i].materialFlags = (MaterialFlags)(material[i].materialFlags | MaterialFlags::Albedo);
             }
         }
         if(pMaterial->GetTextureCount(aiTextureType_LIGHTMAP) > 0){
             aiString path;
             if(pMaterial->GetTexture(aiTextureType_LIGHTMAP, 0, &path, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS){
                 //load AO Texture
+                ReadImage(path.C_Str(), material[i].AmbientOcclusion);
+                material[i].materialFlags = (MaterialFlags)(material[i].materialFlags | MaterialFlags::AmbientOcclusion);
             }
         }
         // unsure if this should be aiTextureType_DISPLACEMENT
@@ -31,14 +36,48 @@ void loadMaterial(const aiScene* pScene){
             aiString path;
             if(pMaterial->GetTexture(aiTextureType_HEIGHT, 0, &path, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS){
                 //load Heightmap Texture
+                ReadImage(path.C_Str(), material[i].HeightMap);
+                material[i].materialFlags = (MaterialFlags)(material[i].materialFlags | MaterialFlags::HeightMap);
             }
         }
         if(pMaterial->GetTextureCount(aiTextureType_NORMALS) > 0){
             aiString path;
             if(pMaterial->GetTexture(aiTextureType_NORMALS, 0, &path, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS){
                 //load normal Texture
+                ReadImage(path.C_Str(), material[i].NormalMap);
+                material[i].materialFlags = (MaterialFlags)(material[i].materialFlags | MaterialFlags::NormalMap);
             }
         }
+        float ns;
+        aiColor3D kd,ka,ks,ke;
+		float ni, d;
+        ni = 0;
+		pMaterial->Get(AI_MATKEY_COLOR_AMBIENT, ka);
+		pMaterial->Get(AI_MATKEY_COLOR_SPECULAR, ks);
+		pMaterial->Get(AI_MATKEY_COLOR_DIFFUSE, kd);
+		pMaterial->Get(AI_MATKEY_COLOR_EMISSIVE, ke);
+		pMaterial->Get(AI_MATKEY_SHININESS, ns);
+		pMaterial->Get(AI_MATKEY_OPACITY, d);
+        
+        material[i].Ka.x = ka.r;
+        material[i].Ka.y = ka.g;
+        material[i].Ka.z = ka.b;
+        
+        material[i].Kd.x = kd.r;
+        material[i].Kd.y = kd.g;
+        material[i].Kd.z = kd.b;
+        
+        material[i].Ks.x = ks.r;
+        material[i].Ks.y = ks.g;
+        material[i].Ks.z = ks.b;
+        
+        material[i].Ke.x = ke.r;
+        material[i].Ke.y = ke.g;
+        material[i].Ke.z = ke.b;
+        
+        material[i].d = d;
+        material[i].Ni = ni;
+        material[i].Ns = ns;
     }
 }
 
@@ -84,8 +123,7 @@ Mesh loadMesh(const aiMesh* pMesh)
     unsigned int vertexArray = CreateVertexArray();
     unsigned int vertexBuffer = CreateVertexBuffer(vertex);
     unsigned int indeciesBuffer = CreateIndeciesBuffer(indecies);
-
-    return Mesh(
+    Mesh theMesh = Mesh(
         0, 
         pMesh->mNumVertices, 
         vertexBuffer, 
@@ -93,6 +131,8 @@ Mesh loadMesh(const aiMesh* pMesh)
         indeciesBuffer,
         vertexArray
     );
+
+    return theMesh;
 }
 
 Model* loadModel(const std::string& modelFile, ResourceManager* rm)
@@ -108,8 +148,21 @@ Model* loadModel(const std::string& modelFile, ResourceManager* rm)
 
     theReturnModel->getMeshes().reserve(pScene->mNumMeshes);
 
+    //come on
+    std::vector<Material> materials;
+    loadMaterial(pScene, materials);
+
+    std::vector<materialConstBuffer> mcb;
+    mcb.resize(materials.size());
+
+    for(int i = 0; i < mcb.size(); i++){
+        mcb[i] = materials[i];//special operator
+    }
+    
     for(unsigned int i = 0; i < pScene->mNumMeshes; i++){
         theReturnModel->getMeshes().push_back(loadMesh(pScene->mMeshes[i]));
+        theReturnModel->getMeshes()[theReturnModel->getMeshes().size() - 1].material = materials[pScene->mMeshes[i]->mMaterialIndex];
+        theReturnModel->getMeshes()[theReturnModel->getMeshes().size() - 1].mcb = CreateUniformBuffer(mcb[pScene->mMeshes[i]->mMaterialIndex]);
     }
     
     

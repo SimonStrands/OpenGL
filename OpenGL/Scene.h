@@ -1,7 +1,6 @@
 #pragma once
 #include "GameObject.h"
-#include "Camera.h"
-#include "Mouse.h"
+#include "DefaultVariableToScene.h"
 
 enum SceneHandlerCalls{
 	NOTHING,
@@ -21,15 +20,12 @@ public:
 	virtual void render() = 0;
 public:
 	//FROM ENGINE TO SCENE
-	void setResourceManager(ResourceManager *rm);
-	void setMouseAndKeyboard(Mouse* mouse, Keyboard* keyboard);
+	void setBasicVariables(DefaultVariableToScene& basic);
 	//FROM SCENE TO ENGINE
 	const int getNewSceneID();
 protected:
 	void switchScene(int sceneID);
-	ResourceManager* rm;
-	Mouse* mouse;
-	Keyboard* keyboard;
+	DefaultVariableToScene basic;
 private:
 	int newSceneID;
 };

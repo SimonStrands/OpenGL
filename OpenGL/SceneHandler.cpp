@@ -25,19 +25,12 @@ void SceneHandler::Render()
 	currentScene->render();
 }
 
-void SceneHandler::setResourceManager(ResourceManager* rm)
+void SceneHandler::setBasicDefaultVariables(DefaultVariableToScene& basic)
 {
-	this->rm = rm;
-	currentScene->setResourceManager(rm);
+	this->basic = &basic;
+	currentScene->setBasicVariables(basic);
 }
 
-void SceneHandler::setMouseandKeyboard(Mouse* mouse, Keyboard* keyboard)
-{
-	this->mouse = mouse;
-	this->keyboard = keyboard;
-
-	currentScene->setMouseAndKeyboard(mouse, keyboard);
-}
 
 void SceneHandler::switchScene(const int sceneID)
 {
@@ -52,8 +45,7 @@ void SceneHandler::switchScene(const int sceneID)
 	}
 	delete currentScene;
 	currentScene = nextScene;
-	currentScene->setResourceManager(rm);
-	currentScene->setMouseAndKeyboard(mouse, keyboard);
+	currentScene->setBasicVariables(*basic);
 	currentScene->init();
 }
 

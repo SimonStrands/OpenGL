@@ -16,25 +16,32 @@ void Player::init()
 
 void Player::update(float dt)
 {
-	//cam->rotate(mouse->getMouseDelta());
-	
+	float speed = 20;
+	if(keyboard->getKeyDown(GLFW_KEY_LEFT_SHIFT)){
+		speed = 80;
+	}
 	if(keyboard->getKeyDown('A')){
-		moveInDirection(glm::vec3(20,0,0) * dt);
+		pressDir = 3;
+		moveInDirection(dt * speed);
 	}
 	if(keyboard->getKeyDown('D')){
-		moveInDirection(glm::vec3(-20,0,0) * dt);
+		pressDir = 2; 
+		moveInDirection(dt * speed);
 	}
 	if(keyboard->getKeyDown('W')){
-		moveInDirection(glm::vec3(0,0,-20) * dt);
+		pressDir = 0;
+		moveInDirection(dt * speed);
 	}
 	if(keyboard->getKeyDown('S')){
-		moveInDirection(glm::vec3(0,0,20) * dt);
+		pressDir = 1;
+		moveInDirection(dt * speed);
 	}
+
 	if(keyboard->getKeyDown(GLFW_KEY_SPACE)){
-		transform->position.y += 20 * dt;
+		transform->position.y += speed * dt;
 	}
 	if(keyboard->getKeyDown(GLFW_KEY_LEFT_CONTROL)){
-		transform->position.y -= 20 * dt;
+		transform->position.y -= speed * dt;
 	}
 	transform->rotation.x += mouse->getMouseDelta().y * 0.01;
 	transform->rotation.y -= mouse->getMouseDelta().x * 0.01; 
@@ -43,11 +50,25 @@ void Player::update(float dt)
 	cam->setPosition(transform->position);
 }
 
-void Player::moveInDirection(glm::vec3 dir)
+void Player::moveInDirection(float speed)
 {
-	glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), -transform->rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
-                           glm::rotate(glm::mat4(1.0f), transform->rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
-	dir = glm::vec3(rotationMatrix * glm::vec4(dir, 1.0f));
-	transform->position.x -= dir.x;
-	transform->position.z -= dir.z;
+
+	glm::vec3 direction;
+	direction.x = cos(transform->rotation.y) * cos(transform->rotation.x);
+	direction.y = sin(transform->rotation.x);
+	direction.z = sin(transform->rotation.y) * cos(transform->rotation.x);
+
+	if(pressDir == 1){
+		direction = -direction;
+	}
+	else if(pressDir == 2){
+		direction = glm::cross(glm::vec3(0,1,0), direction);
+	}
+	else if(pressDir == 3){
+		direction = glm::cross(direction, glm::vec3(0,1,0));
+	}
+	direction.y = 0;
+	direction = glm::normalize(direction);
+	transform->position.x -= direction.x * speed;
+	transform->position.z -= direction.z * speed;
 }

@@ -19,6 +19,9 @@ public:
 	unsigned int getShaderProgram(const std::string& ShaderProgram);
 	unsigned int getTexture(const std::string& FileName);
 
+	//create more here later if we need hull, displacement and more
+	unsigned int createShaderProgram(const std::string& ShaderProgramName, unsigned int vertex, unsigned int pixel);
+
 private:
 	std::map<std::string, Model*> Models; 
 	std::map<std::string, unsigned int> Shaders; 

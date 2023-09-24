@@ -4,23 +4,21 @@ Scene::Scene()
 {
 }
 
-void Scene::setResourceManager(ResourceManager* rm)
-{
-	this->rm = rm;
-}
-
-void Scene::setMouseAndKeyboard(Mouse* mouse, Keyboard* keyboard)
-{
-	this->mouse = mouse;
-	this->keyboard = keyboard;
-}
-
 Scene::~Scene()
 {
 }
 
 void Scene::init()
 {
+}
+
+void Scene::setBasicVariables(DefaultVariableToScene& basic)
+{
+	this->basic.camera = basic.camera;
+	this->basic.keyboard = basic.keyboard;
+	this->basic.mouse = basic.mouse;
+	this->basic.rm = basic.rm;
+	this->basic.shadowMap = basic.shadowMap;
 }
 
 const int Scene::getNewSceneID()

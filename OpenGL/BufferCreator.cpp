@@ -19,14 +19,35 @@ unsigned int CreateIndeciesBuffer(std::vector<unsigned int>& vertecies)
     return buffer;
 }
 
-void setUniform(std::string uniformName, const unsigned int uniformBuffer)
+void setUniform(std::string uniformName, const unsigned int uniformBuffer, GLuint bindingIndex)
 {
-    glBindBufferBase(GL_UNIFORM_BUFFER, 0, uniformBuffer);
+    glBindBufferBase(GL_UNIFORM_BUFFER, bindingIndex, uniformBuffer);
     GLint v;
-	glGetIntegerv(GL_CURRENT_PROGRAM, &v);
-    
-    GLuint bindingIndex = 0;
+    glGetIntegerv(GL_CURRENT_PROGRAM, &v);
+
 	GLuint blockIndex = glGetUniformBlockIndex(v, uniformName.c_str());
-	glBindBufferBase(GL_UNIFORM_BUFFER, 0, uniformBuffer);
-	glUniformBlockBinding(v, blockIndex, bindingIndex);
+    GLTest(glBindBufferBase(GL_UNIFORM_BUFFER, bindingIndex, uniformBuffer));
+	GLTest(glUniformBlockBinding(v, blockIndex, bindingIndex));
+
+}
+
+void createDepthStencil(unsigned int Width, unsigned int Height, unsigned int &depthBufferFBO, unsigned int &depthBuffer)
+{
+    glGenFramebuffers(1, &depthBufferFBO);
+
+    glGenTextures(1, &depthBuffer);
+    glBindTexture(GL_TEXTURE_2D, depthBuffer);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, Width, Height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+    static const float clampColor[] = {1.0f, 1.0f, 1.0f, 1.0f};
+    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, clampColor);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, depthBufferFBO);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthBuffer, 0);
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

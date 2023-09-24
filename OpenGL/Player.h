@@ -10,9 +10,10 @@ public:
 	void init();
 	void update(float dt);
 private:
-	void moveInDirection(glm::vec3 dir);
+	void moveInDirection(float speed);
 	Camera* cam;
 	Transform* transform;
 	Mouse* mouse;
 	Keyboard* keyboard;
+	int pressDir = 0;
 };

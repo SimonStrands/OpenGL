@@ -3,6 +3,7 @@
 #include "Graphics.h"
 #include "SceneHandler.h"
 #include "DeltaTime.h"
+#include "ShadowMap.h"
 
 
 class Engine{
@@ -16,9 +17,8 @@ private:
 	//Objects
 	SceneHandler m_sceneHandler;
 	Graphics gfx;
-	Mouse* mouse;
-	Keyboard* keyboard;
-	ResourceManager* rm;
 	DeltaTime dt;
+	DefaultVariableToScene basicToScene;
+
 	//renderer
 };

@@ -205,6 +205,7 @@
     <ClCompile Include="BufferCreator.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="DeltaTime.cpp" />
+    <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Graphics.cpp" />
@@ -219,6 +220,8 @@
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneHandler.cpp" />
+    <ClCompile Include="ShadowMap.cpp" />
+    <ClCompile Include="SpotLight.cpp" />
     <ClCompile Include="TestScene.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -229,23 +232,31 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ComponentList.h" />
     <ClInclude Include="Components.h" />
+    <ClInclude Include="DefaultVariableToScene.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="DeltaTime.h" />
+    <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="ErrorHelper.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="ImageReader.h" />
     <ClInclude Include="Keyboard.h" />
+    <ClInclude Include="Light.h" />
+    <ClInclude Include="LightBuffer.h" />
     <ClInclude Include="LoadShaders.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="modelReader.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PointLight.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneHandler.h" />
+    <ClInclude Include="Settings.h" />
+    <ClInclude Include="ShadowMap.h" />
+    <ClInclude Include="SpotLight.h" />
     <ClInclude Include="STBI_Image.h" />
     <ClInclude Include="TestScene.h" />
     <ClInclude Include="Transform.h" />
@@ -254,6 +265,8 @@
   <ItemGroup>
     <None Include="Shaders\BasicPixelShader.frag" />
     <None Include="Shaders\BasicVertexShader.vert" />
+    <None Include="ShadowMapPixelShader.frag" />
+    <None Include="ShadowMapVertexShader.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

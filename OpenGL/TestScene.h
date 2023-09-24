@@ -13,5 +13,4 @@ private:
 	GameObject* test;
 	GameObject* Sponza;
 	GameObject* player;
-	Camera cam;
 };

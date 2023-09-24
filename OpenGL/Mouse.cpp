@@ -8,10 +8,10 @@ lastScroll(0)
 {
     this->wnd = wnd;
     glfwSetCursorPos(this->wnd, (double)(1024/2), (double)(768/2));
-    glfwSetScrollCallback(this->wnd, [](GLFWwindow* window, double xoffset, double yoffset) {
-            // Call the member function to handle the scroll event
-            instance().scroll_callBack(xoffset, yoffset);
-        });
+    //glfwSetScrollCallback(this->wnd, [](GLFWwindow* window, double xoffset, double yoffset) {
+    //        // Call the member function to handle the scroll event
+    //        instance().scroll_callBack(xoffset, yoffset);
+    //    });
 }
 
 void Mouse::Update()

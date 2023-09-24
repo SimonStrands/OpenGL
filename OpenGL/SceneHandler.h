@@ -9,13 +9,12 @@ public:
 	void Update(float dt);
 	void sceneInit();
 	void Render();
+	void setBasicDefaultVariables(DefaultVariableToScene& basic);
 	void setResourceManager(ResourceManager* rm);
 	void setMouseandKeyboard(Mouse* mouse, Keyboard* keyboard);
 private:
 	void switchScene(const int sceneID);
-	ResourceManager* rm;
-	Mouse* mouse;
-	Keyboard* keyboard;
+	DefaultVariableToScene* basic;
 	Scene* currentScene;
 	Scene* nextScene;
 };

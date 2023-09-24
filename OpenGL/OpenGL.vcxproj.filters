@@ -43,6 +43,18 @@
     <Filter Include="Header Files\Engine\Components">
       <UniqueIdentifier>{56165c92-f958-4803-b7d4-b7250feecb73}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Engine\Light">
+      <UniqueIdentifier>{7466edae-c611-46d0-80cf-76de36bebb65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\Normal">
+      <UniqueIdentifier>{7252e89c-bd53-4353-b70f-67b041172f2a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\ShadowShader">
+      <UniqueIdentifier>{43eeaced-7621-4a10-b870-21a73550a7ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Engine\SingleTon">
+      <UniqueIdentifier>{45b9c2fc-e464-4e80-8d59-edde0d22be64}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -106,6 +118,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DeltaTime.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadowMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectionalLight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SpotLight.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -194,13 +215,43 @@
     <ClInclude Include="DeltaTime.h">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>Header Files\Engine\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="SpotLight.h">
+      <Filter>Header Files\Engine\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectionalLight.h">
+      <Filter>Header Files\Engine\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="PointLight.h">
+      <Filter>Header Files\Engine\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="LightBuffer.h">
+      <Filter>Header Files\Engine\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowMap.h">
+      <Filter>Header Files\Engine\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings.h">
+      <Filter>Header Files\Engine\SingleTon</Filter>
+    </ClInclude>
+    <ClInclude Include="DefaultVariableToScene.h">
+      <Filter>Header Files\Engine\EngineScene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\BasicPixelShader.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
     <None Include="Shaders\BasicVertexShader.vert">
-      <Filter>Resource Files\Shaders</Filter>
+      <Filter>Resource Files\Shaders\Normal</Filter>
+    </None>
+    <None Include="Shaders\BasicPixelShader.frag">
+      <Filter>Resource Files\Shaders\Normal</Filter>
+    </None>
+    <None Include="ShadowMapVertexShader.vert">
+      <Filter>Resource Files\Shaders\ShadowShader</Filter>
+    </None>
+    <None Include="ShadowMapPixelShader.frag">
+      <Filter>Resource Files\Shaders\ShadowShader</Filter>
     </None>
   </ItemGroup>
 </Project>

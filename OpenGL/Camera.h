@@ -15,13 +15,14 @@ public:
 	void rotate(glm::vec2 rotation);//skipping Z
 	void moveInDirection(glm::vec3 direction = glm::vec3(0,0,1));
 	void Update();
-
+	glm::vec3 getRotation() const;
 private:
 	void RotationMatrix();
 	glm::vec3 translation;
 	struct cameraBuffer{
 		glm::mat4 p;
 		glm::mat4 v;
+		glm::vec4 camPos;
 	};
 	cameraBuffer cb;
 	unsigned int pv;

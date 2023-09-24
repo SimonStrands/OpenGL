@@ -31,6 +31,14 @@ void GameObject::directRender()
 	
 }
 
+void GameObject::directRenderShadow()
+{
+	model->setTransform(*(Transform*)components["Transform"]);
+	if(model != nullptr){
+		model->DirectRenderShadow();
+	}
+}
+
 void GameObject::addModel(Model* model)
 {
 	this->model = model;
