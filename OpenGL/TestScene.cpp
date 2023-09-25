@@ -21,6 +21,10 @@ void TestScene::init()
 	Sponza = new GameObject(basic.rm);
 	test->addModel(basic.rm->getModel("Objects/Human_806polys.fbx"));
 	Sponza->addModel(basic.rm->getModel("Objects/sponza.obj"));
+
+	basic.shadowMap->addGameObject(test);
+	basic.shadowMap->addGameObject(Sponza);
+
 	((Transform*)Sponza->getComponent("Transform"))->position.x = 20;
 	((Transform*)Sponza->getComponent("Transform"))->scale = glm::vec3(0.5,0.5,0.5);
 	//

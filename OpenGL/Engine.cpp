@@ -10,11 +10,11 @@ Engine::Engine():
 	basicToScene.mouse = new Mouse(gfx.getCurrentActiveWindow());
 	basicToScene.keyboard = new Keyboard(gfx.getCurrentActiveWindow());
 	basicToScene.camera = new Camera();
-	//basicToScene.shadowMap = new ShadowMap();
+	basicToScene.shadowMap = new ShadowMap();
 
-	//unsigned int shadowVertex = basicToScene.rm->getShader("ShadowMapVertexShader.vert");
-	//unsigned int shadowPixel = basicToScene.rm->getShader("ShadowMapPixelShader.frag");
-	//basicToScene.shadowMap->addShaderProgram(basicToScene.rm->createShaderProgram("ShadowMapProgram", shadowVertex, shadowPixel));
+	unsigned int shadowVertex = basicToScene.rm->getShader("ShadowMapVertexShader.vert");
+	unsigned int shadowPixel = basicToScene.rm->getShader("ShadowMapPixelShader.frag");
+	basicToScene.shadowMap->addShaderProgram(basicToScene.rm->createShaderProgram("ShadowMapProgram", shadowVertex, shadowPixel));
 
 	m_sceneHandler.setBasicDefaultVariables(basicToScene);
 	basicToScene.camera->init();
@@ -36,6 +36,11 @@ Engine::~Engine()
 
 void Engine::Run()
 {
+
+	std::vector<Light*> l;
+	l.push_back(new SpotLight(glm::vec3(0,5,0), glm::vec3(0,0,0)));
+	basicToScene.shadowMap->setLights(l);
+
 	float currentTimeToUpdateFPS = 0;
 	float TimeToUpdateFPS = 0.3f;
 	unsigned int counter = 0;
@@ -72,7 +77,8 @@ void Engine::Run()
 	
 			basicToScene.mouse->Update();
 			m_sceneHandler.Update(dt.dt());
-			//basicToScene.shadowMap->renderShadow();
+			basicToScene.shadowMap->renderShadow();
+			gfx.setDefaultViewPort();
 			m_sceneHandler.Render();
 	
 			glfwSwapBuffers(gfx.getCurrentActiveWindow());

@@ -78,6 +78,17 @@ void ShadowMap::renderShadow()
 				gameObjectsWithShadow[i]->directRenderShadow();
 			}
 		}
+		if(lights[i]->lightType ==  LightType::e_SpotLight){
+			SpotLight* dl = (SpotLight*)lights[i];
+
+			glViewport(0, 0, dl->WidthHeight.x, dl->WidthHeight.y);
+			glBindFramebuffer(GL_FRAMEBUFFER, DepthBufferFBO[i]);
+			glClear(GL_DEPTH_BUFFER_BIT);
+
+			for(int i = 0; i < gameObjectsWithShadow.size(); i++){
+				gameObjectsWithShadow[i]->directRenderShadow();
+			}
+		}
 	}
 }
 
