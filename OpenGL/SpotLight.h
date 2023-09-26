@@ -19,6 +19,6 @@ public:
 		this->position = position;
 		this->color = color;
 		this->lightType = LightType::e_SpotLight;
-		projectonMatrix = glm::transpose(glm::perspectiveFovLH(glm::radians(FOV), WH.x, WH.y, 0.01f, 200.f));
+		projectonMatrix = glm::transpose(glm::perspectiveFovLH(glm::radians(FOV), WH.x, WH.y, 0.01f, 20000.f));
 	}
 };

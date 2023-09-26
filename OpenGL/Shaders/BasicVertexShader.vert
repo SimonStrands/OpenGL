@@ -7,6 +7,7 @@ layout(location = 2) in vec2 uv;
 out vec4 o_fragPos;
 out vec3 o_normal;
 out vec2 o_uv;
+out vec4 FragPosLightSpace;
 
 
 layout (std140, binding = 0) uniform Matrices
@@ -37,4 +38,5 @@ void main()
 	o_fragPos = (vec4(position.xyz, 1.0) * (transform));
 	o_normal = normal;
 	o_uv = uv;
+	FragPosLightSpace = lightViewProjection[0] * vec4(o_fragPos.xyz, 1);
 }

@@ -66,9 +66,9 @@ void ImGuiManager::renderGameObject()
 		ImGui::SliderFloat("y##Rotation", &transform->rotation.y, -10, 10);
 		ImGui::SliderFloat("z##Rotation", &transform->rotation.z, -10, 10);
 		ImGui::Text("Scale");
-		ImGui::SliderFloat("x##Scale", &transform->scale.x, 0, 20);
-		ImGui::SliderFloat("y##Scale", &transform->scale.y, 0, 20);
-		ImGui::SliderFloat("z##Scale", &transform->scale.z, 0, 20);
+		ImGui::SliderFloat("x##Scale", &transform->scale.x, 0, 100);
+		ImGui::SliderFloat("y##Scale", &transform->scale.y, 0, 100);
+		ImGui::SliderFloat("z##Scale", &transform->scale.z, 0, 100);
 	}
 }
 
