@@ -11,6 +11,7 @@ public:
 	void render();
 private:
 	GameObject* test;
+	GameObject* box2;
 	GameObject* Sponza;
 	GameObject* player;
 };

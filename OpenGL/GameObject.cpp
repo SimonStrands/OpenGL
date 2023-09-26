@@ -44,6 +44,18 @@ void GameObject::addModel(Model* model)
 	this->model = model;
 }
 
+void GameObject::setMaterial(Material mat, int index)
+{
+	if(index < 0){
+		for(int i = 0; i < model->getMeshes().size(); i++){
+			model->getMeshes()[i].material = mat;
+		}
+	}
+	else{
+		model->getMeshes()[index].material = mat;
+	}
+}
+
 void GameObject::addComponent(const std::string& componentName, Components* component)
 {
 	this->components.insert(std::pair(componentName, component));

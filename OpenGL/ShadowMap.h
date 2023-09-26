@@ -27,7 +27,7 @@ public:
 	void addGameObject(GameObject* gameObject);
 	void renderShadow();
 	void updateLightMatrices();
-	unsigned int getShadowBuffer(int index, glm::vec2& size);
+	unsigned int getDepthBuffer(int index);
 private:
 	
 	void setUpLight(Light* light, unsigned int index);

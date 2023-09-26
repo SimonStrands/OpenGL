@@ -41,7 +41,7 @@ void Engine::Run()
 {
 
 	std::vector<Light*> l;
-	l.push_back(new SpotLight(glm::vec3(0,5,0), glm::vec3(0,0,0), glm::vec2(1200, 800)));
+	l.push_back(new SpotLight(glm::vec3(0,5,0), glm::vec3(0,0,0), glm::vec2(2000, 2000), glm::vec3(1,1,1), 90));
 	basicToScene.shadowMap->setLights(l);
 
 	float currentTimeToUpdateFPS = 0;

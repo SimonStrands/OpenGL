@@ -13,6 +13,7 @@ public:
 public:
 	virtual glm::mat4 getLightViewProj() = 0;
 	glm::mat4 getProjection();
-protected:
+//protected:
+public:
 	glm::mat4 projectonMatrix;
 };

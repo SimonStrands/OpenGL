@@ -5,7 +5,6 @@ layout(location = 0) out vec4 finalPixel;
 in vec4 o_fragPos;
 in vec3 o_normal;
 in vec2 o_uv;
-in vec4 FragPosLightSpace;
 
 //texture materials
 layout(binding = 0)uniform sampler2D ambientTexture;
@@ -59,16 +58,20 @@ void main(){
         vec3 ambientLight = Ka.xyz * lightColors[i].xyz;
     
         vec4 shadowHomo = o_fragPos * lightViewProjection[i];
-        //vec4 shadowMapCoords = shadowHomo * 0.5 + 0.5;
-        vec4 shadowMapCoords = shadowHomo * vec4(0.5, 0.5, 1.0f, 1.0f) + (vec4(0.5f, 0.5f, 0.0f, 0.0f) * shadowHomo.w);
+        //vec4 shadowMapCoords = shadowHomo * vec4(0.5, 0.5, 1.0f, 1.0f) + (vec4(0.5f, 0.5f, 0.0f, 0.0f) * shadowHomo.w);
+        vec4 shadowMapCoords = vec4(shadowHomo.xyz / shadowHomo.w, 1);
+        shadowMapCoords = shadowMapCoords * 0.5 + 0.5;
+
         
-        shadowMapCoords.xyz = shadowMapCoords.xyz / shadowMapCoords.w;
-        
-        float SM = texture(ShadowMaps, vec3(shadowMapCoords.xy, i)).r;
-        
-        const float bias = 0.0001; // Adjust the bias value as needed
-        
-        if (SM > shadowMapCoords.z - bias) 
+        double SM = texture(ShadowMaps, vec3(shadowMapCoords.xy, i)).r;
+         
+        float bias = 0.000001;
+          
+        if (SM + bias > shadowMapCoords.z &&
+                shadowMapCoords.z <= 1.0f &&//E
+				shadowMapCoords.x < 1 && shadowMapCoords.x > 0 &&
+				shadowMapCoords.y < 1 && shadowMapCoords.y > 0 
+                )   
         {
             vec3 defuse_light;
             float ammount_diffuse = max(dot(o_normal, lightDir), 0.0f);

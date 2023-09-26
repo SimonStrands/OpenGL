@@ -49,15 +49,6 @@ void ShadowMap::setLights(std::vector<Light*> lights)
 	lightBuffer.projection = this->lights[0]->getProjection();
 	lightBuffer.view = glm::mat4(1);
 
-	/*
-	for(int i = 0; i < this->lights.size(); i++)
-	{
-		if (this->lights[i]->lightType != LightType::e_PointLight)
-		{
-			setUpLight(this->lights[i], i);
-		}
-	}
-	*/
 	float MaxWidth = 0, MaxHeight = 0;
 	for(int i = 0; i < this->lights.size(); i++){
 		if (this->lights[i]->lightType == LightType::e_SpotLight)
@@ -174,26 +165,11 @@ void ShadowMap::updateLightMatrices()
 	setUniform("ShadowData", shadowMapCB, 3);
 }
 
-unsigned int ShadowMap::getShadowBuffer(int index, glm::vec2& size)
+unsigned int ShadowMap::getDepthBuffer(int index)
 {
-	if(lights.size() < index){
-		return 0;
-	}
-	if(lights[index]->lightType == LightType::e_DirectionlLight){
-		DirectionalLight* l = dynamic_cast<DirectionalLight*>(lights[index]);
-		size.x = l->WidthHeight.x;
-		size.y = l->WidthHeight.y;
-	}
-	else if(lights[index]->lightType == LightType::e_SpotLight){
-		SpotLight* l = dynamic_cast<SpotLight*>(lights[index]);
-		size.x = l->WidthHeight.x;
-		size.y = l->WidthHeight.y;
-	}
-	else{
-		return 0;
-	}
 	return DepthBufferFBO[index];
 }
+
 
 //void ShadowMap::setUpLight(Light* light, unsigned int index)
 //{
