@@ -148,7 +148,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);GLEW_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\Libs\glfw-3.3.8.bin.WIN64\include;$(SolutionDir)\Libs\GLEW\include;$(SolutionDir)\Libs\Assimp\include;$(SolutionDir)\Libs\glm-master\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\Libs\glfw-3.3.8.bin.WIN64\include;$(SolutionDir)\Libs\GLEW\include;$(SolutionDir)\Libs\Assimp\include;$(SolutionDir)\Libs\glm-master\glm;$(SolutionDir)\Libs\ImGui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -166,7 +166,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);GLEW_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\Libs\glfw-3.3.8.bin.WIN64\include;$(SolutionDir)\Libs\GLEW\include;$(SolutionDir)\Libs\Assimp\include;$(SolutionDir)\Libs\glm-master\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\Libs\glfw-3.3.8.bin.WIN64\include;$(SolutionDir)\Libs\GLEW\include;$(SolutionDir)\Libs\Assimp\include;$(SolutionDir)\Libs\glm-master\glm;$(SolutionDir)\Libs\ImGui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -186,7 +186,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;Dist;%(PreprocessorDefinitions);GLEW_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\Libs\glfw-3.3.8.bin.WIN64\include;$(SolutionDir)\Libs\GLEW\include;$(SolutionDir)\Libs\Assimp\include;$(SolutionDir)\Libs\glm-master\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\Libs\glfw-3.3.8.bin.WIN64\include;$(SolutionDir)\Libs\GLEW\include;$(SolutionDir)\Libs\Assimp\include;$(SolutionDir)\Libs\glm-master\glm;$(SolutionDir)\Libs\ImGui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -199,6 +199,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Libs\ImGui\imgui.cpp" />
+    <ClCompile Include="..\Libs\ImGui\imgui_demo.cpp" />
+    <ClCompile Include="..\Libs\ImGui\imgui_draw.cpp" />
+    <ClCompile Include="..\Libs\ImGui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="..\Libs\ImGui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="..\Libs\ImGui\imgui_tables.cpp" />
+    <ClCompile Include="..\Libs\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="App.cpp" />
     <ClCompile Include="AssimpToOpenGL.cpp" />
     <ClCompile Include="Behavior.cpp" />
@@ -210,7 +217,9 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="ImageReader.cpp" />
+    <ClCompile Include="ImGuiManager.cpp" />
     <ClCompile Include="Keyboard.cpp" />
+    <ClCompile Include="Light.cpp" />
     <ClCompile Include="LoadShaders.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Model.cpp" />
@@ -225,6 +234,15 @@
     <ClCompile Include="TestScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Libs\ImGui\imconfig.h" />
+    <ClInclude Include="..\Libs\ImGui\imgui.h" />
+    <ClInclude Include="..\Libs\ImGui\imgui_impl_glfw.h" />
+    <ClInclude Include="..\Libs\ImGui\imgui_impl_opengl3.h" />
+    <ClInclude Include="..\Libs\ImGui\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="..\Libs\ImGui\imgui_internal.h" />
+    <ClInclude Include="..\Libs\ImGui\imstb_rectpack.h" />
+    <ClInclude Include="..\Libs\ImGui\imstb_textedit.h" />
+    <ClInclude Include="..\Libs\ImGui\imstb_truetype.h" />
     <ClInclude Include="App.h" />
     <ClInclude Include="AssimpToOpenGL.h" />
     <ClInclude Include="Behavior.h" />
@@ -241,6 +259,7 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="ImageReader.h" />
+    <ClInclude Include="ImGuiManager.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="LightBuffer.h" />
@@ -265,8 +284,11 @@
   <ItemGroup>
     <None Include="Shaders\BasicPixelShader.frag" />
     <None Include="Shaders\BasicVertexShader.vert" />
-    <None Include="ShadowMapPixelShader.frag" />
-    <None Include="ShadowMapVertexShader.vert" />
+    <None Include="Shaders\ShadowMapPixelShader.frag" />
+    <None Include="Shaders\ShadowMapVertexShader.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ConstantBufferBindings.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

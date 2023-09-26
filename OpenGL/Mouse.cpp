@@ -6,6 +6,7 @@ mouseDelta(0,0),
 scrollDelta(0),
 lastScroll(0)
 {
+    mouseStuck = true;
     this->wnd = wnd;
     glfwSetCursorPos(this->wnd, (double)(1024/2), (double)(768/2));
     //glfwSetScrollCallback(this->wnd, [](GLFWwindow* window, double xoffset, double yoffset) {
@@ -16,12 +17,16 @@ lastScroll(0)
 
 void Mouse::Update()
 {
-    
-    double xpos, ypos;
-    glfwGetCursorPos(this->wnd, &xpos, &ypos);
-    mouseDelta.x = xpos - (1024/2);
-    mouseDelta.y = ypos - (768/2);
-    glfwSetCursorPos(this->wnd, (double)(1024/2), (double)(768/2));
+    if(mouseStuck){
+        double xpos, ypos;
+        glfwGetCursorPos(this->wnd, &xpos, &ypos);
+        mouseDelta.x = xpos - (1024/2);
+        mouseDelta.y = ypos - (768/2);
+        glfwSetCursorPos(this->wnd, (double)(1024/2), (double)(768/2));
+    }
+    else{
+        mouseDelta = glm::vec2(0,0);
+    }
     lastScroll = scrollDelta;
 }
 
@@ -33,6 +38,16 @@ double Mouse::getScrollDelta()
 glm::vec2 Mouse::getMouseDelta() const
 {
     return mouseDelta;
+}
+
+void Mouse::hideMouseCursor(bool hide)
+{
+}
+
+void Mouse::stickMouse()
+{
+    glfwSetCursorPos(this->wnd, (double)(1024/2), (double)(768/2));
+    mouseStuck = !mouseStuck;
 }
 
 Mouse& Mouse::instance(){

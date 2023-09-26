@@ -1,0 +1,34 @@
+
+layout (std140, binding = 0) uniform Matrices
+{
+    mat4 projection;
+    mat4 view;
+	vec4 cameraPos;
+};
+
+layout (std140, binding = 1) uniform Transform
+{
+    mat4 transform;
+};
+
+layout (std140, binding = 2) uniform Material
+{
+    vec4 Ka;
+    vec4 Kd;
+    vec4 Ks;
+    vec4 Ke;
+};
+
+layout (std140, binding = 3) uniform LightBuffer
+{
+    vec4 lightPos[MAXNUMBEROFLIGHTS];//4:th element is what type of light it is
+	vec4 lightColors[MAXNUMBEROFLIGHTS];//4:th element is how hard the shadows should be
+	mat4 lightViewProjection[MAXNUMBEROFLIGHTS];
+	int nrOfLight;
+};
+
+layout (std140, binding = 5) uniform LightData
+{
+    mat4 projection;
+    mat4 view;
+};

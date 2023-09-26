@@ -6,10 +6,17 @@
 class Keyboard{
 public:
 	Keyboard(GLFWwindow* wnd);
+	void update();
 	bool getKeyDown(unsigned char key);
 	bool getKeyDown(int key);
 	bool getKeyUp(unsigned char key);
 	bool getKeyUp(int key);
+	bool getKeyJustDown(unsigned char key);
+	bool getKeyJustDown(int key);
+	bool getKeyReleased(unsigned char key);
+	bool getKeyReleased(int key);
 private:
+	unsigned int currentKeyAction[349] = {false};
+	unsigned int LastKeyAction[349] = {false};
 	GLFWwindow* wnd;
 };

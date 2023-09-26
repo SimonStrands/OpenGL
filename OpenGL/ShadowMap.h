@@ -26,17 +26,25 @@ public:
 	void addLight(Light* light);
 	void addGameObject(GameObject* gameObject);
 	void renderShadow();
-private:
 	void updateLightMatrices();
-	void setUpLight(Light* light, unsigned int index);
+	unsigned int getShadowBuffer(int index, glm::vec2& size);
 private:
+	
+	void setUpLight(Light* light, unsigned int index);
+//private:
+public:
 	std::vector<GameObject*> gameObjectsWithShadow;
 	std::vector<Light*> lights;
 
 	std::vector<unsigned int> DepthBufferFBO;
-	std::vector<unsigned int> DepthBuffer;
+	unsigned int DepthBufferArray;
 
-	LightBuffer lightConstantBuffer;
+	
+	LightBuffer lightBuffer;
 	unsigned int lightCB;
+
+	ShadowMapBuffer shadowMapConstantBuffer;
+	unsigned int shadowMapCB;
+
 	unsigned int ShadowShaderProgram;
 };

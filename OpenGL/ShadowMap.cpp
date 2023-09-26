@@ -3,12 +3,14 @@
 ShadowMap::ShadowMap(std::vector<Light*> lights)
 {
 	setLights(lights);
-	lightCB = CreateUniformBuffer(lightConstantBuffer);
+	shadowMapCB = CreateUniformBuffer(shadowMapConstantBuffer);
+	lightCB = CreateUniformBuffer(lightBuffer);
 }
 
 ShadowMap::ShadowMap()
 {
-	lightCB = CreateUniformBuffer(lightConstantBuffer);
+	shadowMapCB = CreateUniformBuffer(shadowMapConstantBuffer);
+	lightCB = CreateUniformBuffer(lightBuffer);
 }
 
 void ShadowMap::clean()
@@ -23,7 +25,7 @@ void ShadowMap::clean()
 	}
 	for(int i = 0; i < DepthBufferFBO.size(); i++){
 		glDeleteBuffers(1, &DepthBufferFBO[i]);
-		glDeleteBuffers(1, &DepthBuffer[i]);
+		glDeleteBuffers(1, &DepthBufferArray);
 	}
 	
 }
@@ -43,16 +45,61 @@ void ShadowMap::setLights(std::vector<Light*> lights)
 	}
 
 	DepthBufferFBO.resize(this->lights.size());
-	DepthBuffer.resize(this->lights.size());
-	lightConstantBuffer.nrOfLight = (int)this->lights.size();
+	shadowMapConstantBuffer.nrOfLight = (int)this->lights.size();
+	lightBuffer.projection = this->lights[0]->getProjection();
+	lightBuffer.view = glm::mat4(1);
 
-
+	/*
 	for(int i = 0; i < this->lights.size(); i++)
 	{
 		if (this->lights[i]->lightType != LightType::e_PointLight)
 		{
 			setUpLight(this->lights[i], i);
 		}
+	}
+	*/
+	float MaxWidth = 0, MaxHeight = 0;
+	for(int i = 0; i < this->lights.size(); i++){
+		if (this->lights[i]->lightType == LightType::e_SpotLight)
+		{
+			SpotLight* sl = (SpotLight*)lights[i];
+			if(MaxWidth < sl->WidthHeight.x){
+				MaxWidth = sl->WidthHeight.x;
+			}
+			if(MaxHeight < sl->WidthHeight.y){
+				MaxHeight = sl->WidthHeight.y;
+			}
+		}
+		else if(this->lights[i]->lightType == LightType::e_DirectionlLight)
+		{
+			DirectionalLight* dl = (DirectionalLight*)lights[i];
+			if(MaxWidth < dl->WidthHeight.x){
+				MaxWidth = dl->WidthHeight.x;
+			}
+			if(MaxHeight < dl->WidthHeight.y){
+				MaxHeight = dl->WidthHeight.y;
+			}
+		}
+	}
+
+	glGenTextures(1, &DepthBufferArray);
+	glBindTexture(GL_TEXTURE_2D_ARRAY, DepthBufferArray);
+	glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_DEPTH_COMPONENT32F, MaxWidth, MaxHeight, this->lights.size());
+
+	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	static const float clampColor[] = {1.0f, 1.0f, 1.0f, 1.0f};
+	glTexParameterfv(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_BORDER_COLOR, clampColor);
+	
+	for (size_t i = 0; i < this->lights.size(); ++i) {
+	    glGenFramebuffers(1, &DepthBufferFBO[i]);
+	    glBindFramebuffer(GL_FRAMEBUFFER, DepthBufferFBO[i]);
+	    glFramebufferTextureLayer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, DepthBufferArray, 0, i);
+	    glDrawBuffer(GL_NONE);
+	    glReadBuffer(GL_NONE);
+	    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 }
 
@@ -68,7 +115,13 @@ void ShadowMap::renderShadow()
 	for(int i = 0; i < lights.size(); i++){
 		
 		if(lights[i]->lightType ==  LightType::e_DirectionlLight){
+			
 			DirectionalLight* dl = (DirectionalLight*)lights[i];
+
+			lightBuffer.projection = dl->getProjection();
+			lightBuffer.view = dl->getLightView();
+			UpdateUniformBuffer(lightBuffer, lightCB);
+			setUniform("LightData", lightCB, 5);
 
 			glViewport(0, 0, dl->WidthHeight.x, dl->WidthHeight.y);
 			glBindFramebuffer(GL_FRAMEBUFFER, DepthBufferFBO[i]);
@@ -79,9 +132,14 @@ void ShadowMap::renderShadow()
 			}
 		}
 		if(lights[i]->lightType ==  LightType::e_SpotLight){
-			SpotLight* dl = (SpotLight*)lights[i];
+			SpotLight* sl = (SpotLight*)lights[i];
 
-			glViewport(0, 0, dl->WidthHeight.x, dl->WidthHeight.y);
+			lightBuffer.projection = sl->getProjection();
+			lightBuffer.view = sl->getLightView();
+			UpdateUniformBuffer(lightBuffer, lightCB);
+			setUniform("LightData", lightCB, 5);
+
+			glViewport(0, 0, sl->WidthHeight.x, sl->WidthHeight.y);
 			glBindFramebuffer(GL_FRAMEBUFFER, DepthBufferFBO[i]);
 			glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -95,7 +153,7 @@ void ShadowMap::renderShadow()
 ShadowMap::~ShadowMap()
 {
 	clean();
-	//delete lightCB
+	//delete shadowMapCB
 }
 
 void ShadowMap::addShaderProgram(unsigned int ShadowShaderProgram)
@@ -105,25 +163,48 @@ void ShadowMap::addShaderProgram(unsigned int ShadowShaderProgram)
 
 void ShadowMap::updateLightMatrices()
 {
+	glActiveTexture(GL_TEXTURE4);
+    glBindTexture(GL_TEXTURE_2D_ARRAY, DepthBufferArray);
 	for(int i = 0; i < lights.size(); i++){
-		lightConstantBuffer.lightPos[i] = glm::vec4(lights[i]->position, lights[i]->lightType);
-		lightConstantBuffer.lightColors[i] = glm::vec4(lights[i]->color, 0);
-		lightConstantBuffer.lightViewProjection[i] = lights[i]->getLightViewProj();
+		shadowMapConstantBuffer.lightPos[i] = glm::vec4(lights[i]->position, lights[i]->lightType);
+		shadowMapConstantBuffer.lightColors[i] = glm::vec4(lights[i]->color, 0);
+		shadowMapConstantBuffer.lightViewProjection[i] = lights[i]->getLightViewProj();
 	}
-	UpdateUniformBuffer(lightConstantBuffer, lightCB);
-	setUniform("LightData", lightCB, 5);
+	UpdateUniformBuffer(shadowMapConstantBuffer, shadowMapCB);
+	setUniform("ShadowData", shadowMapCB, 3);
 }
 
-void ShadowMap::setUpLight(Light* light, unsigned int index)
+unsigned int ShadowMap::getShadowBuffer(int index, glm::vec2& size)
 {
-	if(light->lightType == LightType::e_DirectionlLight)
-	{
-		DirectionalLight* dirLight = dynamic_cast<DirectionalLight*>(light);
-		createDepthStencil(dirLight->WidthHeight.x, dirLight->WidthHeight.y, DepthBufferFBO[index], DepthBuffer[index]);
+	if(lights.size() < index){
+		return 0;
 	}
-	else if(light->lightType == LightType::e_SpotLight)
-	{
-		SpotLight* dirLight = dynamic_cast<SpotLight*>(light);
-		createDepthStencil(dirLight->WidthHeight.x, dirLight->WidthHeight.y, DepthBufferFBO[index], DepthBuffer[index]);
+	if(lights[index]->lightType == LightType::e_DirectionlLight){
+		DirectionalLight* l = dynamic_cast<DirectionalLight*>(lights[index]);
+		size.x = l->WidthHeight.x;
+		size.y = l->WidthHeight.y;
 	}
+	else if(lights[index]->lightType == LightType::e_SpotLight){
+		SpotLight* l = dynamic_cast<SpotLight*>(lights[index]);
+		size.x = l->WidthHeight.x;
+		size.y = l->WidthHeight.y;
+	}
+	else{
+		return 0;
+	}
+	return DepthBufferFBO[index];
 }
+
+//void ShadowMap::setUpLight(Light* light, unsigned int index)
+//{
+//	if(light->lightType == LightType::e_DirectionlLight)
+//	{
+//		DirectionalLight* dirLight = dynamic_cast<DirectionalLight*>(light);
+//		createDepthStencil(dirLight->WidthHeight.x, dirLight->WidthHeight.y, DepthBufferFBO[index], DepthBuffer[index]);
+//	}
+//	else if(light->lightType == LightType::e_SpotLight)
+//	{
+//		SpotLight* dirLight = dynamic_cast<SpotLight*>(light);
+//		createDepthStencil(dirLight->WidthHeight.x, dirLight->WidthHeight.y, DepthBufferFBO[index], DepthBuffer[index]);
+//	}
+//}

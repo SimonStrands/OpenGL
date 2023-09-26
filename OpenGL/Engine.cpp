@@ -12,6 +12,9 @@ Engine::Engine():
 	basicToScene.camera = new Camera();
 	basicToScene.shadowMap = new ShadowMap();
 
+	basicToScene.imGuiManager = &this->imGuiManager;
+	imGuiManager.init();
+
 	unsigned int shadowVertex = basicToScene.rm->getShader("ShadowMapVertexShader.vert");
 	unsigned int shadowPixel = basicToScene.rm->getShader("ShadowMapPixelShader.frag");
 	basicToScene.shadowMap->addShaderProgram(basicToScene.rm->createShaderProgram("ShadowMapProgram", shadowVertex, shadowPixel));
@@ -38,14 +41,23 @@ void Engine::Run()
 {
 
 	std::vector<Light*> l;
-	l.push_back(new SpotLight(glm::vec3(0,5,0), glm::vec3(0,0,0)));
+	l.push_back(new SpotLight(glm::vec3(0,5,0), glm::vec3(0,0,0), glm::vec2(1200, 800)));
 	basicToScene.shadowMap->setLights(l);
 
 	float currentTimeToUpdateFPS = 0;
 	float TimeToUpdateFPS = 0.3f;
 	unsigned int counter = 0;
 	while(!m_gameOver){
-	
+
+		#ifdef TurnOfWithWindow
+		if(gfx.GetNrOfWindows() <= 0){
+			m_gameOver = true;
+			return;
+		}
+        #else
+		    
+        #endif // TurnOfWithWindow
+
 		dt.restartClock();
 
 		currentTimeToUpdateFPS += dt.dt();
@@ -59,14 +71,7 @@ void Engine::Run()
 			counter = 0;
 		}
 
-        #ifdef TurnOfWithWindow
-		if(gfx.GetNrOfWindows() <= 0){
-			m_gameOver = true;
-			return;
-		}
-        #else
-		    
-        #endif // TurnOfWithWindow
+
 		
 			if(basicToScene.keyboard->getKeyDown(GLFW_KEY_ESCAPE)){
 				m_gameOver = true;
@@ -74,15 +79,35 @@ void Engine::Run()
 			glClearColor(0.1,0.1,0.1,1);
 			glClear(GL_COLOR_BUFFER_BIT);
 			glClear(GL_DEPTH_BUFFER_BIT);
-	
+
+			//update
 			basicToScene.mouse->Update();
 			m_sceneHandler.Update(dt.dt());
+
+			//render
+			//shadows
 			basicToScene.shadowMap->renderShadow();
 			gfx.setDefaultViewPort();
+
+			if(basicToScene.keyboard->getKeyDown('O')){
+				l[0]->position = basicToScene.camera->getPosition();
+				((SpotLight*)l[0])->rotation = basicToScene.camera->getRotation();
+			}
+
+
+			//real object
+			glUseProgram(basicToScene.rm->getShaderProgram("defShaderProgram"));
+			basicToScene.shadowMap->updateLightMatrices();
 			m_sceneHandler.Render();
-	
+
+			imGuiManager.render();
+
+			if(basicToScene.keyboard->getKeyReleased(GLFW_KEY_TAB)){
+				basicToScene.mouse->stickMouse();
+			}
+
 			glfwSwapBuffers(gfx.getCurrentActiveWindow());
-	
+			basicToScene.keyboard->update();
 			glfwPollEvents();
 			gfx.UpdateWindows();
 	}

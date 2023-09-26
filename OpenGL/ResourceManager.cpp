@@ -22,6 +22,9 @@ Model* ResourceManager::getModel(const std::string& FileName)
 {
     if(Models.find(FileName) == Models.end()){
         Model* temp = loadModel(FileName, this);
+        if(temp == nullptr){
+            std::cout << "couldn't load model" << std::endl;
+        }
         Models.insert(std::pair<std::string, Model*>(FileName, temp));
     }
     return Models.find(FileName)->second;
@@ -29,7 +32,27 @@ Model* ResourceManager::getModel(const std::string& FileName)
 
 unsigned int ResourceManager::getShader(const std::string& ShaderFile)
 {
-    return 0;
+    if(Shaders.find(ShaderFile) == Shaders.end()){
+        unsigned int newShader;
+        
+        std::string extension = ShaderFile.substr(ShaderFile.size() - 4);
+        if(extension == "vert"){
+            if(!loadVShader(ShaderFile, newShader)){
+                std::cout << "couldn't create shader" << std::endl;
+            }
+        }
+        else if(extension == "frag"){
+            if(!loadPShader(ShaderFile, newShader)){
+                std::cout << "couldn't create shader" << std::endl;
+            }
+        }
+        else{
+            std::cout << "doesn't support " << extension << " extension yet" << std::endl;
+        }
+
+        Shaders.insert(std::pair(ShaderFile, newShader));
+    }
+    return Shaders.find(ShaderFile)->second;
 }
 
 unsigned int ResourceManager::getShaderProgram(const std::string& ShaderProgram)
@@ -88,14 +111,11 @@ void ResourceManager::loadDef()
     Models.insert(std::pair<std::string, Model*>("def", temp));
 
     unsigned int def_vShader, def_pShader;
-    GLTest(loadVShader("BasicVertexShader.vert", def_vShader));
-    Shaders.insert(std::make_pair("defVertex", def_vShader));
+    def_vShader = getShader("BasicVertexShader.vert");
 
-    GLTest(loadPShader("BasicPixelShader.frag", def_pShader));
-    Shaders.insert(std::make_pair("defPixel", def_pShader));
+    def_pShader = getShader("BasicPixelShader.frag");
 
-    unsigned int def_shaderProgram = attachShaders(def_vShader, def_pShader);
-    ShaderProgram.insert(std::make_pair("defShaderProgram", def_shaderProgram));
+    unsigned int def_shaderProgram = createShaderProgram("defShaderProgram", def_vShader, def_pShader);
     glUseProgram(def_shaderProgram);
 
     unsigned int defTexture;

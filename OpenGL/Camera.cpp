@@ -59,6 +59,21 @@ glm::vec3 Camera::getRotation() const
 	return this->rotation;
 }
 
+glm::vec3 Camera::getPosition() const
+{
+	return this->position;
+}
+
+glm::mat4 Camera::getProjection()
+{
+	return cb.p;
+}
+
+glm::mat4 Camera::getView()
+{
+	return cb.v;
+}
+
 void Camera::RotationMatrix()
 {
 	glm::vec3 direction;

@@ -55,6 +55,12 @@
     <Filter Include="Header Files\Engine\SingleTon">
       <UniqueIdentifier>{45b9c2fc-e464-4e80-8d59-edde0d22be64}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Engine\IMGUI">
+      <UniqueIdentifier>{dc3f48d8-f67e-4351-ada4-80c3cacb6157}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Engine\IMGUI\Lib">
+      <UniqueIdentifier>{daadc9a5-6e6d-4b09-b932-b79a8e17bbdc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -127,6 +133,33 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SpotLight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libs\ImGui\imgui.cpp">
+      <Filter>Header Files\Engine\IMGUI\Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libs\ImGui\imgui_demo.cpp">
+      <Filter>Header Files\Engine\IMGUI\Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libs\ImGui\imgui_draw.cpp">
+      <Filter>Header Files\Engine\IMGUI\Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libs\ImGui\imgui_impl_glfw.cpp">
+      <Filter>Header Files\Engine\IMGUI\Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libs\ImGui\imgui_impl_opengl3.cpp">
+      <Filter>Header Files\Engine\IMGUI\Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libs\ImGui\imgui_tables.cpp">
+      <Filter>Header Files\Engine\IMGUI\Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Libs\ImGui\imgui_widgets.cpp">
+      <Filter>Header Files\Engine\IMGUI\Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuiManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -239,6 +272,36 @@
     <ClInclude Include="DefaultVariableToScene.h">
       <Filter>Header Files\Engine\EngineScene</Filter>
     </ClInclude>
+    <ClInclude Include="..\Libs\ImGui\imconfig.h">
+      <Filter>Header Files\Engine\IMGUI\Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libs\ImGui\imgui.h">
+      <Filter>Header Files\Engine\IMGUI\Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libs\ImGui\imgui_impl_glfw.h">
+      <Filter>Header Files\Engine\IMGUI\Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libs\ImGui\imgui_impl_opengl3.h">
+      <Filter>Header Files\Engine\IMGUI\Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libs\ImGui\imgui_impl_opengl3_loader.h">
+      <Filter>Header Files\Engine\IMGUI\Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libs\ImGui\imgui_internal.h">
+      <Filter>Header Files\Engine\IMGUI\Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libs\ImGui\imstb_rectpack.h">
+      <Filter>Header Files\Engine\IMGUI\Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libs\ImGui\imstb_textedit.h">
+      <Filter>Header Files\Engine\IMGUI\Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Libs\ImGui\imstb_truetype.h">
+      <Filter>Header Files\Engine\IMGUI\Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiManager.h">
+      <Filter>Header Files\Engine\IMGUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\BasicVertexShader.vert">
@@ -247,11 +310,16 @@
     <None Include="Shaders\BasicPixelShader.frag">
       <Filter>Resource Files\Shaders\Normal</Filter>
     </None>
-    <None Include="ShadowMapVertexShader.vert">
+    <None Include="Shaders\ShadowMapPixelShader.frag">
       <Filter>Resource Files\Shaders\ShadowShader</Filter>
     </None>
-    <None Include="ShadowMapPixelShader.frag">
+    <None Include="Shaders\ShadowMapVertexShader.vert">
       <Filter>Resource Files\Shaders\ShadowShader</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ConstantBufferBindings.txt">
+      <Filter>Resource Files\Shaders</Filter>
+    </Text>
   </ItemGroup>
 </Project>

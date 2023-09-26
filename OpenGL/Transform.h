@@ -30,7 +30,7 @@ struct Transform : public Components{
 		rot = glm::rotate(rot, rotation.x, glm::vec3(0.0f, 0.0f, 1.0f));     // Roll around Z-axis
 		rot = glm::rotate(rot, rotation.y, glm::vec3(1.0f, 0.0f, 0.0f));   // Pitch around X-axis
 		rot = glm::rotate(rot, rotation.z, glm::vec3(0.0f, 1.0f, 0.0f)); 
-		glm::mat4 modelMatrix = (pos * rot) * scaleM;
+		glm::mat4 modelMatrix = scaleM * (rot * pos);
 		modelMatrix = glm::transpose(modelMatrix);
 		return modelMatrix;
 	}

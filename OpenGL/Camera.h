@@ -16,6 +16,10 @@ public:
 	void moveInDirection(glm::vec3 direction = glm::vec3(0,0,1));
 	void Update();
 	glm::vec3 getRotation() const;
+	glm::vec3 getPosition() const;
+	//DEBUG
+	glm::mat4 getProjection();
+	glm::mat4 getView();
 private:
 	void RotationMatrix();
 	glm::vec3 translation;

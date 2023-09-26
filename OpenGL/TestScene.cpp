@@ -17,16 +17,22 @@ TestScene::~TestScene()
 void TestScene::init()
 {
 	basic.camera->setPosition(glm::vec3(0,5,0));
+	basic.camera->setRotation(glm::vec3(0,0,0));
 	test = new GameObject(basic.rm);
 	Sponza = new GameObject(basic.rm);
-	test->addModel(basic.rm->getModel("Objects/Human_806polys.fbx"));
-	Sponza->addModel(basic.rm->getModel("Objects/sponza.obj"));
+	//test->addModel(basic.rm->getModel("Objects/Human_806polys.fbx"));
+	//Sponza->addModel(basic.rm->getModel("Objects/sponza.obj"));
+
+	test->addModel(basic.rm->getModel("Objects/Cube.fbx"));
+	Sponza->addModel(basic.rm->getModel("Objects/Plane.fbx"));
+
+	basic.imGuiManager->addGameObject(test, "Cube");
+	basic.imGuiManager->addGameObject(Sponza, "Plane");
 
 	basic.shadowMap->addGameObject(test);
 	basic.shadowMap->addGameObject(Sponza);
 
-	((Transform*)Sponza->getComponent("Transform"))->position.x = 20;
-	((Transform*)Sponza->getComponent("Transform"))->scale = glm::vec3(0.5,0.5,0.5);
+	((Transform*)Sponza->getComponent("Transform"))->scale = glm::vec3(20,20,0.5);
 	//
 	player = new GameObject(basic.rm);
 	std::vector<std::pair<std::string, void*>> playerComponents;
@@ -43,8 +49,9 @@ SceneHandlerCalls TestScene::update(float dt)
 	//std::cout << "update()" << std::endl;
 
 	basic.camera->Update();
-	((Transform*)test->getComponent("Transform"))->rotation.x += 1 * dt;
+	//((Transform*)test->getComponent("Transform"))->rotation.x += 1 * dt;
 	player->update(dt);
+
 	return theReturn;
 }
 

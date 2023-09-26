@@ -12,6 +12,8 @@ public:
 	void Update();
 	double getScrollDelta();
 	glm::vec2 getMouseDelta() const;
+	void hideMouseCursor(bool hide);
+	void stickMouse();
 private:
 	static Mouse& instance();
 	void scroll_callBack(double xoffset, double yoffset);
@@ -19,4 +21,5 @@ private:
 	glm::vec2 mouseDelta;
 	double scrollDelta;
 	double lastScroll;
+	bool mouseStuck;
 };

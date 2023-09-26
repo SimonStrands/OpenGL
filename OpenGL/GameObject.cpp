@@ -23,7 +23,7 @@ void GameObject::SetShaderProgram(unsigned int shaderProgram)
 
 void GameObject::directRender()
 {
-	glUseProgram(shaderProgram);
+	//glUseProgram(shaderProgram);
 	model->setTransform(*(Transform*)components["Transform"]);
 	if(model != nullptr){
 		model->DirectRender();

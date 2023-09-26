@@ -11,23 +11,32 @@ static glm::vec2 AssimpToOpenGL(const aiVector2D& aVec2)
 	return glm::vec2(aVec2.x,aVec2.y);
 }
 
-void loadMaterial(const aiScene* pScene, std::vector<Material>& material){
+void loadMaterial(const aiScene* pScene, std::vector<Material>& material, ResourceManager* rm){
     material.resize(pScene->mNumMaterials);
+
+    //Just beacuse I found a bug with a object that doesn't have a material but says it has
+    bool actually_has_material = false;
+
     for(unsigned int i = 0; i < pScene->mNumMaterials; i++){
         const aiMaterial* pMaterial = pScene->mMaterials[i];
         if(pMaterial->GetTextureCount(aiTextureType_DIFFUSE) > 0){
             aiString path;
             if(pMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &path, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS){
                 //load diffuse Texture
-                ReadImage(path.C_Str(), material[i].Albedo);
+                actually_has_material = true;
+                material[i].Albedo = rm->getTexture(path.C_Str());
                 material[i].materialFlags = (MaterialFlags)(material[i].materialFlags | MaterialFlags::Albedo);
             }
+        }
+        else{
+             material[i].Albedo = rm->getTexture("def");
         }
         if(pMaterial->GetTextureCount(aiTextureType_LIGHTMAP) > 0){
             aiString path;
             if(pMaterial->GetTexture(aiTextureType_LIGHTMAP, 0, &path, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS){
                 //load AO Texture
-                ReadImage(path.C_Str(), material[i].AmbientOcclusion);
+                actually_has_material = true;
+                material[i].AmbientOcclusion = rm->getTexture(path.C_Str());
                 material[i].materialFlags = (MaterialFlags)(material[i].materialFlags | MaterialFlags::AmbientOcclusion);
             }
         }
@@ -36,7 +45,8 @@ void loadMaterial(const aiScene* pScene, std::vector<Material>& material){
             aiString path;
             if(pMaterial->GetTexture(aiTextureType_HEIGHT, 0, &path, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS){
                 //load Heightmap Texture
-                ReadImage(path.C_Str(), material[i].HeightMap);
+                actually_has_material = true;
+                material[i].HeightMap = rm->getTexture(path.C_Str());
                 material[i].materialFlags = (MaterialFlags)(material[i].materialFlags | MaterialFlags::HeightMap);
             }
         }
@@ -44,7 +54,8 @@ void loadMaterial(const aiScene* pScene, std::vector<Material>& material){
             aiString path;
             if(pMaterial->GetTexture(aiTextureType_NORMALS, 0, &path, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS){
                 //load normal Texture
-                ReadImage(path.C_Str(), material[i].NormalMap);
+                actually_has_material = true;
+                material[i].NormalMap = rm->getTexture(path.C_Str());
                 material[i].materialFlags = (MaterialFlags)(material[i].materialFlags | MaterialFlags::NormalMap);
             }
         }
@@ -59,25 +70,28 @@ void loadMaterial(const aiScene* pScene, std::vector<Material>& material){
 		pMaterial->Get(AI_MATKEY_SHININESS, ns);
 		pMaterial->Get(AI_MATKEY_OPACITY, d);
         
-        material[i].Ka.x = ka.r;
-        material[i].Ka.y = ka.g;
-        material[i].Ka.z = ka.b;
-        
-        material[i].Kd.x = kd.r;
-        material[i].Kd.y = kd.g;
-        material[i].Kd.z = kd.b;
-        
-        material[i].Ks.x = ks.r;
-        material[i].Ks.y = ks.g;
-        material[i].Ks.z = ks.b;
-        
-        material[i].Ke.x = ke.r;
-        material[i].Ke.y = ke.g;
-        material[i].Ke.z = ke.b;
-        
-        material[i].d = d;
-        material[i].Ni = ni;
-        material[i].Ns = ns;
+        if(actually_has_material)
+        {
+            material[i].Ka.x = ka.r;
+            material[i].Ka.y = ka.g;
+            material[i].Ka.z = ka.b;
+            
+            material[i].Kd.x = kd.r;
+            material[i].Kd.y = kd.g;
+            material[i].Kd.z = kd.b;
+            
+            material[i].Ks.x = ks.r;
+            material[i].Ks.y = ks.g;
+            material[i].Ks.z = ks.b;
+            
+            material[i].Ke.x = ke.r;
+            material[i].Ke.y = ke.g;
+            material[i].Ke.z = ke.b;
+            
+            material[i].d = d;
+            material[i].Ni = ni;
+            material[i].Ns = ns;
+        }
     }
 }
 
@@ -150,7 +164,7 @@ Model* loadModel(const std::string& modelFile, ResourceManager* rm)
 
     //come on
     std::vector<Material> materials;
-    loadMaterial(pScene, materials);
+    loadMaterial(pScene, materials, rm);
 
     std::vector<materialConstBuffer> mcb;
     mcb.resize(materials.size());

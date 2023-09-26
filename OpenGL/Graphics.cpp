@@ -1,4 +1,5 @@
 #include "Graphics.h"
+#include <iostream>
 
 Graphics::Graphics()
 {
@@ -25,20 +26,26 @@ Graphics::Graphics()
 	glCullFace(GL_FRONT);  
 	glFrontFace(GL_CCW);
 	vSynced = true;
+
+	setUpImGui();
 }
 
 Graphics::~Graphics()
 {
 	glfwTerminate();
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
 }
 
-void Graphics::UpdateWindows()
+bool Graphics::UpdateWindows()
 {
 	for(int i = 0; i < windows.size(); i++){
 		if(glfwWindowShouldClose(windows[i])){
 			windows.erase(windows.begin() + i);
 		}
 	}
+	return windows.size() < 1;
 }
 
 void Graphics::CreateWindow(uint16_t Width, uint16_t Height, std::string Title, bool fullScreen)
@@ -100,4 +107,21 @@ glm::vec2 Graphics::getWindowCurrentWH() const
 glm::vec2 Graphics::getWindowByIndexWH(int index) const
 {
 	return WindowWH[index];
+}
+
+void Graphics::setUpImGui()
+{
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext(); 
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	io.DisplaySize = ImVec2(getWindowCurrentWH().x, getWindowCurrentWH().y);
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+
+	ImGui::StyleColorsDark();
+	if(!ImGui_ImplGlfw_InitForOpenGL(windows[currentActiveWindow], true)){
+		std::cout << "error with glfw" << std::endl;
+	}
+	if(!ImGui_ImplOpenGL3_Init("#version 330")){
+		std::cout << "version" << std::endl;
+	}
 }

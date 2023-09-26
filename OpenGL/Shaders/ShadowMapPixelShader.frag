@@ -3,5 +3,5 @@
 layout(location = 0) out vec4 finalPixel;
 
 void main(){ 
-    finalPixel = vec4(1,0,0,1);
+    finalPixel = vec4(1,1,0,1);
 }

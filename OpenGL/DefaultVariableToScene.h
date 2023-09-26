@@ -4,6 +4,7 @@
 #include "Keyboard.h"
 #include "Mouse.h"
 #include "ResourceManager.h"
+#include "ImGuiManager.h"
 
 struct DefaultVariableToScene{
 	Camera* camera;
@@ -11,4 +12,5 @@ struct DefaultVariableToScene{
 	Mouse* mouse;
 	Keyboard* keyboard;
 	ShadowMap* shadowMap;
+	ImGuiManager* imGuiManager;
 };
