@@ -91,9 +91,9 @@ unsigned int ResourceManager::createShaderProgram(const std::string& ShaderProgr
 void ResourceManager::loadDef()
 {
 	std::vector<Vertex> DefaultVertecies;
-    DefaultVertecies.push_back(Vertex(glm::vec3(1.0f,0.0f,0.0f), glm::vec3(0,0,1), glm::vec2(0,0)));
-    DefaultVertecies.push_back(Vertex(glm::vec3(0.f,1.f,0.f), glm::vec3(0,0,1), glm::vec2(0,0)));
-    DefaultVertecies.push_back(Vertex(glm::vec3(-1.f,0.f,0.f), glm::vec3(0,0,1), glm::vec2(0,0)));
+    DefaultVertecies.push_back(Vertex(glm::vec3(1.0f,0.0f,0.0f), glm::vec2(0,0), glm::vec3(0,0,1), glm::vec3(0,0,1), glm::vec3(0,0,1)));
+    DefaultVertecies.push_back(Vertex(glm::vec3(0.f,1.f,0.f), glm::vec2(0,0), glm::vec3(0,0,1), glm::vec3(0,0,1), glm::vec3(0,0,1)));
+    DefaultVertecies.push_back(Vertex(glm::vec3(-1.f,0.f,0.f), glm::vec2(0,0), glm::vec3(0,0,1), glm::vec3(0,0,1), glm::vec3(0,0,1)));
     std::vector<unsigned int> DefaultIndecies = {
         0,1,2,
     };

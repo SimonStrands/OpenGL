@@ -14,6 +14,7 @@ public:
 	void directRenderShadow();
 	void addModel(Model* model);
 	void setMaterial(Material mat, int index = -1);
+	Material& getMaterial(int index = 0);
 	void addComponent(const std::string& componentName, Components* component);
 	void addBehavior(const std::string& behaviorName, Behavior* behavior, std::vector<std::pair<std::string, void*>>* variables = nullptr);
 	void update(float dt);

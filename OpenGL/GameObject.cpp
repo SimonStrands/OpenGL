@@ -56,6 +56,15 @@ void GameObject::setMaterial(Material mat, int index)
 	}
 }
 
+Material& GameObject::getMaterial(int index)
+{
+	if (index < 0 || index > model->getMeshes().size() - 1) {
+		std::cout << "cannot get that mesh index" << std::endl;
+		return model->getMeshes()[0].material;
+	}
+	return model->getMeshes()[index].material;
+}
+
 void GameObject::addComponent(const std::string& componentName, Components* component)
 {
 	this->components.insert(std::pair(componentName, component));

@@ -24,8 +24,6 @@ Engine::Engine():
 	m_sceneHandler.sceneInit();
 	
 	//Graphics Creates Window on it's own first
-
-	gfx.vSync(false);
 }
 
 Engine::~Engine()

@@ -15,11 +15,15 @@ unsigned int CreateVertexBuffer(std::vector<T>& vertecies, GLenum type = GL_FLOA
     GLTest(glEnableVertexAttribArray(0));
     GLTest(glVertexAttribPointer(0, 3, type, GL_FALSE, sizeof(T), 0));
     GLTest(glEnableVertexAttribArray(1));
-    GLTest(glVertexAttribPointer(1, 3, type, GL_FALSE, sizeof(T), (void*)offsetof(T, m_normals)));
+    GLTest(glVertexAttribPointer(1, 2, type, GL_FALSE, sizeof(T), (void*)offsetof(T, m_texChoords)));
     GLTest(glEnableVertexAttribArray(2));
-    GLTest(glVertexAttribPointer(2, 2, type, GL_FALSE, sizeof(T), (void*)offsetof(T, m_texChoords)));
+    GLTest(glVertexAttribPointer(2, 3, type, GL_FALSE, sizeof(T), (void*)offsetof(T, m_normals)));
+    GLTest(glEnableVertexAttribArray(3));
+    GLTest(glVertexAttribPointer(3, 3, type, GL_FALSE, sizeof(T), (void*)offsetof(T, m_tangent)));
+    GLTest(glEnableVertexAttribArray(4));
+    GLTest(glVertexAttribPointer(4, 3, type, GL_FALSE, sizeof(T), (void*)offsetof(T, m_bitangent)));
 
-    GLTest(glBindBuffer(GL_ARRAY_BUFFER, buffer));
+    GLTest(glBindBuffer(GL_ARRAY_BUFFER, 0));
 
     return buffer;
 }

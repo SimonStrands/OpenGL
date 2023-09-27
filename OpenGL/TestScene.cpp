@@ -33,6 +33,7 @@ void TestScene::init()
 	basic.shadowMap->addGameObject(test);
 	basic.shadowMap->addGameObject(box2);
 	basic.shadowMap->addGameObject(Sponza);
+	Sponza->getMaterial().d = 1;
 
 	((Transform*)Sponza->getComponent("Transform"))->scale = glm::vec3(20,20,0.5);
 	//
@@ -57,6 +58,14 @@ SceneHandlerCalls TestScene::update(float dt)
 	//std::cout << "update()" << std::endl;
 
 	basic.camera->Update();
+
+	if(basic.keyboard->getKeyDown('N')){
+		Sponza->getMaterial().d = 0;
+	}
+	else{
+		Sponza->getMaterial().d = 1;
+	}
+
 	//((Transform*)test->getComponent("Transform"))->rotation.x += 1 * dt; 
 	player->update(dt);
 

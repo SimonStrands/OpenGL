@@ -1,10 +1,12 @@
 #version 420 core
         
 layout(location = 0) out vec4 finalPixel;
-    
+
 in vec4 o_fragPos;
-in vec3 o_normal;
 in vec2 o_uv;
+in vec3 o_normal;
+in vec3 o_tangent;
+in vec3 o_bitangent;
 
 //texture materials
 layout(binding = 0)uniform sampler2D ambientTexture;
@@ -17,8 +19,6 @@ layout(binding = 4)uniform sampler2DArray ShadowMaps;
 const vec3 c_lightColor = vec3(1,1,1);
 const vec4 c_lightPos = vec4(0,20,0,0);//w is what kind of light it is
 
-
-
 layout (std140, binding = 0) uniform Matrices
 {
     mat4 projection;
@@ -28,10 +28,10 @@ layout (std140, binding = 0) uniform Matrices
 
 layout (std140, binding = 2) uniform Material
 {
-    vec4 Ka;
-    vec4 Kd;
-    vec4 Ks;
-    vec4 Ke;
+    vec4 Ka;//last one is ni;
+    vec4 Kd;//last one is d;
+    vec4 Ks;//last one is NS;
+    vec4 Ke;//last one has materialFlags;
 };
 
 const int MAXNUMBEROFLIGHTS = 6;
@@ -45,8 +45,23 @@ layout (std140, binding = 3) uniform ShadowData
 
 void main(){ 
     
+    vec3 newNormal = o_normal;
+    if((int(Ke.w) & 8) != 0 && int(Kd.w) == 0){
+        mat3 TBN = mat3(
+            o_tangent, 
+            o_bitangent, 
+            o_normal
+            );
     
-     vec3 PixelLight = vec3(0,0,0); 
+        vec3 normalSample = texture(NormalMapTexture, o_uv).xyz;
+        newNormal.x = normalSample.x * 2.0 - 1.0;
+        newNormal.y = normalSample.y * 2.0 - 1.0;
+        newNormal.z = normalSample.z * 2.0 - 1.0;
+    
+        newNormal = normalize(TBN * newNormal);
+    }
+
+    vec3 PixelLight = vec3(0,0,0); 
     vec4 color = texture(ambientTexture, o_uv);
     vec3 viewDir = normalize(cameraPos.xyz - o_fragPos.xyz);
     
@@ -58,7 +73,6 @@ void main(){
         vec3 ambientLight = Ka.xyz * lightColors[i].xyz;
     
         vec4 shadowHomo = o_fragPos * lightViewProjection[i];
-        //vec4 shadowMapCoords = shadowHomo * vec4(0.5, 0.5, 1.0f, 1.0f) + (vec4(0.5f, 0.5f, 0.0f, 0.0f) * shadowHomo.w);
         vec4 shadowMapCoords = vec4(shadowHomo.xyz / shadowHomo.w, 1);
         shadowMapCoords = shadowMapCoords * 0.5 + 0.5;
 
@@ -74,10 +88,10 @@ void main(){
                 )   
         {
             vec3 defuse_light;
-            float ammount_diffuse = max(dot(o_normal, lightDir), 0.0f);
+            float ammount_diffuse = max(dot(newNormal, lightDir), 0.0f);
             defuse_light = ammount_diffuse * Kd.xyz * lightColors[i].xyz;
             
-            vec3 reflectDir = reflect(-lightDir, o_normal);
+            vec3 reflectDir = reflect(-lightDir, newNormal);
             float spec = pow(max(dot(viewDir, reflectDir), 0.0), Ks.w + 0.000001);
             vec3 specular = Ks.xyz * spec;
             
