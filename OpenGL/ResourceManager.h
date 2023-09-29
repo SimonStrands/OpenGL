@@ -21,6 +21,7 @@ public:
 
 	//create more here later if we need hull, displacement and more
 	unsigned int createShaderProgram(const std::string& ShaderProgramName, unsigned int vertex, unsigned int pixel);
+	unsigned int createShaderProgram(const std::string& ShaderProgramName, unsigned int vertex, unsigned int control, unsigned int evaluation, unsigned int pixel);
 
 private:
 	std::map<std::string, Model*> Models; 

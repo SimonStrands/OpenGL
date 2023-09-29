@@ -84,6 +84,16 @@ void Graphics::setDefaultViewPort()
 	glViewport(0,0, WindowWH[currentActiveWindow].x, WindowWH[currentActiveWindow].y);
 }
 
+void Graphics::enableWireframeMode(bool enable)
+{
+	if(enable){
+		glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+	}
+	else{
+		glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+	}
+}
+
 unsigned int Graphics::GetNrOfWindows()
 {
 	return (unsigned int)windows.size();

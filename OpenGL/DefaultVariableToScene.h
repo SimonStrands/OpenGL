@@ -12,5 +12,6 @@ struct DefaultVariableToScene{
 	Mouse* mouse;
 	Keyboard* keyboard;
 	ShadowMap* shadowMap;
+	Graphics* gfx;
 	ImGuiManager* imGuiManager;
 };

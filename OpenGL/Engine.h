@@ -13,6 +13,8 @@ public:
 	virtual ~Engine();
 	void Run();
 private:
+	void setUpDefaultShaders();
+private:
 	//Variables
 	bool m_gameOver;
 	//Objects

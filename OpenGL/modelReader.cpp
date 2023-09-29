@@ -1,5 +1,6 @@
 #include "modelReader.h"
 #include "ResourceManager.h"
+#include <unordered_map>
 
 static glm::vec3 AssimpToOpenGL(const aiVector3D aVec3)
 {
@@ -9,6 +10,11 @@ static glm::vec3 AssimpToOpenGL(const aiVector3D aVec3)
 static glm::vec2 AssimpToOpenGL(const aiVector2D& aVec2)
 {
 	return glm::vec2(aVec2.x,aVec2.y);
+}
+
+void loadBoneDataToVertecies(std::vector<AnimationVertex> vertecies)
+{
+    
 }
 
 void loadMaterial(const aiScene* pScene, std::vector<Material>& material, ResourceManager* rm){
@@ -41,12 +47,13 @@ void loadMaterial(const aiScene* pScene, std::vector<Material>& material, Resour
             }
         }
         // unsure if this should be aiTextureType_DISPLACEMENT
-        if(pMaterial->GetTextureCount(aiTextureType_HEIGHT) > 0){
+        if(pMaterial->GetTextureCount(aiTextureType_DISPLACEMENT) > 0){
             aiString path;
-            if(pMaterial->GetTexture(aiTextureType_HEIGHT, 0, &path, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS){
+            if(pMaterial->GetTexture(aiTextureType_DISPLACEMENT, 0, &path, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS){
                 //load Heightmap Texture
                 actually_has_material = true;
                 material[i].HeightMap = rm->getTexture(path.C_Str());
+                material[i].tessellate = true;
                 material[i].materialFlags = (MaterialFlags)(material[i].materialFlags | MaterialFlags::HeightMap);
             }
         }
@@ -128,6 +135,70 @@ Mesh loadMesh(const aiMesh* pMesh)
 
         vertex.push_back(
             Vertex(
+                pos,
+                glm::vec2(TexCoord.x, TexCoord.y),
+                norm, 
+                tangent,
+                bitangent
+            )
+        );
+    }
+
+    for(unsigned int i = 0; i < pMesh->mNumFaces; i++){
+        indecies.push_back(pMesh->mFaces[i].mIndices[0]);
+        indecies.push_back(pMesh->mFaces[i].mIndices[1]);
+        indecies.push_back(pMesh->mFaces[i].mIndices[2]);
+    }
+
+
+    unsigned int vertexArray = CreateVertexArray();
+    unsigned int vertexBuffer = CreateVertexBuffer(vertex);
+    unsigned int indeciesBuffer = CreateIndeciesBuffer(indecies);
+    Mesh theMesh = Mesh(
+        0, 
+        pMesh->mNumVertices, 
+        vertexBuffer, 
+        (unsigned int)indecies.size(), 
+        indeciesBuffer,
+        vertexArray
+    );
+
+    return theMesh;
+}
+
+Mesh loadAnimationMesh(const aiMesh* pMesh)
+{
+    std::vector<AnimationVertex> vertex;
+    std::vector<unsigned int> indecies;
+
+    vertex.reserve(pMesh->mNumVertices);
+    indecies.reserve(pMesh->mNumFaces * 3);
+
+    aiVector3D TexCoord(0,0,0);
+    for(unsigned int i = 0; i < pMesh->mNumVertices; i++){
+        glm::vec3 pos, norm, tangent, bitangent;
+        pos.x = pMesh->mVertices[i].x;
+        pos.y = pMesh->mVertices[i].y;
+        pos.z = pMesh->mVertices[i].z;
+
+        norm.x = pMesh->mNormals[i].x;
+        norm.y = pMesh->mNormals[i].y;
+        norm.z = pMesh->mNormals[i].z;
+
+        tangent.x = pMesh->mTangents[i].x;
+        tangent.y = pMesh->mTangents[i].y;
+        tangent.z = pMesh->mTangents[i].z;
+
+        bitangent.x = pMesh->mBitangents[i].x;
+        bitangent.y = pMesh->mBitangents[i].y;
+        bitangent.z = pMesh->mBitangents[i].z;
+
+        if(pMesh->HasTextureCoords(0)){
+            TexCoord = pMesh->mTextureCoords[0][i];
+        }
+
+        vertex.push_back(
+            AnimationVertex(
                 pos,
                 glm::vec2(TexCoord.x, TexCoord.y),
                 norm, 

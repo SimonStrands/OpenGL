@@ -46,6 +46,17 @@ unsigned int ResourceManager::getShader(const std::string& ShaderFile)
                 std::cout << "couldn't create shader" << std::endl;
             }
         }
+        else if(extension == "tesc"){
+            if(!loadHShader(ShaderFile, newShader)){
+                std::cout << "couldn't create shader" << std::endl;
+            }
+        }
+        else if(extension == "tese"){
+            if(!loadDShader(ShaderFile, newShader)){
+                std::cout << "couldn't create shader" << std::endl;
+            }
+        }
+        
         else{
             std::cout << "doesn't support " << extension << " extension yet" << std::endl;
         }
@@ -83,6 +94,13 @@ unsigned int ResourceManager::getTexture(const std::string& FileName)
 unsigned int ResourceManager::createShaderProgram(const std::string& ShaderProgramName, unsigned int vertex, unsigned int pixel)
 {
     unsigned int shaderProgram = attachShaders(vertex, pixel);
+    ShaderProgram.insert(std::make_pair(ShaderProgramName, shaderProgram));
+    return shaderProgram;
+}
+
+unsigned int ResourceManager::createShaderProgram(const std::string& ShaderProgramName, unsigned int vertex, unsigned int control, unsigned int evaluation, unsigned int pixel)
+{
+    unsigned int shaderProgram = attachShaders(vertex, control, evaluation, pixel);
     ShaderProgram.insert(std::make_pair(ShaderProgramName, shaderProgram));
     return shaderProgram;
 }

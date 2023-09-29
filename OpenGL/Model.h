@@ -47,7 +47,7 @@ class Model{
 public:
 	Model();
 	std::vector<Mesh> &getMeshes();
-	void DirectRender();
+	void DirectRender(GLuint Topology = GL_TRIANGLES);
 	void DirectRenderShadow();
 	void setTransform(Transform transform);
 private:

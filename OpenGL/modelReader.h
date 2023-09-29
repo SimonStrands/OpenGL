@@ -8,5 +8,6 @@ class Model;
 class Mesh;
 
 Mesh loadMesh(const aiMesh* pMesh);
+Mesh loadAnimationMesh(const aiMesh* pMesh);
 Model* loadModel(const std::string& modelFile, ResourceManager* rm);
 

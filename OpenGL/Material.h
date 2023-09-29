@@ -23,7 +23,9 @@ struct Material{
 	float Ni;
 	float d;
 	MaterialFlags materialFlags;
+	bool tessellate;//Phong tessellation without heightmap, but if heightMap exist this will be ignored
 	Material(){
+		tessellate = false;
 		Albedo = 0;
 		AmbientOcclusion = 0;
 		HeightMap = 0;

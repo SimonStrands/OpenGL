@@ -19,6 +19,7 @@ public:
 	void vSync(bool enable);
 	bool isVsynced()const;
 	void setDefaultViewPort();
+	void enableWireframeMode(bool enable);
 	unsigned int GetNrOfWindows();
 	GLFWwindow* getCurrentActiveWindow();
 	GLFWwindow* getWindowByIndex(int index);

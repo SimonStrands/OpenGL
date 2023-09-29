@@ -28,6 +28,13 @@ void TestScene::init()
 	test->addModel(basic.rm->getModel("Objects/Cube.fbx"));
 	box2->addModel(basic.rm->getModel("Objects/Cube.fbx"));
 	Sponza->addModel(basic.rm->getModel("Objects/Plane.fbx"));
+
+	//basic.gfx->enableWireframeMode(true);
+
+	//add the heightmap to material
+	Sponza->getMaterial().HeightMap = basic.rm->getTexture("C:/Users/Simon/Desktop/UnityPrefab/Materials/ChiseledCobble/chiseled-cobble_height2.png");
+	Sponza->getMaterial(0).materialFlags = MaterialFlags(Sponza->getMaterial(0).materialFlags | MaterialFlags::HeightMap);
+	Sponza->SetShaderProgram(basic.rm->getShaderProgram("DefTessellation"));
 	
 
 	basic.shadowMap->addGameObject(test);
@@ -60,10 +67,10 @@ SceneHandlerCalls TestScene::update(float dt)
 	basic.camera->Update();
 
 	if(basic.keyboard->getKeyDown('N')){
-		Sponza->getMaterial().d = 0;
+		Sponza->getMaterial().d = 1;
 	}
 	else{
-		Sponza->getMaterial().d = 1;
+		Sponza->getMaterial().d = 0;
 	}
 
 	//((Transform*)test->getComponent("Transform"))->rotation.x += 1 * dt; 

@@ -61,6 +61,12 @@
     <Filter Include="Header Files\Engine\IMGUI\Lib">
       <UniqueIdentifier>{daadc9a5-6e6d-4b09-b932-b79a8e17bbdc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Shaders\Tesselation">
+      <UniqueIdentifier>{2a5f15bb-d659-4704-a3a8-96e525fe4e64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Engine\Animation">
+      <UniqueIdentifier>{64174ca5-e496-4621-a3aa-afe4ff62e0b0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -302,6 +308,12 @@
     <ClInclude Include="ImGuiManager.h">
       <Filter>Header Files\Engine\IMGUI</Filter>
     </ClInclude>
+    <ClInclude Include="AnimatorModel.h">
+      <Filter>Header Files\Engine\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>Header Files\Engine\Animation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\BasicVertexShader.vert">
@@ -316,10 +328,22 @@
     <None Include="Shaders\ShadowMapVertexShader.vert">
       <Filter>Resource Files\Shaders\ShadowShader</Filter>
     </None>
+    <None Include="Shaders\Tesselation.vert">
+      <Filter>Resource Files\Shaders\Tesselation</Filter>
+    </None>
+    <None Include="Shaders\TessellationControlShader.tesc">
+      <Filter>Resource Files\Shaders\Tesselation</Filter>
+    </None>
+    <None Include="Shaders\TessellationEvaluationShader.tese">
+      <Filter>Resource Files\Shaders\Tesselation</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ConstantBufferBindings.txt">
       <Filter>Resource Files\Shaders</Filter>
+    </Text>
+    <Text Include="UsingTesselation.txt">
+      <Filter>Resource Files\Shaders\Tesselation</Filter>
     </Text>
   </ItemGroup>
 </Project>

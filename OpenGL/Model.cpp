@@ -10,7 +10,7 @@ std::vector<Mesh>& Model::getMeshes()
     return meshes;
 }
 
-void Model::DirectRender()
+void Model::DirectRender(GLuint Topology)
 {
     for(int i = 0; i < meshes.size(); i++){
 
@@ -30,7 +30,13 @@ void Model::DirectRender()
 
 		GLTest(glBindVertexArray(meshes[i].m_vertexarray));
 		GLTest(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshes[i].m_indeciesBuffer));
-        GLTest(glDrawElements(GL_TRIANGLES, meshes[i].m_nrOfIndecies, GL_UNSIGNED_INT, nullptr));
+        if(meshes[i].material.tessellate || meshes[i].material.materialFlags | MaterialFlags::HeightMap){
+            GLTest(glDrawElements(GL_PATCHES, meshes[i].m_nrOfIndecies, GL_UNSIGNED_INT, nullptr));
+        }
+        else{
+            GLTest(glDrawElements(Topology, meshes[i].m_nrOfIndecies, GL_UNSIGNED_INT, nullptr));
+        }
+        
 	}
 }
 

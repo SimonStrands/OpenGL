@@ -11,13 +11,12 @@ Engine::Engine():
 	basicToScene.keyboard = new Keyboard(gfx.getCurrentActiveWindow());
 	basicToScene.camera = new Camera();
 	basicToScene.shadowMap = new ShadowMap();
+	basicToScene.gfx = &this->gfx;
 
 	basicToScene.imGuiManager = &this->imGuiManager;
 	imGuiManager.init();
 
-	unsigned int shadowVertex = basicToScene.rm->getShader("ShadowMapVertexShader.vert");
-	unsigned int shadowPixel = basicToScene.rm->getShader("ShadowMapPixelShader.frag");
-	basicToScene.shadowMap->addShaderProgram(basicToScene.rm->createShaderProgram("ShadowMapProgram", shadowVertex, shadowPixel));
+	setUpDefaultShaders();
 
 	m_sceneHandler.setBasicDefaultVariables(basicToScene);
 	basicToScene.camera->init();
@@ -109,4 +108,19 @@ void Engine::Run()
 			glfwPollEvents();
 			gfx.UpdateWindows();
 	}
+}
+
+void Engine::setUpDefaultShaders()
+{
+	unsigned int shadowVertex = basicToScene.rm->getShader("ShadowMapVertexShader.vert");
+	unsigned int shadowPixel = basicToScene.rm->getShader("ShadowMapPixelShader.frag");
+	basicToScene.shadowMap->addShaderProgram(basicToScene.rm->createShaderProgram("ShadowMapProgram", shadowVertex, shadowPixel));
+
+	unsigned int tessellationVertex = basicToScene.rm->getShader("Tesselation.vert");
+	unsigned int tessellationControl = basicToScene.rm->getShader("TessellationControlShader.tesc");
+	unsigned int tessellationEvaluation = basicToScene.rm->getShader("TessellationEvaluationShader.tese");
+
+	basicToScene.rm->createShaderProgram("DefTessellation", tessellationVertex, tessellationControl, tessellationEvaluation, basicToScene.rm->getShader("BasicPixelShader.frag"));
+
+	//basicToScene.rm->createShaderProgram("DefTessellation", tessellationVertex, test);
 }

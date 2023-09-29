@@ -20,6 +20,7 @@ void Scene::setBasicVariables(DefaultVariableToScene& basic)
 	this->basic.rm = basic.rm;
 	this->basic.shadowMap = basic.shadowMap;
 	this->basic.imGuiManager = basic.imGuiManager;
+	this->basic.gfx = basic.gfx;
 }
 
 const int Scene::getNewSceneID()
