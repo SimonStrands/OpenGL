@@ -120,11 +120,12 @@ void ResourceManager::loadDef()
     temp->getMeshes().push_back(
         Mesh(
             0, 
-            DefaultVertecies.size(), 
+            (unsigned int)DefaultVertecies.size(), 
             CreateVertexBuffer(DefaultVertecies), 
-            DefaultIndecies.size(), 
+            (unsigned int)DefaultIndecies.size(), 
             CreateIndeciesBuffer(DefaultIndecies),
-            defVertexArray
+            defVertexArray,
+            TypeOfMesh::Default
         ));
     Models.insert(std::pair<std::string, Model*>("def", temp));
 

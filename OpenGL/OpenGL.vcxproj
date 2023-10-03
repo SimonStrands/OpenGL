@@ -206,6 +206,7 @@
     <ClCompile Include="..\Libs\ImGui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="..\Libs\ImGui\imgui_tables.cpp" />
     <ClCompile Include="..\Libs\ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="AnimatorModel.cpp" />
     <ClCompile Include="App.cpp" />
     <ClCompile Include="AssimpToOpenGL.cpp" />
     <ClCompile Include="Behavior.cpp" />
@@ -222,6 +223,7 @@
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="LoadShaders.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="modelReader.cpp" />
     <ClCompile Include="Mouse.cpp" />
@@ -244,6 +246,7 @@
     <ClInclude Include="..\Libs\ImGui\imstb_textedit.h" />
     <ClInclude Include="..\Libs\ImGui\imstb_truetype.h" />
     <ClInclude Include="Animation.h" />
+    <ClInclude Include="AnimationComponent.h" />
     <ClInclude Include="AnimatorModel.h" />
     <ClInclude Include="App.h" />
     <ClInclude Include="AssimpToOpenGL.h" />
@@ -267,6 +270,7 @@
     <ClInclude Include="LightBuffer.h" />
     <ClInclude Include="LoadShaders.h" />
     <ClInclude Include="Material.h" />
+    <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="modelReader.h" />
     <ClInclude Include="Mouse.h" />
@@ -288,12 +292,14 @@
     <None Include="Shaders\BasicVertexShader.vert" />
     <None Include="Shaders\ShadowMapPixelShader.frag" />
     <None Include="Shaders\ShadowMapVertexShader.vert" />
+    <None Include="Shaders\SkeletalAnimationVertexShader.vert" />
     <None Include="Shaders\Tesselation.vert" />
     <None Include="Shaders\TessellationControlShader.tesc" />
     <None Include="Shaders\TessellationEvaluationShader.tese" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="ConstantBufferBindings.txt" />
+    <Text Include="TODO.txt" />
     <Text Include="UsingTesselation.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

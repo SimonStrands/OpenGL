@@ -1,8 +1,11 @@
 #include "GameObject.h"
 
-GameObject::GameObject(ResourceManager* rm, glm::vec3 Position, glm::vec3 Rotation, glm::vec3 Scale):
+GameObject::GameObject(DefToGameObject& def, glm::vec3 Position, glm::vec3 Rotation, glm::vec3 Scale):
 	model(nullptr)
 {
+	rm = def.rm;
+	gfx = def.gfx;
+
 	shaderProgram = rm->getShaderProgram("defShaderProgram");
 	components.insert(std::pair<std::string, Components*>("Transform", new Transform()));
 }
@@ -26,6 +29,20 @@ void GameObject::directRender()
 	GLTest(glUseProgram(shaderProgram));
 	model->setTransform(*(Transform*)components["Transform"]);
 	if(model != nullptr){
+		if(model->GetModelType() == TypeOfModel::Animated){
+			AnimationComponent* animComp = getComponent<AnimationComponent>("AnimationComponent");
+			BoneConstantBuffer poses;
+			((AnimatedModel*)model)->getPose(
+					animComp->time,
+					animComp->animationName,
+				poses
+				);
+			UpdateUniformBuffer(
+				poses,
+				gfx->getUniformBuffer("SkeletalPose")
+			);
+			setUniform("Skeleton", gfx->getUniformBuffer("SkeletalPose"), 4);
+		}
 		model->DirectRender();
 	}
 	
@@ -42,6 +59,13 @@ void GameObject::directRenderShadow()
 void GameObject::addModel(Model* model)
 {
 	this->model = model;
+	if(model->GetModelType() == TypeOfModel::Animated)
+	{
+		AnimationComponent *animComp = new AnimationComponent();
+		animComp->animationName = ((AnimatedModel*)model)->getAnimations().begin()->first;
+		addComponent("AnimationComponent", animComp);
+
+	}
 }
 
 void GameObject::setMaterial(Material mat, int index)
@@ -83,9 +107,9 @@ void GameObject::update(float dt)
 	if(components.find("BehaviorList") != components.end()){
 		((BehaviorList*)components.find("BehaviorList")->second)->update(dt);
 	}
-}
+	if(components.find("AnimationComponent") != components.end()){
+		getComponent<AnimationComponent>("AnimationComponent")->update(dt);
 
-Components* GameObject::getComponent(std::string componentName)
-{
-	return components.find(componentName)->second;
+	}
+	
 }

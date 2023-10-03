@@ -2,7 +2,12 @@
 
 Model::Model()
 {
+    typeOfModel = TypeOfModel::Default;
     TransformBuffer = CreateUniformBuffer(Transform().toMat4());
+}
+
+Model::~Model()
+{
 }
 
 std::vector<Mesh>& Model::getMeshes()
@@ -12,6 +17,11 @@ std::vector<Mesh>& Model::getMeshes()
 
 void Model::DirectRender(GLuint Topology)
 {
+    //if model is animated update the bones to the vertex shader
+    if(this->typeOfModel == TypeOfModel::Animated){
+        //
+    }
+
     for(int i = 0; i < meshes.size(); i++){
 
         glActiveTexture(GL_TEXTURE0);
@@ -30,7 +40,7 @@ void Model::DirectRender(GLuint Topology)
 
 		GLTest(glBindVertexArray(meshes[i].m_vertexarray));
 		GLTest(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshes[i].m_indeciesBuffer));
-        if(meshes[i].material.tessellate || meshes[i].material.materialFlags | MaterialFlags::HeightMap){
+        if(meshes[i].material.tessellate || (meshes[i].material.materialFlags & MaterialFlags::HeightMap)){
             GLTest(glDrawElements(GL_PATCHES, meshes[i].m_nrOfIndecies, GL_UNSIGNED_INT, nullptr));
         }
         else{
@@ -56,25 +66,7 @@ void Model::setTransform(Transform transform)
     setUniform("Transform", TransformBuffer, 1);
 }
 
-Mesh::Mesh()
+TypeOfModel Model::GetModelType() const
 {
+    return typeOfModel;
 }
-
-
-Mesh::Mesh(
-    unsigned int materialIndex, 
-    unsigned int nrOfVertecies,
-    unsigned int vertexBuffer, 
-    unsigned int nrOfIndecies, 
-    unsigned int indeciesBuffer,
-    unsigned int vertexArray
-):
-    m_materialIndex(materialIndex),
-    m_nrOfVertecies(nrOfVertecies),
-    m_vertexBuffer(vertexBuffer),
-    m_nrOfIndecies(nrOfIndecies),
-    m_indeciesBuffer(indeciesBuffer),
-    m_vertexarray(vertexArray)
-{
-}
-

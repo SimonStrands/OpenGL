@@ -43,8 +43,8 @@ void Player::update(float dt)
 	if(keyboard->getKeyDown(GLFW_KEY_LEFT_CONTROL)){
 		transform->position.y -= speed * dt;
 	}
-	transform->rotation.x += mouse->getMouseDelta().y * 0.01;
-	transform->rotation.y -= mouse->getMouseDelta().x * 0.01; 
+	transform->rotation.x += mouse->getMouseDelta().y * 0.01f;
+	transform->rotation.y -= mouse->getMouseDelta().x * 0.01f; 
 	transform->rotation.z = 0;
 	cam->setRotation(transform->rotation);
 	cam->setPosition(transform->position);

@@ -56,7 +56,7 @@ void ImGuiManager::renderGameObject()
 	ImGui::EndCombo();
 	}
 	if(sItem > -1){
-		Transform* transform = (Transform*)gameObjects[sItem].first->getComponent("Transform");
+		Transform* transform = gameObjects[sItem].first->getComponent<Transform>("Transform");
 		ImGui::Text("Position");
 		ImGui::SliderFloat("x##Position", &transform->position.x, -100, 100);
 		ImGui::SliderFloat("y##Position", &transform->position.y, -100, 100);

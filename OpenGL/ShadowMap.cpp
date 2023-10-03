@@ -49,33 +49,33 @@ void ShadowMap::setLights(std::vector<Light*> lights)
 	lightBuffer.projection = this->lights[0]->getProjection();
 	lightBuffer.view = glm::mat4(1);
 
-	float MaxWidth = 0, MaxHeight = 0;
+	int MaxWidth = 0, MaxHeight = 0;
 	for(int i = 0; i < this->lights.size(); i++){
 		if (this->lights[i]->lightType == LightType::e_SpotLight)
 		{
 			SpotLight* sl = (SpotLight*)lights[i];
 			if(MaxWidth < sl->WidthHeight.x){
-				MaxWidth = sl->WidthHeight.x;
+				MaxWidth = (int)sl->WidthHeight.x;
 			}
 			if(MaxHeight < sl->WidthHeight.y){
-				MaxHeight = sl->WidthHeight.y;
+				MaxHeight = (int)sl->WidthHeight.y;
 			}
 		}
 		else if(this->lights[i]->lightType == LightType::e_DirectionlLight)
 		{
 			DirectionalLight* dl = (DirectionalLight*)lights[i];
 			if(MaxWidth < dl->WidthHeight.x){
-				MaxWidth = dl->WidthHeight.x;
+				MaxWidth = (int)dl->WidthHeight.x;
 			}
 			if(MaxHeight < dl->WidthHeight.y){
-				MaxHeight = dl->WidthHeight.y;
+				MaxHeight = (int)dl->WidthHeight.y;
 			}
 		}
 	}
 
 	glGenTextures(1, &DepthBufferArray);
 	glBindTexture(GL_TEXTURE_2D_ARRAY, DepthBufferArray);
-	glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_DEPTH_COMPONENT32F, MaxWidth, MaxHeight, this->lights.size());
+	glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_DEPTH_COMPONENT32F, MaxWidth, MaxHeight, (int)this->lights.size());
 
 	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -84,7 +84,7 @@ void ShadowMap::setLights(std::vector<Light*> lights)
 	static const float clampColor[] = {1.0f, 1.0f, 1.0f, 1.0f};
 	glTexParameterfv(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_BORDER_COLOR, clampColor);
 	
-	for (size_t i = 0; i < this->lights.size(); ++i) {
+	for (int i = 0; i < this->lights.size(); ++i) {
 	    glGenFramebuffers(1, &DepthBufferFBO[i]);
 	    glBindFramebuffer(GL_FRAMEBUFFER, DepthBufferFBO[i]);
 	    glFramebufferTextureLayer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, DepthBufferArray, 0, i);
@@ -114,7 +114,7 @@ void ShadowMap::renderShadow()
 			UpdateUniformBuffer(lightBuffer, lightCB);
 			setUniform("LightData", lightCB, 5);
 
-			glViewport(0, 0, dl->WidthHeight.x, dl->WidthHeight.y);
+			glViewport(0, 0, (GLsizei)dl->WidthHeight.x, (GLsizei)dl->WidthHeight.y);
 			glBindFramebuffer(GL_FRAMEBUFFER, DepthBufferFBO[i]);
 			glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -130,7 +130,7 @@ void ShadowMap::renderShadow()
 			UpdateUniformBuffer(lightBuffer, lightCB);
 			setUniform("LightData", lightCB, 5);
 
-			glViewport(0, 0, sl->WidthHeight.x, sl->WidthHeight.y);
+			glViewport(0, 0, (GLsizei)sl->WidthHeight.x, (GLsizei)sl->WidthHeight.y);
 			glBindFramebuffer(GL_FRAMEBUFFER, DepthBufferFBO[i]);
 			glClear(GL_DEPTH_BUFFER_BIT);
 

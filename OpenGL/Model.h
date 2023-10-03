@@ -1,9 +1,10 @@
 #pragma once
-#include "Material.h"
+#include "Mesh.h"
 #include <vector>
 #include "ErrorHelper.h"
 #include "Transform.h"
 #include "BufferCreator.h"
+#include "Animation.h"
 
 struct materialConstBuffer{
     glm::vec4 Ka;//add ni here
@@ -18,40 +19,25 @@ struct materialConstBuffer{
 	};
 };
 
-class Mesh{
-public:
-	Mesh();
-	Mesh(unsigned int materialIndex,
-		unsigned int nrOfVertecies,
-		unsigned int vertexBuffer,
-		unsigned int nrOfIndecies,
-		unsigned int indeciesBuffer,
-		unsigned int vertexArray
-		);
-public:
-	Material material;
-	unsigned int mcb; //materialConstBuffer does not handle textures
-
-	unsigned int m_materialIndex;
-
-	unsigned int m_nrOfVertecies;
-	unsigned int m_vertexBuffer;
-
-	unsigned int m_nrOfIndecies;
-	unsigned int m_indeciesBuffer;
-
-	unsigned int m_vertexarray;
+enum class TypeOfModel {
+	Default,
+	Animated
 };
 
 class Model{
 public:
 	Model();
+	virtual ~Model();
 	std::vector<Mesh> &getMeshes();
-	void DirectRender(GLuint Topology = GL_TRIANGLES);
+	virtual void DirectRender(GLuint Topology = GL_TRIANGLES);
 	void DirectRenderShadow();
 	void setTransform(Transform transform);
-private:
+	TypeOfModel GetModelType() const;
+protected:
+	TypeOfModel typeOfModel;
 	unsigned int TransformBuffer;
 	std::vector<Mesh> meshes;
 };
+
+
 

@@ -79,7 +79,7 @@ void main(){
         
         double SM = texture(ShadowMaps, vec3(shadowMapCoords.xy, i)).r;
          
-        float bias = 0.000001;
+        float bias = 0.00001;
           
         if (SM + bias > shadowMapCoords.z &&
                 shadowMapCoords.z <= 1.0f &&//E

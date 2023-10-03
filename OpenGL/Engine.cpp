@@ -15,9 +15,9 @@ Engine::Engine():
 
 	basicToScene.imGuiManager = &this->imGuiManager;
 	imGuiManager.init();
-
+	
 	setUpDefaultShaders();
-
+	
 	m_sceneHandler.setBasicDefaultVariables(basicToScene);
 	basicToScene.camera->init();
 	m_sceneHandler.sceneInit();
@@ -36,7 +36,6 @@ Engine::~Engine()
 
 void Engine::Run()
 {
-
 	std::vector<Light*> l;
 	l.push_back(new SpotLight(glm::vec3(0,5,0), glm::vec3(0,0,0), glm::vec2(2000, 2000), glm::vec3(1,1,1), 90));
 	basicToScene.shadowMap->setLights(l);
@@ -57,7 +56,7 @@ void Engine::Run()
 
 		dt.restartClock();
 
-		currentTimeToUpdateFPS += dt.dt();
+		currentTimeToUpdateFPS += (float)dt.dt();
 		counter++;
 		if(currentTimeToUpdateFPS >= TimeToUpdateFPS){
 			float fps = 1/(currentTimeToUpdateFPS / (float)counter);
@@ -73,13 +72,13 @@ void Engine::Run()
 			if(basicToScene.keyboard->getKeyDown(GLFW_KEY_ESCAPE)){
 				m_gameOver = true;
 			}
-			glClearColor(0.1,0.1,0.1,1);
+			glClearColor(0.1f,0.1f,0.1f,1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
 			glClear(GL_DEPTH_BUFFER_BIT);
 
 			//update
 			basicToScene.mouse->Update();
-			m_sceneHandler.Update(dt.dt());
+			m_sceneHandler.Update((float)dt.dt());
 
 			//render
 			//shadows
@@ -122,5 +121,6 @@ void Engine::setUpDefaultShaders()
 
 	basicToScene.rm->createShaderProgram("DefTessellation", tessellationVertex, tessellationControl, tessellationEvaluation, basicToScene.rm->getShader("BasicPixelShader.frag"));
 
-	//basicToScene.rm->createShaderProgram("DefTessellation", tessellationVertex, test);
+	unsigned int SkeletalAnimationVertex = basicToScene.rm->getShader("SkeletalAnimationVertexShader.vert");
+	basicToScene.rm->createShaderProgram("DefSkeletalAnimation", SkeletalAnimationVertex, basicToScene.rm->getShader("BasicPixelShader.frag"));
 }

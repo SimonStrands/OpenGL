@@ -2,6 +2,11 @@
 #include "ResourceManager.h"
 #include <unordered_map>
 
+static glm::quat AssimpToOpenGL(const aiQuaternion& aVec4)
+{
+	return glm::quat(aVec4.w, aVec4.x,aVec4.y,aVec4.z);
+}
+
 static glm::vec3 AssimpToOpenGL(const aiVector3D aVec3)
 {
 	return glm::vec3(aVec3.x,aVec3.y,aVec3.z);
@@ -12,9 +17,177 @@ static glm::vec2 AssimpToOpenGL(const aiVector2D& aVec2)
 	return glm::vec2(aVec2.x,aVec2.y);
 }
 
-void loadBoneDataToVertecies(std::vector<AnimationVertex> vertecies)
+static glm::mat4 AssimpToOpenGL(const aiMatrix4x4 aMat4){
+    //I do not know if it should be the other way
+    return glm::mat4(
+        aMat4.a1, aMat4.b1, aMat4.c1, aMat4.d1,
+        aMat4.a2, aMat4.b2, aMat4.c2, aMat4.d2,
+        aMat4.a3, aMat4.b3, aMat4.c3, aMat4.d3,
+        aMat4.a4, aMat4.b4, aMat4.c4, aMat4.d4
+        );
+}
+
+void addEmptyAnimationForEmptyJoints(buildBone& bone, Animation& animation){
+
+	if(animation.keyFrames.find(bone.name) == animation.keyFrames.end()){
+		//if the bone doesn't exist in animation add it
+		//DO I need two???
+		KeyFrames track;
+		track.positions.push_back(glm::vec3(0,0,0));
+		track.rotations.push_back(glm::quat(1,0,0,0));
+		track.scales.push_back(glm::vec3(1,1,1));
+
+		track.positions.push_back(glm::vec3(0,0,0));
+		track.rotations.push_back(glm::quat(1,0,0,0));
+		track.scales.push_back(glm::vec3(1,1,1));
+		track.positionTimestamps.push_back(0);
+		track.rotationTimestamps.push_back(0);
+		track.scaleTimestamps.push_back(0);
+
+		track.positionTimestamps.push_back(animation.length);
+		track.rotationTimestamps.push_back(animation.length);
+		track.scaleTimestamps.push_back(animation.length);
+		animation.keyFrames.insert(std::pair<std::string, KeyFrames>(bone.name, track));
+	}
+	else{
+		//if the bone doesn't have a certain animation
+		KeyFrames& track = animation.keyFrames.find(bone.name)->second;
+		if(track.positions.size() <= 0){
+			track.positions.push_back(glm::vec3(0, 0, 0));
+			track.positionTimestamps.push_back(0);
+			track.positions.push_back(glm::vec3(0, 0, 0));
+			track.positionTimestamps.push_back(animation.length);
+		}
+		if(track.rotations.size() <= 0){
+			track.rotations.push_back(glm::quat(1, 0, 0, 0));
+			track.rotationTimestamps.push_back(0);
+			track.rotations.push_back(glm::quat(1, 0, 0, 0));
+			track.rotationTimestamps.push_back(animation.length);
+		}
+		if(track.scales.size() <= 0){
+			track.scales.push_back(glm::vec3(1,1,1));
+			track.scaleTimestamps.push_back(0);
+			track.scales.push_back(glm::vec3(1,1,1));
+			track.scaleTimestamps.push_back(animation.length);
+		}
+	}
+	for(int i = 0; i < bone.childJoints.size(); i++){
+		addEmptyAnimationForEmptyJoints(bone.childJoints[i], animation);
+	}
+}
+
+bool loadAnimation(const aiScene* scene, std::map<std::string, Animation>& animations, buildBone& root){
+    for(unsigned int a = 0; a < scene->mNumAnimations; a++){
+        aiAnimation* anim = scene->mAnimations[a];
+        Animation animation;
+
+        if(anim->mTicksPerSecond != 0.0f){
+            animation.tick = (float)anim->mTicksPerSecond;
+	    }
+	    else{
+	    	animation.tick = (float)anim->mTicksPerSecond;
+	    }
+	    animation.length = (float)(anim->mDuration); 
+	    animation.keyFrames = {};
+
+	    for (unsigned int i = 0; i < anim->mNumChannels; i++) {
+	    	aiNodeAnim* channel = anim->mChannels[i];
+	    	KeyFrames track;
+	    	for (unsigned int j = 0; j < channel->mNumPositionKeys; j++) {
+	    		track.positionTimestamps.push_back((float)channel->mPositionKeys[j].mTime);
+	    		track.positions.push_back(AssimpToOpenGL(channel->mPositionKeys[j].mValue));
+	    	}
+	    	for (unsigned int j = 0; j < channel->mNumRotationKeys; j++) {
+	    		track.rotationTimestamps.push_back((float)channel->mRotationKeys[j].mTime);
+	    		track.rotations.push_back(AssimpToOpenGL(channel->mRotationKeys[j].mValue));
+
+	    	}
+	    	for (unsigned int j = 0; j < channel->mNumScalingKeys; j++) {
+	    		track.scaleTimestamps.push_back((float)channel->mScalingKeys[j].mTime);
+	    		track.scales.push_back(AssimpToOpenGL(channel->mScalingKeys[j].mValue));
+	    
+	    	}
+	    	animation.keyFrames.insert(std::pair<std::string, KeyFrames>(channel->mNodeName.C_Str(), track));
+	    }
+        addEmptyAnimationForEmptyJoints(root, animation);
+        animations.insert(std::pair(anim->mName.C_Str(), animation));
+    }
+    return true;
+}
+
+bool readSkeleton(buildBone& joint, aiNode* node, const std::map<std::string, glm::mat4>& OffsetMatrices)
 {
-    
+    if (OffsetMatrices.find(node->mName.C_Str()) != OffsetMatrices.end()) { // if node is actually a bone
+		joint.name = node->mName.C_Str();
+		joint.inverseBindPoseMatrix = glm::transpose(OffsetMatrices.find(joint.name)->second);
+		for (unsigned int i = 0; i < node->mNumChildren; i++) {
+			buildBone child;
+			//child.parent = &joint;
+			if(readSkeleton(child, node->mChildren[i], OffsetMatrices)){
+				joint.childJoints.push_back(child);
+			}
+		}
+		return true;
+	}
+	else { // find bones in children
+		for (unsigned int i = 0; i < node->mNumChildren; i++) {
+			if (readSkeleton(joint, node->mChildren[i], OffsetMatrices)) {
+				return true;
+			}
+	
+		}
+	}
+	return false;
+}
+
+#define MAXNUMBEROFBONESPERVERTEX 3
+
+void loadBoneDataToVertecies(std::vector<AnimationVertex>& vertecies, const aiMesh* pMesh, std::map<std::string, glm::mat4>& offsetMatrices)
+{
+    std::vector<uint16_t> boneCounts;
+	boneCounts.resize(vertecies.size());
+
+    for(unsigned int i = 0; i < pMesh->mNumBones; i++){
+        aiBone* bone = pMesh->mBones[i];
+        
+        offsetMatrices.insert(std::pair(bone->mName.C_Str(), AssimpToOpenGL(bone->mOffsetMatrix)));
+
+        for(unsigned int w = 0; w < bone->mNumWeights; w++){
+            unsigned int id = bone->mWeights[w].mVertexId;
+			float weight = bone->mWeights[w].mWeight;
+
+            boneCounts[id]++;
+			switch (boneCounts[id]) {
+			case 1:
+				vertecies[id].m_boneIDs.x = i;
+				vertecies[id].m_boneWeights.x = weight;
+				break;
+			case 2:
+				vertecies[id].m_boneIDs.y = i;
+				vertecies[id].m_boneWeights.y = weight;
+				break;
+			case 3:
+				vertecies[id].m_boneIDs.z = i;
+				vertecies[id].m_boneWeights.z = weight;
+				break;
+			default:
+                //is it to little we add case 4
+				break;
+
+			}
+        }
+    }
+    //normalize weight in vertecies
+    for(int i = 0; i < vertecies.size(); i++){
+        float totalWeight = 
+            vertecies[i].m_boneWeights.x + 
+            vertecies[i].m_boneWeights.y + 
+            vertecies[i].m_boneWeights.z;
+
+        vertecies[i].m_boneWeights.x = vertecies[i].m_boneWeights.x / totalWeight;
+        vertecies[i].m_boneWeights.y = vertecies[i].m_boneWeights.y / totalWeight;
+        vertecies[i].m_boneWeights.z = vertecies[i].m_boneWeights.z / totalWeight;
+    }
 }
 
 void loadMaterial(const aiScene* pScene, std::vector<Material>& material, ResourceManager* rm){
@@ -160,13 +333,14 @@ Mesh loadMesh(const aiMesh* pMesh)
         vertexBuffer, 
         (unsigned int)indecies.size(), 
         indeciesBuffer,
-        vertexArray
+        vertexArray,
+        TypeOfMesh::Default
     );
 
     return theMesh;
 }
 
-Mesh loadAnimationMesh(const aiMesh* pMesh)
+Mesh loadAnimatedMesh(const aiMesh* pMesh, std::map<std::string, glm::mat4>& offsetMatrices)
 {
     std::vector<AnimationVertex> vertex;
     std::vector<unsigned int> indecies;
@@ -175,8 +349,8 @@ Mesh loadAnimationMesh(const aiMesh* pMesh)
     indecies.reserve(pMesh->mNumFaces * 3);
 
     aiVector3D TexCoord(0,0,0);
+    glm::vec3 pos, norm, tangent, bitangent;
     for(unsigned int i = 0; i < pMesh->mNumVertices; i++){
-        glm::vec3 pos, norm, tangent, bitangent;
         pos.x = pMesh->mVertices[i].x;
         pos.y = pMesh->mVertices[i].y;
         pos.z = pMesh->mVertices[i].z;
@@ -208,26 +382,42 @@ Mesh loadAnimationMesh(const aiMesh* pMesh)
         );
     }
 
+
     for(unsigned int i = 0; i < pMesh->mNumFaces; i++){
         indecies.push_back(pMesh->mFaces[i].mIndices[0]);
         indecies.push_back(pMesh->mFaces[i].mIndices[1]);
         indecies.push_back(pMesh->mFaces[i].mIndices[2]);
     }
 
+    loadBoneDataToVertecies(vertex, pMesh, offsetMatrices);
 
     unsigned int vertexArray = CreateVertexArray();
-    unsigned int vertexBuffer = CreateVertexBuffer(vertex);
+    unsigned int vertexBuffer = CreateAnimationVertexBuffer(vertex);
     unsigned int indeciesBuffer = CreateIndeciesBuffer(indecies);
+
     Mesh theMesh = Mesh(
         0, 
         pMesh->mNumVertices, 
         vertexBuffer, 
         (unsigned int)indecies.size(), 
         indeciesBuffer,
-        vertexArray
+        vertexArray,
+        TypeOfMesh::Animated
     );
 
     return theMesh;
+}
+
+void buildTheSkeleton(std::vector<Bone>& skeleton, buildBone rootBone, int parentID)
+{
+    Bone newBone;
+    newBone.name = rootBone.name;
+    newBone.parentIndex = parentID;
+    newBone.inverseBindPoseMatrix = rootBone.inverseBindPoseMatrix;
+    skeleton.push_back(newBone);
+    for(int i = 0; i < rootBone.childJoints.size(); i++){
+        buildTheSkeleton(skeleton, rootBone.childJoints[i], (int)skeleton.size() - 1);
+    }
 }
 
 Model* loadModel(const std::string& modelFile, ResourceManager* rm)
@@ -239,8 +429,14 @@ Model* loadModel(const std::string& modelFile, ResourceManager* rm)
     if(!pScene){
         return nullptr;
     }
-    Model* theReturnModel = new Model();
-
+    Model* theReturnModel;
+    if(pScene->HasAnimations()){
+        theReturnModel = new AnimatedModel();
+    }
+    else{
+        theReturnModel = new Model();
+    }
+    
     theReturnModel->getMeshes().reserve(pScene->mNumMeshes);
 
     //come on
@@ -253,13 +449,26 @@ Model* loadModel(const std::string& modelFile, ResourceManager* rm)
     for(int i = 0; i < mcb.size(); i++){
         mcb[i] = materials[i];//special operator
     }
-    
+
+    std::map<std::string, glm::mat4> OffsetMatrices;
     for(unsigned int i = 0; i < pScene->mNumMeshes; i++){
-        theReturnModel->getMeshes().push_back(loadMesh(pScene->mMeshes[i]));
+        if(pScene->mMeshes[i]->HasBones()){
+            
+            theReturnModel->getMeshes().push_back(loadAnimatedMesh(pScene->mMeshes[i], OffsetMatrices));
+        }
+        else{
+            theReturnModel->getMeshes().push_back(loadMesh(pScene->mMeshes[i]));
+        }
         theReturnModel->getMeshes()[theReturnModel->getMeshes().size() - 1].material = materials[pScene->mMeshes[i]->mMaterialIndex];
         theReturnModel->getMeshes()[theReturnModel->getMeshes().size() - 1].mcb = CreateUniformBuffer(mcb[pScene->mMeshes[i]->mMaterialIndex]);
     }
-    
-    
+    if(pScene->HasAnimations()){
+        buildBone bone;
+        //
+        readSkeleton(bone, pScene->mRootNode, OffsetMatrices);
+        loadAnimation(pScene, ((AnimatedModel*)theReturnModel)->getAnimations(), bone);
+        //build sksleton array
+        buildTheSkeleton(((AnimatedModel*)theReturnModel)->getSkeleton(), bone, -1);
+    }
     return theReturnModel;
 }

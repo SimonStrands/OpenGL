@@ -1,0 +1,4 @@
+-change unsigned int to uint32_t
+-change transform uniform into SSBO
+-change shadow map bias
+-get a uniform for the skeleton

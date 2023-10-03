@@ -26,6 +26,14 @@ public:
 protected:
 	void switchScene(int sceneID);
 	DefaultVariableToScene basic;
+	DefToGameObject defToObj;
+
+	Camera* MainCamera;
+	ResourceManager* rm;
+	Mouse* mouse;
+	Keyboard* keyboard;
+	Graphics* gfx;
+	ImGuiManager* imGuiManager;
 private:
 	int newSceneID;
 };

@@ -67,6 +67,15 @@
     <Filter Include="Header Files\Engine\Animation">
       <UniqueIdentifier>{64174ca5-e496-4621-a3aa-afe4ff62e0b0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="TODO">
+      <UniqueIdentifier>{e494e64b-da7d-443e-b40e-f9a0ee1cc9b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\SkeletalAnimation">
+      <UniqueIdentifier>{2c2802da-7a14-4fa3-bc88-3dda779567c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Engine\Objects\Animation">
+      <UniqueIdentifier>{31493e30-3113-4699-b9fb-5f35ee4ffe1a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -166,6 +175,12 @@
       <Filter>Header Files\Engine\IMGUI\Lib</Filter>
     </ClCompile>
     <ClCompile Include="ImGuiManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimatorModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -308,11 +323,17 @@
     <ClInclude Include="ImGuiManager.h">
       <Filter>Header Files\Engine\IMGUI</Filter>
     </ClInclude>
-    <ClInclude Include="AnimatorModel.h">
-      <Filter>Header Files\Engine\Objects</Filter>
-    </ClInclude>
     <ClInclude Include="Animation.h">
       <Filter>Header Files\Engine\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Header Files\Engine\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimatorModel.h">
+      <Filter>Header Files\Engine\Objects\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationComponent.h">
+      <Filter>Header Files\Engine\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -337,6 +358,9 @@
     <None Include="Shaders\TessellationEvaluationShader.tese">
       <Filter>Resource Files\Shaders\Tesselation</Filter>
     </None>
+    <None Include="Shaders\SkeletalAnimationVertexShader.vert">
+      <Filter>Resource Files\Shaders\SkeletalAnimation</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ConstantBufferBindings.txt">
@@ -344,6 +368,9 @@
     </Text>
     <Text Include="UsingTesselation.txt">
       <Filter>Resource Files\Shaders\Tesselation</Filter>
+    </Text>
+    <Text Include="TODO.txt">
+      <Filter>TODO</Filter>
     </Text>
   </ItemGroup>
 </Project>

@@ -21,7 +21,7 @@ unsigned int CreateIndeciesBuffer(std::vector<unsigned int>& vertecies)
 
 void setUniform(std::string uniformName, const unsigned int uniformBuffer, GLuint bindingIndex)
 {
-    glBindBufferBase(GL_UNIFORM_BUFFER, bindingIndex, uniformBuffer);
+    GLTest(glBindBufferBase(GL_UNIFORM_BUFFER, bindingIndex, uniformBuffer));
     GLint v;
     glGetIntegerv(GL_CURRENT_PROGRAM, &v);
 

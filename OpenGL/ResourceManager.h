@@ -3,8 +3,9 @@
 #include "BufferCreator.h"
 #include "LoadShaders.h"
 #include "Vertex.h"
+#include "Animation.h"
 #include "Material.h"
-#include "Model.h"
+#include "AnimatorModel.h"
 #include <map>
 #include <string>
 #include <iostream>

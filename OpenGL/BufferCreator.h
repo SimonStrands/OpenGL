@@ -28,6 +28,34 @@ unsigned int CreateVertexBuffer(std::vector<T>& vertecies, GLenum type = GL_FLOA
     return buffer;
 }
 
+template <typename T>
+unsigned int CreateAnimationVertexBuffer(std::vector<T>& vertecies, GLenum type = GL_FLOAT){
+	unsigned int buffer = 0;
+    GLTest(glGenBuffers(1, &buffer));
+    GLTest(glBindBuffer(GL_ARRAY_BUFFER, buffer));
+    GLTest(glBufferData(GL_ARRAY_BUFFER, sizeof(T) * vertecies.size(), vertecies.data(), GL_STATIC_DRAW));
+    
+    
+    GLTest(glEnableVertexAttribArray(0));
+    GLTest(glVertexAttribPointer(0, 3, type, GL_FALSE, sizeof(T), 0));
+    GLTest(glEnableVertexAttribArray(1));
+    GLTest(glVertexAttribPointer(1, 2, type, GL_FALSE, sizeof(T), (void*)offsetof(T, m_texChoords)));
+    GLTest(glEnableVertexAttribArray(2));
+    GLTest(glVertexAttribPointer(2, 3, type, GL_FALSE, sizeof(T), (void*)offsetof(T, m_normals)));
+    GLTest(glEnableVertexAttribArray(3));
+    GLTest(glVertexAttribPointer(3, 3, type, GL_FALSE, sizeof(T), (void*)offsetof(T, m_tangent)));
+    GLTest(glEnableVertexAttribArray(4));
+    GLTest(glVertexAttribPointer(4, 3, type, GL_FALSE, sizeof(T), (void*)offsetof(T, m_bitangent)));
+    GLTest(glEnableVertexAttribArray(5));
+    GLTest(glVertexAttribPointer(5, 3, type, GL_FALSE, sizeof(T), (void*)offsetof(T, m_boneIDs)));
+    GLTest(glEnableVertexAttribArray(6));
+    GLTest(glVertexAttribPointer(6, 3, type, GL_FALSE, sizeof(T), (void*)offsetof(T, m_boneWeights)));
+
+    GLTest(glBindBuffer(GL_ARRAY_BUFFER, 0));
+
+    return buffer;
+}
+
 unsigned int CreateVertexArray();
 
 unsigned int CreateIndeciesBuffer(std::vector<unsigned int>& vertecies);
@@ -43,11 +71,12 @@ unsigned int CreateUniformBuffer(T data){
 
 template <typename T>
 void UpdateUniformBuffer(const T data, unsigned int buff){
+    //std::cout << sizeof(data) << std::endl;
     GLTest(glBindBuffer(GL_UNIFORM_BUFFER, buff));
     void* ptr = glMapBuffer(GL_UNIFORM_BUFFER, GL_WRITE_ONLY);
     if(ptr){
         memcpy(ptr, &data, sizeof(data));
-        glUnmapBuffer(GL_UNIFORM_BUFFER);
+        GLTest(glUnmapBuffer(GL_UNIFORM_BUFFER));
     }
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }

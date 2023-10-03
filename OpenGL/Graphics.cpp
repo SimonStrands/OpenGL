@@ -28,6 +28,7 @@ Graphics::Graphics()
 	vSynced = true;
 
 	setUpImGui();
+	setUpBuffers();
 }
 
 Graphics::~Graphics()
@@ -134,4 +135,17 @@ void Graphics::setUpImGui()
 	if(!ImGui_ImplOpenGL3_Init("#version 330")){
 		std::cout << "version" << std::endl;
 	}
+}
+
+void Graphics::setUpBuffers()
+{
+	BoneConstantBuffer zeroData;
+	uniformBuffers.insert(std::pair("SkeletalPose", CreateUniformBuffer(zeroData)));
+	//make one for transform also
+	
+}
+
+unsigned int Graphics::getUniformBuffer(std::string bufferName)
+{
+	return uniformBuffers[bufferName];
 }
