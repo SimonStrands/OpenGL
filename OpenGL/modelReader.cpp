@@ -1,6 +1,7 @@
 #include "modelReader.h"
 #include "ResourceManager.h"
 #include <unordered_map>
+#include "../glm/gtc/type_ptr.hpp"
 
 static glm::quat AssimpToOpenGL(const aiQuaternion& aVec4)
 {
@@ -19,12 +20,7 @@ static glm::vec2 AssimpToOpenGL(const aiVector2D& aVec2)
 
 static glm::mat4 AssimpToOpenGL(const aiMatrix4x4 aMat4){
     //I do not know if it should be the other way
-    return glm::mat4(
-        aMat4.a1, aMat4.b1, aMat4.c1, aMat4.d1,
-        aMat4.a2, aMat4.b2, aMat4.c2, aMat4.d2,
-        aMat4.a3, aMat4.b3, aMat4.c3, aMat4.d3,
-        aMat4.a4, aMat4.b4, aMat4.c4, aMat4.d4
-        );
+    return glm::transpose(glm::make_mat4(&aMat4.a1));
 }
 
 void addEmptyAnimationForEmptyJoints(buildBone& bone, Animation& animation){
@@ -115,15 +111,17 @@ bool loadAnimation(const aiScene* scene, std::map<std::string, Animation>& anima
     return true;
 }
 
-bool readSkeleton(buildBone& joint, aiNode* node, const std::map<std::string, glm::mat4>& OffsetMatrices)
+bool readSkeleton(buildBone& joint, aiNode* node, std::unordered_map<std::string, std::pair<int, glm::mat4>>& offsetMatrices)
 {
-    if (OffsetMatrices.find(node->mName.C_Str()) != OffsetMatrices.end()) { // if node is actually a bone
+    if (offsetMatrices.find(node->mName.C_Str()) != offsetMatrices.end()) { // if node is actually a bone
 		joint.name = node->mName.C_Str();
-		joint.inverseBindPoseMatrix = glm::transpose(OffsetMatrices.find(joint.name)->second);
+        joint.id = offsetMatrices[joint.name].first;
+        glm::mat4 off = offsetMatrices[joint.name].second;
+		joint.inverseBindPoseMatrix = glm::transpose(off);
 		for (unsigned int i = 0; i < node->mNumChildren; i++) {
 			buildBone child;
 			//child.parent = &joint;
-			if(readSkeleton(child, node->mChildren[i], OffsetMatrices)){
+			if(readSkeleton(child, node->mChildren[i], offsetMatrices)){
 				joint.childJoints.push_back(child);
 			}
 		}
@@ -131,7 +129,7 @@ bool readSkeleton(buildBone& joint, aiNode* node, const std::map<std::string, gl
 	}
 	else { // find bones in children
 		for (unsigned int i = 0; i < node->mNumChildren; i++) {
-			if (readSkeleton(joint, node->mChildren[i], OffsetMatrices)) {
+			if (readSkeleton(joint, node->mChildren[i], offsetMatrices)) {
 				return true;
 			}
 	
@@ -142,7 +140,7 @@ bool readSkeleton(buildBone& joint, aiNode* node, const std::map<std::string, gl
 
 #define MAXNUMBEROFBONESPERVERTEX 3
 
-void loadBoneDataToVertecies(std::vector<AnimationVertex>& vertecies, const aiMesh* pMesh, std::map<std::string, glm::mat4>& offsetMatrices)
+void loadBoneDataToVertecies(std::vector<AnimationVertex>& vertecies, const aiMesh* pMesh, std::unordered_map<std::string, std::pair<int, glm::mat4>>& offsetMatrices)
 {
     std::vector<uint16_t> boneCounts;
 	boneCounts.resize(vertecies.size());
@@ -150,7 +148,7 @@ void loadBoneDataToVertecies(std::vector<AnimationVertex>& vertecies, const aiMe
     for(unsigned int i = 0; i < pMesh->mNumBones; i++){
         aiBone* bone = pMesh->mBones[i];
         
-        offsetMatrices.insert(std::pair(bone->mName.C_Str(), AssimpToOpenGL(bone->mOffsetMatrix)));
+        offsetMatrices[bone->mName.C_Str()] = {i, AssimpToOpenGL(bone->mOffsetMatrix) };
 
         for(unsigned int w = 0; w < bone->mNumWeights; w++){
             unsigned int id = bone->mWeights[w].mVertexId;
@@ -170,8 +168,11 @@ void loadBoneDataToVertecies(std::vector<AnimationVertex>& vertecies, const aiMe
 				vertecies[id].m_boneIDs.z = i;
 				vertecies[id].m_boneWeights.z = weight;
 				break;
+            case 4:
+                vertecies[id].m_boneIDs.w = i;
+				vertecies[id].m_boneWeights.w = weight;
+                break;
 			default:
-                //is it to little we add case 4
 				break;
 
 			}
@@ -182,11 +183,13 @@ void loadBoneDataToVertecies(std::vector<AnimationVertex>& vertecies, const aiMe
         float totalWeight = 
             vertecies[i].m_boneWeights.x + 
             vertecies[i].m_boneWeights.y + 
-            vertecies[i].m_boneWeights.z;
+            vertecies[i].m_boneWeights.z +
+            vertecies[i].m_boneWeights.w;
 
         vertecies[i].m_boneWeights.x = vertecies[i].m_boneWeights.x / totalWeight;
         vertecies[i].m_boneWeights.y = vertecies[i].m_boneWeights.y / totalWeight;
         vertecies[i].m_boneWeights.z = vertecies[i].m_boneWeights.z / totalWeight;
+        vertecies[i].m_boneWeights.w = vertecies[i].m_boneWeights.w / totalWeight;
     }
 }
 
@@ -340,7 +343,7 @@ Mesh loadMesh(const aiMesh* pMesh)
     return theMesh;
 }
 
-Mesh loadAnimatedMesh(const aiMesh* pMesh, std::map<std::string, glm::mat4>& offsetMatrices)
+Mesh loadAnimatedMesh(const aiMesh* pMesh, std::unordered_map<std::string, std::pair<int, glm::mat4>>& offsetMatrices)
 {
     std::vector<AnimationVertex> vertex;
     std::vector<unsigned int> indecies;
@@ -414,9 +417,9 @@ void buildTheSkeleton(std::vector<Bone>& skeleton, buildBone rootBone, int paren
     newBone.name = rootBone.name;
     newBone.parentIndex = parentID;
     newBone.inverseBindPoseMatrix = rootBone.inverseBindPoseMatrix;
-    skeleton.push_back(newBone);
+    skeleton[rootBone.id] = newBone;
     for(int i = 0; i < rootBone.childJoints.size(); i++){
-        buildTheSkeleton(skeleton, rootBone.childJoints[i], (int)skeleton.size() - 1);
+        buildTheSkeleton(skeleton, rootBone.childJoints[i], rootBone.id);
     }
 }
 
@@ -450,11 +453,11 @@ Model* loadModel(const std::string& modelFile, ResourceManager* rm)
         mcb[i] = materials[i];//special operator
     }
 
-    std::map<std::string, glm::mat4> OffsetMatrices;
+    std::unordered_map<std::string, std::pair<int, glm::mat4>> boneInfo = {};
     for(unsigned int i = 0; i < pScene->mNumMeshes; i++){
         if(pScene->mMeshes[i]->HasBones()){
             
-            theReturnModel->getMeshes().push_back(loadAnimatedMesh(pScene->mMeshes[i], OffsetMatrices));
+            theReturnModel->getMeshes().push_back(loadAnimatedMesh(pScene->mMeshes[i], boneInfo));
         }
         else{
             theReturnModel->getMeshes().push_back(loadMesh(pScene->mMeshes[i]));
@@ -465,9 +468,10 @@ Model* loadModel(const std::string& modelFile, ResourceManager* rm)
     if(pScene->HasAnimations()){
         buildBone bone;
         //
-        readSkeleton(bone, pScene->mRootNode, OffsetMatrices);
+        readSkeleton(bone, pScene->mRootNode, boneInfo);
         loadAnimation(pScene, ((AnimatedModel*)theReturnModel)->getAnimations(), bone);
         //build sksleton array
+        ((AnimatedModel*)theReturnModel)->getSkeleton().resize(boneInfo.size());
         buildTheSkeleton(((AnimatedModel*)theReturnModel)->getSkeleton(), bone, -1);
     }
     return theReturnModel;

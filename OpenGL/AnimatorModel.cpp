@@ -51,13 +51,23 @@ void AnimatedModel::DirectRender(GLuint Topology)
 	}
 }
 
+void printMatrix(glm::mat4 m, std::string name){
+    std::cout << name <<"-------------------------" << std::endl;
+        std::cout << m[0].x << ", " << m[0].y << ", " << m[0].z << ", " << m[0].w << std::endl;
+        std::cout << m[1].x << ", " << m[1].y << ", " << m[1].z << ", " << m[1].w << std::endl;
+        std::cout << m[2].x << ", " << m[2].y << ", " << m[2].z << ", " << m[2].w << std::endl;
+        std::cout << m[3].x << ", " << m[3].y << ", " << m[3].z << ", " << m[3].w << std::endl;
+    std::cout << "-------------------------" << std::endl;
+}
+
 void AnimatedModel::getPose(float time, const std::string& animationName, BoneConstantBuffer& poses)
 {
-    time = 1;
+    //time = 1;
+    
     //std::vector<glm::mat4> poses(skeleton.size());
     std::pair<unsigned int, float> fp;
     Animation currentAnimation = animations[animationName];
-
+    time = time * currentAnimation.tick;
     glm::vec3 vec31, vec32;
     glm::quat vec41, vec42;
     glm::mat4 position, rotation, scale;
@@ -91,29 +101,16 @@ void AnimatedModel::getPose(float time, const std::string& animationName, BoneCo
             pt = skeleton[CurrentBone.parentIndex].FinalTransformation;
         }
         glm::mat4 str = (scale * rotation);
-        glm::mat4 mat = str * position;
-        
-        std::cout << position[0].x << ", " << position[0].y << ", " << position[0].z << ", " << position[0].w << std::endl;
-        std::cout << position[1].x << ", " << position[1].y << ", " << position[1].z << ", " << position[1].w << std::endl;
-        std::cout << position[2].x << ", " << position[2].y << ", " << position[2].z << ", " << position[2].w << std::endl;
-        std::cout << position[3].x << ", " << position[3].y << ", " << position[3].z << ", " << position[3].w << std::endl;
-        std::cout << "---------" << std::endl;
-        std::cout << str[0].x << ", " << str[0].y << ", " << str[0].z << ", " << str[0].w << std::endl;
-        std::cout << str[1].x << ", " << str[1].y << ", " << str[1].z << ", " << str[1].w << std::endl;
-        std::cout << str[2].x << ", " << str[2].y << ", " << str[2].z << ", " << str[2].w << std::endl;
-        std::cout << str[3].x << ", " << str[3].y << ", " << str[3].z << ", " << str[3].w << std::endl;
-        std::cout << "---------" << std::endl;
-        std::cout << mat[0].x << ", " << mat[0].y << ", " << mat[0].z << ", " << mat[0].w << std::endl;
-        std::cout << mat[1].x << ", " << mat[1].y << ", " << mat[1].z << ", " << mat[1].w << std::endl;
-        std::cout << mat[2].x << ", " << mat[2].y << ", " << mat[2].z << ", " << mat[2].w << std::endl;
-        std::cout << mat[3].x << ", " << mat[3].y << ", " << mat[3].z << ", " << mat[3].w << std::endl;
-        std::cout << "---------" << std::endl;
-        mat = glm::transpose(mat);
+        glm::mat4 mat = glm::transpose(position * str);
 
-        CurrentBone.FinalTransformation = pt * mat;
-        //CurrentBone.FinalTransformation = pt * glm::transpose((scale * position));
-        //poses.poses[i] = glm::transpose(CurrentBone.FinalTransformation * CurrentBone.inverseBindPoseMatrix);
-        poses.poses[i] = glm::transpose(CurrentBone.FinalTransformation * CurrentBone.inverseBindPoseMatrix);
+        //std::cout << "id:" << i << std::endl;
+        //printMatrix(mat, "mat");
+
+        CurrentBone.FinalTransformation = mat * pt;
+        //printMatrix(CurrentBone.FinalTransformation, "newParent");
+        //printMatrix( CurrentBone.inverseBindPoseMatrix, "inverse");
+        poses.poses[i] = glm::transpose(CurrentBone.inverseBindPoseMatrix * CurrentBone.FinalTransformation);
+        //printMatrix(poses.poses[i], "final");
     }
 }
 

@@ -5,8 +5,8 @@ layout(location = 1) in vec2 uv;
 layout(location = 2) in vec3 normal;
 layout(location = 3) in vec3 tangent;
 layout(location = 4) in vec3 bitangent;
-layout(location = 5) in vec3 boneID;
-layout(location = 6) in vec3 boneWeights;
+layout(location = 5) in vec4 boneID;
+layout(location = 6) in vec4 boneWeights;
 
 out vec4 o_fragPos;
 out vec2 o_uv;
@@ -35,30 +35,23 @@ void main()
 {
 	mat4 MVP = (transform * view) * projection;
 
-	mat4 boneTransform =
+    vec4 totalPosition = vec4(0.0f);
+	for(int i = 0; i < 4; i++)
     {
-        vec4(0.f, 0.f, 0.f, 0.f),
-        vec4(0.f, 0.f, 0.f, 0.f),
-        vec4(0.f, 0.f, 0.f, 0.f),
-        vec4(0.f, 0.f, 0.f, 0.f)
-	};
-	if (boneID.x > -0.5f)
-    {
-        boneTransform += BoneTransformations[int(boneID.x)] * boneWeights.x;
-    }
-    if (boneID.y > -0.5f)
-    {
-        boneTransform += BoneTransformations[int(boneID.y)] * boneWeights.y;
-    }
-    if (boneID.z > -0.5f)
-    {
-        boneTransform += BoneTransformations[int(boneID.z)] * boneWeights.z;
+        if(boneID[i] < -0.5) 
+            continue;
+        if(boneID[i] >= 60) 
+        {
+            totalPosition = vec4(position,1.0f);
+            break;
+        }
+        vec4 localPosition = BoneTransformations[int(boneID[i])] * vec4(position,1.0f);
+        totalPosition += localPosition * boneWeights[i];
     }
     
-    vec3 nposition = (vec4(position, 1) * boneTransform).xyz;
 
-	gl_Position = vec4(nposition.xyz, 1.0) * MVP;
-	o_fragPos = (vec4(nposition.xyz, 1.0) * (transform));
+	gl_Position = totalPosition * MVP;
+	o_fragPos = (totalPosition * (transform));
 	o_normal = normalize((vec4(normal, 0.0) * transform).xyz);
 	o_tangent = normalize((vec4(tangent, 0.0) * transform).xyz);
 	o_bitangent = normalize((vec4(bitangent, 0.0) * transform).xyz);

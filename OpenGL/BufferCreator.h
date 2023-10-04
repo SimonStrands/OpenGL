@@ -47,9 +47,9 @@ unsigned int CreateAnimationVertexBuffer(std::vector<T>& vertecies, GLenum type 
     GLTest(glEnableVertexAttribArray(4));
     GLTest(glVertexAttribPointer(4, 3, type, GL_FALSE, sizeof(T), (void*)offsetof(T, m_bitangent)));
     GLTest(glEnableVertexAttribArray(5));
-    GLTest(glVertexAttribPointer(5, 3, type, GL_FALSE, sizeof(T), (void*)offsetof(T, m_boneIDs)));
+    GLTest(glVertexAttribPointer(5, 4, type, GL_FALSE, sizeof(T), (void*)offsetof(T, m_boneIDs)));
     GLTest(glEnableVertexAttribArray(6));
-    GLTest(glVertexAttribPointer(6, 3, type, GL_FALSE, sizeof(T), (void*)offsetof(T, m_boneWeights)));
+    GLTest(glVertexAttribPointer(6, 4, type, GL_FALSE, sizeof(T), (void*)offsetof(T, m_boneWeights)));
 
     GLTest(glBindBuffer(GL_ARRAY_BUFFER, 0));
 

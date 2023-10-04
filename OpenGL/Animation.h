@@ -26,6 +26,7 @@ public:
 struct Bone {
 	std::string name;
 	int parentIndex = -1;
+	int id = -1;
 	
 	glm::mat4 inverseBindPoseMatrix;//never change this
 	glm::mat4 FinalTransformation;	//can change this
@@ -35,6 +36,7 @@ struct buildBone {
 	std::vector<buildBone> childJoints;
 	//Bone* parent = nullptr;
 	std::string name;
+	int id = -1;
 	glm::mat4 inverseBindPoseMatrix;
 	glm::mat4 boneMatrix;
 	
