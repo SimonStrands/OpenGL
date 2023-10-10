@@ -1,7 +1,7 @@
 #include "ImageReader.h"
 #include "STBI_Image.h"
 
-bool ReadImage(const std::string& filepath, unsigned int& textureID)
+bool ReadImage(const std::string& filepath, uint32_t& textureID)
 {
 	struct stat buffer;
 	if (filepath == "" || stat(filepath.c_str(), &buffer) != 0) {

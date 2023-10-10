@@ -65,13 +65,13 @@ void main(){
     vec4 color = texture(ambientTexture, o_uv);
     vec3 viewDir = normalize(cameraPos.xyz - o_fragPos.xyz);
     
-    for(int i = 0; i < nrOfLight.x; i++){
+    for(int i = 0; i < nrOfLight; i++){
         
         vec3 lightDir = normalize(lightPos[i].xyz - o_fragPos.xyz);
         float dist = length(lightPos[i].xyz - o_fragPos.xyz);
         
         vec3 ambientLight = Ka.xyz * lightColors[i].xyz;
-    
+        
         vec4 shadowHomo = o_fragPos * lightViewProjection[i];
         vec4 shadowMapCoords = vec4(shadowHomo.xyz / shadowHomo.w, 1);
         shadowMapCoords = shadowMapCoords * 0.5 + 0.5;
@@ -79,12 +79,16 @@ void main(){
         
         double SM = texture(ShadowMaps, vec3(shadowMapCoords.xy, i)).r;
          
-        float bias = 0.00001;
+        //float bias = 0.00001;
+        float bias = max(0.05 * (1.0 - dot(newNormal, lightDir)), 0.005);;
+
           
-        if (SM + bias > shadowMapCoords.z &&
+        if (lightPos[i].w == 1 ||
+                (SM + bias > shadowMapCoords.z &&
                 shadowMapCoords.z <= 1.0f &&//E
 				shadowMapCoords.x < 1 && shadowMapCoords.x > 0 &&
-				shadowMapCoords.y < 1 && shadowMapCoords.y > 0 
+				shadowMapCoords.y < 1 && shadowMapCoords.y > 0 &&
+                dot(o_normal.xyz, lightDir.xyz) > -0.1)
                 )   
         {
             vec3 defuse_light;

@@ -9,27 +9,27 @@ enum class TypeOfMesh {
 class Mesh{
 public:
 	Mesh();
-	Mesh(unsigned int materialIndex,
-		unsigned int nrOfVertecies,
-		unsigned int vertexBuffer,
-		unsigned int nrOfIndecies,
-		unsigned int indeciesBuffer,
-		unsigned int vertexArray,
+	Mesh(uint32_t materialIndex,
+		uint32_t nrOfVertecies,
+		uint32_t vertexBuffer,
+		uint32_t nrOfIndecies,
+		uint32_t indeciesBuffer,
+		uint32_t vertexArray,
 		TypeOfMesh meshType
 		);
 	TypeOfMesh GetModelType() const;
 public:
 	TypeOfMesh typeOfMesh;
 	Material material;
-	unsigned int mcb; //materialConstBuffer does not handle textures
+	uint32_t mcb; //materialConstBuffer does not handle textures
 
-	unsigned int m_materialIndex;
+	uint32_t m_materialIndex;
 
-	unsigned int m_nrOfVertecies;
-	unsigned int m_vertexBuffer;
+	uint32_t m_nrOfVertecies;
+	uint32_t m_vertexBuffer;
 
-	unsigned int m_nrOfIndecies;
-	unsigned int m_indeciesBuffer;
+	uint32_t m_nrOfIndecies;
+	uint32_t m_indeciesBuffer;
 
-	unsigned int m_vertexarray;
+	uint32_t m_vertexarray;
 };

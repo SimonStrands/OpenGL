@@ -25,6 +25,8 @@ Graphics::Graphics()
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_FRONT);  
 	glFrontFace(GL_CCW);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	vSynced = true;
 
 	setUpImGui();
@@ -95,9 +97,9 @@ void Graphics::enableWireframeMode(bool enable)
 	}
 }
 
-unsigned int Graphics::GetNrOfWindows()
+uint32_t Graphics::GetNrOfWindows()
 {
-	return (unsigned int)windows.size();
+	return (uint32_t)windows.size();
 }
 
 GLFWwindow* Graphics::getCurrentActiveWindow()
@@ -145,7 +147,7 @@ void Graphics::setUpBuffers()
 	
 }
 
-unsigned int Graphics::getUniformBuffer(std::string bufferName)
+uint32_t Graphics::getUniformBuffer(std::string bufferName)
 {
 	return uniformBuffers[bufferName];
 }

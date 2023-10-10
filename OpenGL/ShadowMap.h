@@ -6,7 +6,7 @@
 
 #include "LightBuffer.h"
 #include "GameObject.h"
-#include "BufferCreator.h"
+#include "Buffer.h"
 #include "ResourceManager.h"
 #include <vector>
 
@@ -16,7 +16,7 @@ public:
 	ShadowMap(std::vector<Light*> lights);
 	ShadowMap();
 	virtual ~ShadowMap();
-	void addShaderProgram(unsigned int ShadowShaderProgram);
+	void addShaderProgram(uint32_t ShadowShaderProgram);
 
 	//Cleans the shadowMap handler and ready for new Scene
 	//Just like delete
@@ -27,24 +27,24 @@ public:
 	void addGameObject(GameObject* gameObject);
 	void renderShadow();
 	void updateLightMatrices();
-	unsigned int getDepthBuffer(int index);
+	uint32_t getDepthBuffer(int index);
 private:
 	
-	void setUpLight(Light* light, unsigned int index);
+	void setUpLight(Light* light, uint32_t index);
 //private:
 public:
 	std::vector<GameObject*> gameObjectsWithShadow;
 	std::vector<Light*> lights;
 
-	std::vector<unsigned int> DepthBufferFBO;
-	unsigned int DepthBufferArray;
+	std::vector<uint32_t> DepthBufferFBO;
+	uint32_t DepthBufferArray;
 
 	
 	LightBuffer lightBuffer;
-	unsigned int lightCB;
+	uint32_t lightCB;
 
 	ShadowMapBuffer shadowMapConstantBuffer;
-	unsigned int shadowMapCB;
+	uint32_t shadowMapCB;
 
-	unsigned int ShadowShaderProgram;
+	uint32_t ShadowShaderProgram;
 };

@@ -15,7 +15,7 @@ public:
 	//Gonna need to add model
 	GameObject(DefToGameObject& def, glm::vec3 Position = glm::vec3(), glm::vec3 Rotation = glm::vec3(), glm::vec3 Scale = glm::vec3());
 	virtual ~GameObject();
-	void SetShaderProgram(unsigned int shaderProgram);
+	void SetShaderProgram(uint32_t shaderProgram);
 	void directRender();
 	void directRenderShadow();
 	void addModel(Model* model);
@@ -32,7 +32,7 @@ public:
 
 private:
 	Model* model;
-	unsigned int shaderProgram;
+	uint32_t shaderProgram;
 
 	ResourceManager* rm;
 	Graphics* gfx;

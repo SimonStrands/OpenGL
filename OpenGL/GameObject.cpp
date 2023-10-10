@@ -19,7 +19,7 @@ GameObject::~GameObject()
     }
 }
 
-void GameObject::SetShaderProgram(unsigned int shaderProgram)
+void GameObject::SetShaderProgram(uint32_t shaderProgram)
 {
 	this->shaderProgram = shaderProgram;
 }

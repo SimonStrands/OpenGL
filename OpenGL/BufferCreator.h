@@ -5,8 +5,8 @@
 #include "ErrorHelper.h"
 
 template <typename T>
-unsigned int CreateVertexBuffer(std::vector<T>& vertecies, GLenum type = GL_FLOAT){
-	unsigned int buffer = 0;
+uint32_t CreateVertexBuffer(std::vector<T>& vertecies, GLenum type = GL_FLOAT){
+	uint32_t buffer = 0;
     GLTest(glGenBuffers(1, &buffer));
     GLTest(glBindBuffer(GL_ARRAY_BUFFER, buffer));
     GLTest(glBufferData(GL_ARRAY_BUFFER, sizeof(T) * vertecies.size(), vertecies.data(), GL_STATIC_DRAW));
@@ -29,8 +29,8 @@ unsigned int CreateVertexBuffer(std::vector<T>& vertecies, GLenum type = GL_FLOA
 }
 
 template <typename T>
-unsigned int CreateAnimationVertexBuffer(std::vector<T>& vertecies, GLenum type = GL_FLOAT){
-	unsigned int buffer = 0;
+uint32_t CreateAnimationVertexBuffer(std::vector<T>& vertecies, GLenum type = GL_FLOAT){
+	uint32_t buffer = 0;
     GLTest(glGenBuffers(1, &buffer));
     GLTest(glBindBuffer(GL_ARRAY_BUFFER, buffer));
     GLTest(glBufferData(GL_ARRAY_BUFFER, sizeof(T) * vertecies.size(), vertecies.data(), GL_STATIC_DRAW));
@@ -56,13 +56,13 @@ unsigned int CreateAnimationVertexBuffer(std::vector<T>& vertecies, GLenum type 
     return buffer;
 }
 
-unsigned int CreateVertexArray();
+uint32_t CreateVertexArray();
 
-unsigned int CreateIndeciesBuffer(std::vector<unsigned int>& vertecies);
+uint32_t CreateIndeciesBuffer(std::vector<uint32_t>& vertecies);
 
 template <typename T>
-unsigned int CreateUniformBuffer(T data){
-    unsigned int UB;
+uint32_t CreateUniformBuffer(T data){
+    uint32_t UB;
     GLTest(glGenBuffers(1, &UB));
     GLTest(glBindBuffer(GL_UNIFORM_BUFFER, UB));
     GLTest(glBufferData(GL_UNIFORM_BUFFER, sizeof(T), NULL, GL_DYNAMIC_DRAW));
@@ -70,8 +70,7 @@ unsigned int CreateUniformBuffer(T data){
 }
 
 template <typename T>
-void UpdateUniformBuffer(const T data, unsigned int buff){
-    //std::cout << sizeof(data) << std::endl;
+void UpdateUniformBuffer(const T data, uint32_t buff){
     GLTest(glBindBuffer(GL_UNIFORM_BUFFER, buff));
     void* ptr = glMapBuffer(GL_UNIFORM_BUFFER, GL_WRITE_ONLY);
     if(ptr){
@@ -81,6 +80,6 @@ void UpdateUniformBuffer(const T data, unsigned int buff){
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
-void setUniform(std::string uniformName, const unsigned int uniformBuffer, GLuint bindingIndex = 0);
+void setUniform(std::string uniformName, const uint32_t uniformBuffer, GLuint bindingIndex = 0);
 
-void createDepthStencil(unsigned int Width, unsigned int Height, unsigned int &depthBufferFBO, unsigned int &depthBuffer);
+void createDepthStencil(uint32_t Width, uint32_t Height, uint32_t &depthBufferFBO, uint32_t &depthBuffer);

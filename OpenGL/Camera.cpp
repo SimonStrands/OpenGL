@@ -4,6 +4,7 @@ Camera::Camera(glm::vec3 position, glm::vec3 rotation, float FOV):
 	FOV(FOV), position(position), rotation(rotation)
 {
 	cb.p = glm::transpose(glm::perspectiveFovLH(glm::radians(FOV), 16.f, 9.f, 0.1f, 2000.f));
+	//cb.p = glm::transpose(glm::orthoLH(0.f, 1920.f, 0.f, 1080.f, 0.1f, 2000.f));
 	cb.v = glm::lookAt(position, rotation, glm::vec3(0.f,1.f,0.f));
 }
 
@@ -43,6 +44,11 @@ void Camera::moveInDirection(glm::vec3 direction)
 	translation = glm::vec3(rotationMatrix * glm::vec4(translation, 1.0f));
 	this->position.x -= translation.x;
 	this->position.z -= translation.z;
+}
+
+void Camera::setProjection(glm::mat4 proj)
+{
+	cb.p = proj;
 }
 
 void Camera::Update()

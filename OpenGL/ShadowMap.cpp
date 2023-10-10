@@ -122,7 +122,7 @@ void ShadowMap::renderShadow()
 				gameObjectsWithShadow[i]->directRenderShadow();
 			}
 		}
-		if(lights[i]->lightType ==  LightType::e_SpotLight){
+		else if(lights[i]->lightType ==  LightType::e_SpotLight){
 			SpotLight* sl = (SpotLight*)lights[i];
 
 			lightBuffer.projection = sl->getProjection();
@@ -147,7 +147,7 @@ ShadowMap::~ShadowMap()
 	//delete shadowMapCB
 }
 
-void ShadowMap::addShaderProgram(unsigned int ShadowShaderProgram)
+void ShadowMap::addShaderProgram(uint32_t ShadowShaderProgram)
 {
 	this->ShadowShaderProgram = ShadowShaderProgram;
 }
@@ -165,22 +165,9 @@ void ShadowMap::updateLightMatrices()
 	setUniform("ShadowData", shadowMapCB, 3);
 }
 
-unsigned int ShadowMap::getDepthBuffer(int index)
+uint32_t ShadowMap::getDepthBuffer(int index)
 {
 	return DepthBufferFBO[index];
 }
 
 
-//void ShadowMap::setUpLight(Light* light, unsigned int index)
-//{
-//	if(light->lightType == LightType::e_DirectionlLight)
-//	{
-//		DirectionalLight* dirLight = dynamic_cast<DirectionalLight*>(light);
-//		createDepthStencil(dirLight->WidthHeight.x, dirLight->WidthHeight.y, DepthBufferFBO[index], DepthBuffer[index]);
-//	}
-//	else if(light->lightType == LightType::e_SpotLight)
-//	{
-//		SpotLight* dirLight = dynamic_cast<SpotLight*>(light);
-//		createDepthStencil(dirLight->WidthHeight.x, dirLight->WidthHeight.y, DepthBufferFBO[index], DepthBuffer[index]);
-//	}
-//}

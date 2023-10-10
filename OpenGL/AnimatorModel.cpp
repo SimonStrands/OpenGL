@@ -1,7 +1,7 @@
 #include "AnimatorModel.h"
 
-std::pair<unsigned int, float> getTimeFraction(const std::vector<float>& times, float& dt) {
-	unsigned int segment = 0;
+std::pair<uint32_t, float> getTimeFraction(const std::vector<float>& times, float& dt) {
+	uint32_t segment = 0;
 	while (dt > times[segment]){
 		segment++;
 	}
@@ -62,10 +62,7 @@ void printMatrix(glm::mat4 m, std::string name){
 
 void AnimatedModel::getPose(float time, const std::string& animationName, BoneConstantBuffer& poses)
 {
-    //time = 1;
-    
-    //std::vector<glm::mat4> poses(skeleton.size());
-    std::pair<unsigned int, float> fp;
+    std::pair<uint32_t, float> fp;
     Animation currentAnimation = animations[animationName];
     time = time * currentAnimation.tick;
     glm::vec3 vec31, vec32;

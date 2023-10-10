@@ -9,7 +9,7 @@
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
-#include "BufferCreator.h"
+#include "Buffer.h"
 
 struct BoneConstantBuffer
 {
@@ -31,12 +31,12 @@ public:
 	bool isVsynced()const;
 	void setDefaultViewPort();
 	void enableWireframeMode(bool enable);
-	unsigned int GetNrOfWindows();
+	uint32_t GetNrOfWindows();
 	GLFWwindow* getCurrentActiveWindow();
 	GLFWwindow* getWindowByIndex(int index);
 	glm::vec2 getWindowCurrentWH() const;
 	glm::vec2 getWindowByIndexWH(int index) const;
-	unsigned int getUniformBuffer(std::string bufferName);
+	uint32_t getUniformBuffer(std::string bufferName);
 private:
 	void setUpImGui();
 	void setUpBuffers();
@@ -47,5 +47,5 @@ private:
 	bool vSynced;
 
 private:
-	std::map<std::string, unsigned int> uniformBuffers;
+	std::map<std::string, uint32_t> uniformBuffers;
 };

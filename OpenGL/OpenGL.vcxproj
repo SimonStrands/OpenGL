@@ -210,6 +210,7 @@
     <ClCompile Include="App.cpp" />
     <ClCompile Include="AssimpToOpenGL.cpp" />
     <ClCompile Include="Behavior.cpp" />
+    <ClCompile Include="Buffer.cpp" />
     <ClCompile Include="BufferCreator.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="DeltaTime.cpp" />
@@ -285,6 +286,7 @@
     <ClInclude Include="STBI_Image.h" />
     <ClInclude Include="TestScene.h" />
     <ClInclude Include="Transform.h" />
+    <ClInclude Include="Buffer.h" />
     <ClInclude Include="Vertex.h" />
   </ItemGroup>
   <ItemGroup>

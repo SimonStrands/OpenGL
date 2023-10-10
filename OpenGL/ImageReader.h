@@ -6,4 +6,4 @@
 
 
 //
-bool ReadImage(const std::string& filepath, unsigned int& textureID);
+bool ReadImage(const std::string& filepath, uint32_t& textureID);

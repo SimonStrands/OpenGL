@@ -73,7 +73,7 @@ void addEmptyAnimationForEmptyJoints(buildBone& bone, Animation& animation){
 }
 
 bool loadAnimation(const aiScene* scene, std::map<std::string, Animation>& animations, buildBone& root){
-    for(unsigned int a = 0; a < scene->mNumAnimations; a++){
+    for(uint16_t a = 0; a < scene->mNumAnimations; a++){
         aiAnimation* anim = scene->mAnimations[a];
         Animation animation;
 
@@ -118,7 +118,7 @@ bool readSkeleton(buildBone& joint, aiNode* node, std::unordered_map<std::string
         joint.id = offsetMatrices[joint.name].first;
         glm::mat4 off = offsetMatrices[joint.name].second;
 		joint.inverseBindPoseMatrix = glm::transpose(off);
-		for (unsigned int i = 0; i < node->mNumChildren; i++) {
+		for (uint16_t i = 0; i < node->mNumChildren; i++) {
 			buildBone child;
 			//child.parent = &joint;
 			if(readSkeleton(child, node->mChildren[i], offsetMatrices)){
@@ -128,7 +128,7 @@ bool readSkeleton(buildBone& joint, aiNode* node, std::unordered_map<std::string
 		return true;
 	}
 	else { // find bones in children
-		for (unsigned int i = 0; i < node->mNumChildren; i++) {
+		for (uint32_t i = 0; i < node->mNumChildren; i++) {
 			if (readSkeleton(joint, node->mChildren[i], offsetMatrices)) {
 				return true;
 			}
@@ -145,13 +145,13 @@ void loadBoneDataToVertecies(std::vector<AnimationVertex>& vertecies, const aiMe
     std::vector<uint16_t> boneCounts;
 	boneCounts.resize(vertecies.size());
 
-    for(unsigned int i = 0; i < pMesh->mNumBones; i++){
+    for(uint8_t i = 0; i < pMesh->mNumBones; i++){
         aiBone* bone = pMesh->mBones[i];
         
         offsetMatrices[bone->mName.C_Str()] = {i, AssimpToOpenGL(bone->mOffsetMatrix) };
 
-        for(unsigned int w = 0; w < bone->mNumWeights; w++){
-            unsigned int id = bone->mWeights[w].mVertexId;
+        for(uint32_t w = 0; w < bone->mNumWeights; w++){
+            uint32_t id = bone->mWeights[w].mVertexId;
 			float weight = bone->mWeights[w].mWeight;
 
             boneCounts[id]++;
@@ -199,7 +199,7 @@ void loadMaterial(const aiScene* pScene, std::vector<Material>& material, Resour
     //Just beacuse I found a bug with a object that doesn't have a material but says it has
     bool actually_has_material = false;
 
-    for(unsigned int i = 0; i < pScene->mNumMaterials; i++){
+    for(uint32_t i = 0; i < pScene->mNumMaterials; i++){
         const aiMaterial* pMaterial = pScene->mMaterials[i];
         if(pMaterial->GetTextureCount(aiTextureType_DIFFUSE) > 0){
             aiString path;
@@ -281,13 +281,13 @@ void loadMaterial(const aiScene* pScene, std::vector<Material>& material, Resour
 Mesh loadMesh(const aiMesh* pMesh)
 {
     std::vector<Vertex> vertex;
-    std::vector<unsigned int> indecies;
+    std::vector<uint32_t> indecies;
 
     vertex.reserve(pMesh->mNumVertices);
     indecies.reserve(pMesh->mNumFaces * 3);
 
     aiVector3D TexCoord(0,0,0);
-    for(unsigned int i = 0; i < pMesh->mNumVertices; i++){
+    for(uint32_t i = 0; i < pMesh->mNumVertices; i++){
         glm::vec3 pos, norm, tangent, bitangent;
         pos.x = pMesh->mVertices[i].x;
         pos.y = pMesh->mVertices[i].y;
@@ -320,21 +320,21 @@ Mesh loadMesh(const aiMesh* pMesh)
         );
     }
 
-    for(unsigned int i = 0; i < pMesh->mNumFaces; i++){
+    for(uint32_t i = 0; i < pMesh->mNumFaces; i++){
         indecies.push_back(pMesh->mFaces[i].mIndices[0]);
         indecies.push_back(pMesh->mFaces[i].mIndices[1]);
         indecies.push_back(pMesh->mFaces[i].mIndices[2]);
     }
 
 
-    unsigned int vertexArray = CreateVertexArray();
-    unsigned int vertexBuffer = CreateVertexBuffer(vertex);
-    unsigned int indeciesBuffer = CreateIndeciesBuffer(indecies);
+    uint32_t vertexArray = CreateVertexArray();
+    uint32_t vertexBuffer = CreateVertexBuffer(vertex);
+    uint32_t indeciesBuffer = CreateIndeciesBuffer(indecies);
     Mesh theMesh = Mesh(
         0, 
         pMesh->mNumVertices, 
         vertexBuffer, 
-        (unsigned int)indecies.size(), 
+        (uint32_t)indecies.size(), 
         indeciesBuffer,
         vertexArray,
         TypeOfMesh::Default
@@ -346,14 +346,14 @@ Mesh loadMesh(const aiMesh* pMesh)
 Mesh loadAnimatedMesh(const aiMesh* pMesh, std::unordered_map<std::string, std::pair<int, glm::mat4>>& offsetMatrices)
 {
     std::vector<AnimationVertex> vertex;
-    std::vector<unsigned int> indecies;
+    std::vector<uint32_t> indecies;
 
     vertex.reserve(pMesh->mNumVertices);
     indecies.reserve(pMesh->mNumFaces * 3);
 
     aiVector3D TexCoord(0,0,0);
     glm::vec3 pos, norm, tangent, bitangent;
-    for(unsigned int i = 0; i < pMesh->mNumVertices; i++){
+    for(uint32_t i = 0; i < pMesh->mNumVertices; i++){
         pos.x = pMesh->mVertices[i].x;
         pos.y = pMesh->mVertices[i].y;
         pos.z = pMesh->mVertices[i].z;
@@ -386,7 +386,7 @@ Mesh loadAnimatedMesh(const aiMesh* pMesh, std::unordered_map<std::string, std::
     }
 
 
-    for(unsigned int i = 0; i < pMesh->mNumFaces; i++){
+    for(uint32_t i = 0; i < pMesh->mNumFaces; i++){
         indecies.push_back(pMesh->mFaces[i].mIndices[0]);
         indecies.push_back(pMesh->mFaces[i].mIndices[1]);
         indecies.push_back(pMesh->mFaces[i].mIndices[2]);
@@ -394,15 +394,15 @@ Mesh loadAnimatedMesh(const aiMesh* pMesh, std::unordered_map<std::string, std::
 
     loadBoneDataToVertecies(vertex, pMesh, offsetMatrices);
 
-    unsigned int vertexArray = CreateVertexArray();
-    unsigned int vertexBuffer = CreateAnimationVertexBuffer(vertex);
-    unsigned int indeciesBuffer = CreateIndeciesBuffer(indecies);
+    uint32_t vertexArray = CreateVertexArray();
+    uint32_t vertexBuffer = CreateAnimationVertexBuffer(vertex);
+    uint32_t indeciesBuffer = CreateIndeciesBuffer(indecies);
 
     Mesh theMesh = Mesh(
         0, 
         pMesh->mNumVertices, 
         vertexBuffer, 
-        (unsigned int)indecies.size(), 
+        (uint32_t)indecies.size(), 
         indeciesBuffer,
         vertexArray,
         TypeOfMesh::Animated
@@ -454,9 +454,8 @@ Model* loadModel(const std::string& modelFile, ResourceManager* rm)
     }
 
     std::unordered_map<std::string, std::pair<int, glm::mat4>> boneInfo = {};
-    for(unsigned int i = 0; i < pScene->mNumMeshes; i++){
+    for(uint16_t i = 0; i < pScene->mNumMeshes; i++){
         if(pScene->mMeshes[i]->HasBones()){
-            
             theReturnModel->getMeshes().push_back(loadAnimatedMesh(pScene->mMeshes[i], boneInfo));
         }
         else{

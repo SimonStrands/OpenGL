@@ -6,12 +6,12 @@ Mesh::Mesh()
 
 
 Mesh::Mesh(
-    unsigned int materialIndex, 
-    unsigned int nrOfVertecies,
-    unsigned int vertexBuffer, 
-    unsigned int nrOfIndecies, 
-    unsigned int indeciesBuffer,
-    unsigned int vertexArray,
+    uint32_t materialIndex, 
+    uint32_t nrOfVertecies,
+    uint32_t vertexBuffer, 
+    uint32_t nrOfIndecies, 
+    uint32_t indeciesBuffer,
+    uint32_t vertexArray,
     TypeOfMesh meshType
 ):
     m_materialIndex(materialIndex),

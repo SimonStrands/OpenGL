@@ -3,7 +3,7 @@
 #include <vector>
 #include "ErrorHelper.h"
 #include "Transform.h"
-#include "BufferCreator.h"
+#include "Buffer.h"
 #include "Animation.h"
 
 struct materialConstBuffer{
@@ -35,7 +35,7 @@ public:
 	TypeOfModel GetModelType() const;
 protected:
 	TypeOfModel typeOfModel;
-	unsigned int TransformBuffer;
+	uint32_t TransformBuffer;
 	std::vector<Mesh> meshes;
 };
 

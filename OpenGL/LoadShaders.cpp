@@ -18,7 +18,7 @@ bool readShader(const std::string& name, std::string& shaderData)
 	}
 
 	reader.seekg(0, std::ios::end);
-	shaderData.reserve(static_cast<unsigned int>(reader.tellg()));
+	shaderData.reserve(static_cast<uint32_t>(reader.tellg()));
 	reader.seekg(0, std::ios::beg);
 
 	shaderData.assign((std::istreambuf_iterator<char>(reader)), std::istreambuf_iterator<char>());
@@ -27,7 +27,7 @@ bool readShader(const std::string& name, std::string& shaderData)
 	return true;
 }
 
-void readShaderError(unsigned int shader, unsigned int type)
+void readShaderError(uint32_t shader, uint32_t type)
 {
 	int lenght;
     glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &lenght);
@@ -40,7 +40,7 @@ void readShaderError(unsigned int shader, unsigned int type)
 
 }
 
-bool loadVShader(const std::string& name, unsigned int& vertexShader)
+bool loadVShader(const std::string& name, uint32_t& vertexShader)
 {
 	std::string shaderData;
 	if(!readShader(name, shaderData)){
@@ -60,7 +60,7 @@ bool loadVShader(const std::string& name, unsigned int& vertexShader)
 	return true; 
 }
 
-bool loadHShader(const std::string& name, unsigned int& hullShader)
+bool loadHShader(const std::string& name, uint32_t& hullShader)
 {
 	std::string shaderData;
 	if(!readShader(name, shaderData)){
@@ -80,7 +80,7 @@ bool loadHShader(const std::string& name, unsigned int& hullShader)
 	return true; 
 }
 
-bool loadDShader(const std::string& name, unsigned int& domainShader)
+bool loadDShader(const std::string& name, uint32_t& domainShader)
 {
 	std::string shaderData;
 	if(!readShader(name, shaderData)){
@@ -99,7 +99,7 @@ bool loadDShader(const std::string& name, unsigned int& domainShader)
 	return true;
 }
 
-bool loadGShader(const std::string& name, unsigned int& geometryShader)
+bool loadGShader(const std::string& name, uint32_t& geometryShader)
 {
 	std::string shaderData;
 	if(!readShader(name, shaderData)){
@@ -118,7 +118,7 @@ bool loadGShader(const std::string& name, unsigned int& geometryShader)
 	return true;
 }
 
-bool loadPShader(const std::string& name, unsigned int& pixelShader)
+bool loadPShader(const std::string& name, uint32_t& pixelShader)
 {
 	std::string shaderData;
 	if(!readShader(name, shaderData)){
@@ -138,24 +138,20 @@ bool loadPShader(const std::string& name, unsigned int& pixelShader)
 
 }
 
-unsigned int attachShaders(unsigned int vertexShader, unsigned int pixelShader)
+uint32_t attachShaders(uint32_t vertexShader, uint32_t pixelShader)
 {
-	unsigned int p = glCreateProgram();
+	uint32_t p = glCreateProgram();
 	glAttachShader(p, vertexShader);
     glAttachShader(p, pixelShader);
     glLinkProgram(p);
     glValidateProgram(p);
 
-	//should probably not do this here later
-    //glDeleteShader(vertexShader);
-    //glDeleteShader(pixelShader);
-
 	return p;
 }
 
-unsigned int attachShaders(unsigned int vertex, unsigned int control, unsigned int evaluation, unsigned int pixel)
+uint32_t attachShaders(uint32_t vertex, uint32_t control, uint32_t evaluation, uint32_t pixel)
 {
-	unsigned int p = glCreateProgram();
+	uint32_t p = glCreateProgram();
 	GLTest(glAttachShader(p, vertex));
 	GLTest(glAttachShader(p, pixel));
 	GLTest(glAttachShader(p, control));

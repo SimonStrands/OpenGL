@@ -36,13 +36,9 @@ Engine::~Engine()
 
 void Engine::Run()
 {
-	std::vector<Light*> l;
-	l.push_back(new SpotLight(glm::vec3(0,5,0), glm::vec3(0,0,0), glm::vec2(2000, 2000), glm::vec3(1,1,1), 90));
-	basicToScene.shadowMap->setLights(l);
-
 	float currentTimeToUpdateFPS = 0;
 	float TimeToUpdateFPS = 0.3f;
-	unsigned int counter = 0;
+	uint32_t counter = 0;
 	while(!m_gameOver){
 
 		#ifdef TurnOfWithWindow
@@ -85,11 +81,6 @@ void Engine::Run()
 			basicToScene.shadowMap->renderShadow();
 			gfx.setDefaultViewPort();
 
-			if(basicToScene.keyboard->getKeyDown('O')){
-				l[0]->position = basicToScene.camera->getPosition();
-				((SpotLight*)l[0])->rotation = basicToScene.camera->getRotation();
-			}
-
 
 			//real object
 			glUseProgram(basicToScene.rm->getShaderProgram("defShaderProgram"));
@@ -111,16 +102,16 @@ void Engine::Run()
 
 void Engine::setUpDefaultShaders()
 {
-	unsigned int shadowVertex = basicToScene.rm->getShader("ShadowMapVertexShader.vert");
-	unsigned int shadowPixel = basicToScene.rm->getShader("ShadowMapPixelShader.frag");
+	uint32_t shadowVertex = basicToScene.rm->getShader("ShadowMapVertexShader.vert");
+	uint32_t shadowPixel = basicToScene.rm->getShader("ShadowMapPixelShader.frag");
 	basicToScene.shadowMap->addShaderProgram(basicToScene.rm->createShaderProgram("ShadowMapProgram", shadowVertex, shadowPixel));
 
-	unsigned int tessellationVertex = basicToScene.rm->getShader("Tesselation.vert");
-	unsigned int tessellationControl = basicToScene.rm->getShader("TessellationControlShader.tesc");
-	unsigned int tessellationEvaluation = basicToScene.rm->getShader("TessellationEvaluationShader.tese");
+	uint32_t tessellationVertex = basicToScene.rm->getShader("Tesselation.vert");
+	uint32_t tessellationControl = basicToScene.rm->getShader("TessellationControlShader.tesc");
+	uint32_t tessellationEvaluation = basicToScene.rm->getShader("TessellationEvaluationShader.tese");
 
 	basicToScene.rm->createShaderProgram("DefTessellation", tessellationVertex, tessellationControl, tessellationEvaluation, basicToScene.rm->getShader("BasicPixelShader.frag"));
 
-	unsigned int SkeletalAnimationVertex = basicToScene.rm->getShader("SkeletalAnimationVertexShader.vert");
+	uint32_t SkeletalAnimationVertex = basicToScene.rm->getShader("SkeletalAnimationVertexShader.vert");
 	basicToScene.rm->createShaderProgram("DefSkeletalAnimation", SkeletalAnimationVertex, basicToScene.rm->getShader("BasicPixelShader.frag"));
 }

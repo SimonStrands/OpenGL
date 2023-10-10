@@ -16,7 +16,7 @@ public:
 	bool getKeyReleased(unsigned char key);
 	bool getKeyReleased(int key);
 private:
-	unsigned int currentKeyAction[349] = {false};
-	unsigned int LastKeyAction[349] = {false};
+	bool currentKeyAction[349] = {false};
+	bool LastKeyAction[349] = {false};
 	GLFWwindow* wnd;
 };

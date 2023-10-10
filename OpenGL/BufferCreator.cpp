@@ -1,8 +1,8 @@
 #include "BufferCreator.h"
 
-unsigned int CreateVertexArray()
+uint32_t CreateVertexArray()
 {
-    unsigned int buffer = 0;
+    uint32_t buffer = 0;
 
     GLTest(glGenVertexArrays(1, &buffer));
     GLTest(glBindVertexArray(buffer));
@@ -10,16 +10,16 @@ unsigned int CreateVertexArray()
     return buffer;
 }
 
-unsigned int CreateIndeciesBuffer(std::vector<unsigned int>& vertecies)
+uint32_t CreateIndeciesBuffer(std::vector<uint32_t>& vertecies)
 {
-	unsigned int buffer;
+	uint32_t buffer;
     glGenBuffers(1, &buffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * vertecies.size(), vertecies.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * vertecies.size(), vertecies.data(), GL_STATIC_DRAW);
     return buffer;
 }
 
-void setUniform(std::string uniformName, const unsigned int uniformBuffer, GLuint bindingIndex)
+void setUniform(std::string uniformName, const uint32_t uniformBuffer, GLuint bindingIndex)
 {
     GLTest(glBindBufferBase(GL_UNIFORM_BUFFER, bindingIndex, uniformBuffer));
     GLint v;
@@ -31,7 +31,7 @@ void setUniform(std::string uniformName, const unsigned int uniformBuffer, GLuin
 
 }
 
-void createDepthStencil(unsigned int Width, unsigned int Height, unsigned int &depthBufferFBO, unsigned int &depthBuffer)
+void createDepthStencil(uint32_t Width, uint32_t Height, uint32_t &depthBufferFBO, uint32_t &depthBuffer)
 {
     glGenFramebuffers(1, &depthBufferFBO);
 
