@@ -39,14 +39,6 @@ void ImGuiManager::addLight(Light* light, std::string name)
 	lights.push_back(std::pair<Light*, std::string>(light, name));
 }
 
-void ImGuiManager::setTexture(unsigned int buffer, glm::vec2 size)
-{
-	if(name == ""){
-		name = "Light." + std::to_string(lights.size());
-	}
-	lights.push_back(std::pair<Light*, std::string>(light, name));
-}
-
 void ImGuiManager::setTexture(uint32_t buffer, glm::vec2 size)
 {
 	Image = buffer;
