@@ -51,3 +51,18 @@ private:
 	uint16_t bindingIndex;
 	GLint blockIndex;
 };
+
+class SSBOBuffer : public Buffer{
+public:
+	template <typename T>
+	SSBOBuffer(const T& data, const uint32_t bindingIndex){
+		this->buffer = CreateSSBO(data, bindingIndex);
+	}
+	template <typename T>
+	void UpdateData(const T& data){
+		UpdateSSBO(data, this->buffer);
+	}
+	void setSSBO(const uint32_t currentProgram);
+private:
+	GLint blockIndex;
+};

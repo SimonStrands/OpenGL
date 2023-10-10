@@ -76,7 +76,7 @@
     <Filter Include="Header Files\Engine\Objects\Animation">
       <UniqueIdentifier>{31493e30-3113-4699-b9fb-5f35ee4ffe1a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Engine\OpenGLHelper">
+    <Filter Include="Header Files\Engine\Shader">
       <UniqueIdentifier>{c0a06e55-624c-4f60-a8ac-a24173b70c0d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -187,6 +187,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Buffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -342,7 +345,10 @@
       <Filter>Header Files\Engine\Components</Filter>
     </ClInclude>
     <ClInclude Include="Buffer.h">
-      <Filter>Header Files\Engine\OpenGLHelper</Filter>
+      <Filter>Header Files\Engine\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderHandler.h">
+      <Filter>Header Files\Engine\Shader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
