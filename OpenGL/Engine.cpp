@@ -36,10 +36,6 @@ Engine::~Engine()
 
 void Engine::Run()
 {
-	std::vector<Light*> l;
-	l.push_back(new SpotLight(glm::vec3(0,5,0), glm::vec3(0,0,0), glm::vec2(2000, 2000), glm::vec3(1,1,1), 90));
-	basicToScene.shadowMap->setLights(l);
-
 	float currentTimeToUpdateFPS = 0;
 	float TimeToUpdateFPS = 0.3f;
 	unsigned int counter = 0;
@@ -84,11 +80,6 @@ void Engine::Run()
 			//shadows
 			basicToScene.shadowMap->renderShadow();
 			gfx.setDefaultViewPort();
-
-			if(basicToScene.keyboard->getKeyDown('O')){
-				l[0]->position = basicToScene.camera->getPosition();
-				((SpotLight*)l[0])->rotation = basicToScene.camera->getRotation();
-			}
 
 
 			//real object

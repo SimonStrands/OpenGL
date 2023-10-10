@@ -14,4 +14,5 @@ private:
 	GameObject* box2;
 	GameObject* Sponza;
 	GameObject* player;
+	std::vector<Light*> l;
 };

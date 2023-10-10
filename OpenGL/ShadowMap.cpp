@@ -122,7 +122,7 @@ void ShadowMap::renderShadow()
 				gameObjectsWithShadow[i]->directRenderShadow();
 			}
 		}
-		if(lights[i]->lightType ==  LightType::e_SpotLight){
+		else if(lights[i]->lightType ==  LightType::e_SpotLight){
 			SpotLight* sl = (SpotLight*)lights[i];
 
 			lightBuffer.projection = sl->getProjection();

@@ -66,10 +66,6 @@ void main()
     o_normal = interpolate3D(i_normal[0], i_normal[1], i_normal[2]);
     o_tangent = interpolate3D(i_tangent[0], i_tangent[1], i_tangent[2]);
     o_bitangent = interpolate3D(i_bitangent[0], i_bitangent[1], i_bitangent[2]);
-    
-    o_normal = normalize((vec4(o_normal, 0.0) * transform).xyz);
-    o_tangent = normalize((vec4(o_tangent, 0.0) * transform).xyz);
-    o_bitangent = normalize((vec4(o_bitangent, 0.0) * transform).xyz);
 
     //if we have a height map do this
     if((int(Ke.w) & 4) != 0){
@@ -99,4 +95,7 @@ void main()
     //    o_fragPos = vec4(position, 1) * transform;
     //    gl_Position = vec4(position, 1) * MVP;
     //}
+    o_normal = normalize((vec4(o_normal, 0.0) * transform).xyz);
+    o_tangent = normalize((vec4(o_tangent, 0.0) * transform).xyz);
+    o_bitangent = normalize((vec4(o_bitangent, 0.0) * transform).xyz);
 }

@@ -45,6 +45,11 @@ void Camera::moveInDirection(glm::vec3 direction)
 	this->position.z -= translation.z;
 }
 
+void Camera::setProjection(glm::mat4 proj)
+{
+	cb.p = proj;
+}
+
 void Camera::Update()
 {
 	RotationMatrix();

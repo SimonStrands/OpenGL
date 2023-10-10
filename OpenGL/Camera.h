@@ -14,6 +14,7 @@ public:
 	void move(glm::vec3 direction);
 	void rotate(glm::vec2 rotation);//skipping Z
 	void moveInDirection(glm::vec3 direction = glm::vec3(0,0,1));
+	void setProjection(glm::mat4 proj);
 	void Update();
 	glm::vec3 getRotation() const;
 	glm::vec3 getPosition() const;
