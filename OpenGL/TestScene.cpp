@@ -5,6 +5,7 @@
 TestScene::TestScene()
 {
 	std::cout << "Run Test Scene" << std::endl;
+
 }
 
 TestScene::~TestScene()
