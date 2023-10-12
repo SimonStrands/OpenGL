@@ -1,18 +1,17 @@
 #include "Camera.h"
 
-Camera::Camera(glm::vec3 position, glm::vec3 rotation, float FOV):
+Camera::Camera(ShaderHandler* shaderHandler, glm::vec3 position, glm::vec3 rotation, float FOV):
 	FOV(FOV), position(position), rotation(rotation)
 {
 	cb.p = glm::transpose(glm::perspectiveFovLH(glm::radians(FOV), 16.f, 9.f, 0.1f, 2000.f));
 	//cb.p = glm::transpose(glm::orthoLH(0.f, 1920.f, 0.f, 1080.f, 0.1f, 2000.f));
 	cb.v = glm::lookAt(position, rotation, glm::vec3(0.f,1.f,0.f));
+	this->shaderHandler = shaderHandler;
 }
 
 void Camera::init()
 {
-	pv = CreateUniformBuffer(cb);
-	UpdateUniformBuffer(cb, pv);
-	setUniform("Matrices", pv);
+	pv.init(cb, "Matrices", 0);
 }
 
 void Camera::setPosition(glm::vec3 newPosition)
@@ -55,8 +54,8 @@ void Camera::Update()
 {
 	RotationMatrix();
 	cb.camPos = glm::vec4(position, 1.0f);
-	UpdateUniformBuffer(cb, pv);
-	setUniform("Matrices", pv, 0);
+	pv.UpdateData(cb);
+	pv.setUniform(shaderHandler->getCurrentShader());
 }
 
 glm::vec3 Camera::getRotation() const

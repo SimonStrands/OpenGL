@@ -21,6 +21,7 @@ void Scene::setBasicVariables(DefaultVariableToScene& basic)
 	this->basic.shadowMap = basic.shadowMap;
 	this->basic.imGuiManager = basic.imGuiManager;
 	this->basic.gfx = basic.gfx;
+	this->basic.shaderHandler = basic.shaderHandler;
 
 	this->MainCamera = basic.camera;
 	this->rm = basic.rm;
@@ -28,8 +29,9 @@ void Scene::setBasicVariables(DefaultVariableToScene& basic)
 	this->keyboard = basic.keyboard;
 	this->gfx = basic.gfx;
 	this->imGuiManager = basic.imGuiManager;
+	this->shaderHandler = basic.shaderHandler;
 
-	defToObj.gfx = basic.gfx;
+	defToObj.shaderHandler = basic.shaderHandler;
 	defToObj.rm = basic.rm;
 }
 

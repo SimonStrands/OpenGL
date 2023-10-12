@@ -30,7 +30,7 @@ Graphics::Graphics()
 	vSynced = true;
 
 	setUpImGui();
-	setUpBuffers();
+	//setUpBuffers();
 }
 
 Graphics::~Graphics()
@@ -112,12 +112,12 @@ GLFWwindow* Graphics::getWindowByIndex(int index)
 	return windows[index];
 }
 
-glm::vec2 Graphics::getWindowCurrentWH() const
+glm::ivec2 Graphics::getWindowCurrentWH() const
 {
 	return WindowWH[currentActiveWindow];
 }
 
-glm::vec2 Graphics::getWindowByIndexWH(int index) const
+glm::ivec2 Graphics::getWindowByIndexWH(int index) const
 {
 	return WindowWH[index];
 }
@@ -127,7 +127,7 @@ void Graphics::setUpImGui()
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext(); 
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	io.DisplaySize = ImVec2(getWindowCurrentWH().x, getWindowCurrentWH().y);
+	io.DisplaySize = ImVec2((float)getWindowCurrentWH().x, (float)getWindowCurrentWH().y);
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
 	ImGui::StyleColorsDark();
@@ -139,15 +139,14 @@ void Graphics::setUpImGui()
 	}
 }
 
-void Graphics::setUpBuffers()
-{
-	BoneConstantBuffer zeroData;
-	uniformBuffers.insert(std::pair("SkeletalPose", CreateUniformBuffer(zeroData)));
-	//make one for transform also
-	
-}
+//void Graphics::setUpBuffers()
+//{
+//	BoneConstantBuffer zeroData;
+//	uniformBuffers.insert(std::pair("SkeletalPose", CreateUniformBuffer(zeroData)));
+//	//make one for transform also
+//}
 
-uint32_t Graphics::getUniformBuffer(std::string bufferName)
-{
-	return uniformBuffers[bufferName];
-}
+//uint32_t Graphics::getUniformBuffer(std::string bufferName)
+//{
+//	return uniformBuffers[bufferName];
+//}

@@ -5,6 +5,7 @@
 #include "DeltaTime.h"
 #include "ShadowMap.h"
 #include "ImGuiManager.h"
+#include "ShaderHandler.h"
 
 
 class Engine{
@@ -23,5 +24,6 @@ private:
 	DeltaTime dt;
 	DefaultVariableToScene basicToScene;
 	ImGuiManager imGuiManager;
+	ShaderHandler shaderHandler;
 	//renderer
 };

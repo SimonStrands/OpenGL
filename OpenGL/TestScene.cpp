@@ -10,10 +10,12 @@ TestScene::TestScene()
 
 TestScene::~TestScene()
 {
-	delete test;
+	delete Plane1;
+	delete Plane2;
 	delete player;
 	delete Sponza;
-	delete box2;
+	delete Dancer;
+	delete Sun;
 }
 
 void TestScene::init()
@@ -21,27 +23,39 @@ void TestScene::init()
 	gfx->vSync(false);
 	basic.camera->setPosition(glm::vec3(0,5,0));
 	basic.camera->setRotation(glm::vec3(0,0,0));
-	test = new GameObject(defToObj);
+	Plane1 = new GameObject(defToObj);
+	Plane2 = new GameObject(defToObj);
+	Dancer = new GameObject(defToObj);
 	Sponza = new GameObject(defToObj);
-	box2 = new GameObject(defToObj);
+	Sun = new GameObject(defToObj);
+	Sun->addModel(basic.rm->getModel("Objects/Sun.fbx"));
+	Sun->getMaterial().Ka = glm::vec3(1,1,1);
 
-	test->addModel(basic.rm->getModel("Objects/Plane.fbx"));
-	box2->addModel(basic.rm->getModel("Objects/sillydance2.fbx"));
-	box2->SetShaderProgram(basic.rm->getShaderProgram("DefSkeletalAnimation"));
-	Sponza->addModel(basic.rm->getModel("Objects/sponza.obj"));
+	Plane1->addModel(basic.rm->getModel("Objects/Plane.fbx"));
+	Plane2->addModel(basic.rm->getModel("Objects/Plane.fbx"));
+
+	Dancer->addModel(basic.rm->getModel("Objects/sillydance2.fbx"));
+	Dancer->SetShaderProgram(basic.rm->getShaderProgram("DefSkeletalAnimation"));
+
+	//Sponza->addModel(basic.rm->getModel("Objects/sponza.obj"));
 	
 	//basic.gfx->enableWireframeMode(true);
 	
 	//add the heightmap to material
-	test->getMaterial().HeightMap = basic.rm->getTexture("C:/Users/Simon/Desktop/UnityPrefab/Materials/ChiseledCobble/chiseled-cobble_height2.png");
-	test->getMaterial(0).materialFlags = MaterialFlags(test->getMaterial(0).materialFlags | MaterialFlags::HeightMap);
-	test->SetShaderProgram(basic.rm->getShaderProgram("DefTessellation"));
+	Plane1->getMaterial().HeightMap = basic.rm->getTexture("C:/Users/Simon/Desktop/UnityPrefab/Materials/ChiseledCobble/chiseled-cobble_height2.png");
+	Plane1->getMaterial(0).materialFlags = MaterialFlags(Plane1->getMaterial(0).materialFlags | MaterialFlags::HeightMap);
+	Plane1->SetShaderProgram(basic.rm->getShaderProgram("DefTessellation"));
+
+	Plane2->getMaterial().HeightMap = basic.rm->getTexture("C:/Users/Simon/Desktop/UnityPrefab/Materials/ChiseledCobble/chiseled-cobble_height2.png");
+	Plane2->getMaterial(0).materialFlags = MaterialFlags(Plane1->getMaterial(0).materialFlags | MaterialFlags::HeightMap);
+	Plane2->SetShaderProgram(basic.rm->getShaderProgram("DefTessellation"));
 	
-	test->getComponent<Transform>("Transform")->scale = glm::vec3(20,20,1);
-	basic.shadowMap->addGameObject(test);
-	basic.shadowMap->addGameObject(box2);
-	basic.shadowMap->addGameObject(Sponza);
-	Sponza->getMaterial().d = 1;
+	Plane1->getComponent<Transform>("Transform")->scale = glm::vec3(20,20,1);
+	basic.shadowMap->addGameObject(Plane1);
+	basic.shadowMap->addGameObject(Plane2);
+	//basic.shadowMap->addGameObject(Dancer);
+	//basic.shadowMap->addGameObject(Sponza);
+	//Sponza->getMaterial().d = 1;
 	
 	
 	player = new GameObject(defToObj);
@@ -53,15 +67,16 @@ void TestScene::init()
 	player->addBehavior("playerUpdate", new Player(), &playerComponents);
 	
 	
-	basic.imGuiManager->addGameObject(test, "Cube");
-	basic.imGuiManager->addGameObject(box2, "Cube2");
-	basic.imGuiManager->addGameObject(Sponza, "Plane");
-	basic.imGuiManager->addGameObject(player, "player");
+	basic.imGuiManager->addGameObject(Plane1, "Plane1");
+	basic.imGuiManager->addGameObject(Plane2, "Plane2");
+	basic.imGuiManager->addGameObject(Dancer, "StormTrooper");
+	//basic.imGuiManager->addGameObject(Sponza, "Sponza");
 
 	//l.push_back(new SpotLight(glm::vec3(0,5,0), glm::vec3(0,0,0), glm::vec2(2000, 2000), glm::vec3(1,1,1), 90));
 	l.push_back(new DirectionalLight(glm::vec3(0,5,0), glm::vec3(0,0,0), glm::vec2(2000, 2000), glm::vec3(1,1,1)));
+	//l.push_back(new PointLight(glm::vec3(0,5,0)));
 	this->basic.shadowMap->setLights(l);
-	basic.imGuiManager->addLight(l[0], "Spotlight");
+	basic.imGuiManager->addLight(l[0], "DirectionalLight");
 	//basic.imGuiManager->addLight(l[1], "DirectionalLight");
 	
 }
@@ -70,6 +85,8 @@ SceneHandlerCalls TestScene::update(float dt)
 {
 	SceneHandlerCalls theReturn = SceneHandlerCalls::NOTHING;
 	//std::cout << "update()" << std::endl;
+
+	Sun->getComponent<Transform>("Transform")->position = l[0]->position;
 
 	basic.camera->Update();
 	player->update(dt);
@@ -84,7 +101,7 @@ SceneHandlerCalls TestScene::update(float dt)
 		this->MainCamera->setProjection(glm::transpose(glm::perspectiveFovLH(glm::radians(45.f), 16.f, 9.f, 0.1f, 2000.f)));
 	}
 
-	box2->update(dt);
+	Dancer->update(dt);
 	//test->getComponent<Transform>("Transform")->rotation.x += 1 * dt;
 	
 
@@ -93,7 +110,9 @@ SceneHandlerCalls TestScene::update(float dt)
 
 void TestScene::render()
 {
-	test->directRender();
-	box2->directRender();
-	Sponza->directRender();
+	Plane1->directRender();
+	Plane2->directRender();
+	//Dancer->directRender();
+	//Sponza->directRender();
+	Sun->directRender();
 }

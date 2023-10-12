@@ -6,17 +6,23 @@ Engine::Engine():
 	m_gameOver(false)
 {
 	dt.restartClock();
+	
 	basicToScene.rm = new ResourceManager();
+
 	basicToScene.mouse = new Mouse(gfx.getCurrentActiveWindow());
 	basicToScene.keyboard = new Keyboard(gfx.getCurrentActiveWindow());
-	basicToScene.camera = new Camera();
-	basicToScene.shadowMap = new ShadowMap();
+
+	basicToScene.camera = new Camera(&this->shaderHandler);
+	this->shaderHandler.setResourceManager(basicToScene.rm);
+	basicToScene.shadowMap = new ShadowMap(&shaderHandler);
+	setUpDefaultShaders();
 	basicToScene.gfx = &this->gfx;
+	
+	this->shaderHandler.setCurrentshader("defShaderProgram");
+	basicToScene.shaderHandler = &this->shaderHandler;
 
 	basicToScene.imGuiManager = &this->imGuiManager;
 	imGuiManager.init();
-	
-	setUpDefaultShaders();
 	
 	m_sceneHandler.setBasicDefaultVariables(basicToScene);
 	basicToScene.camera->init();
@@ -36,22 +42,28 @@ Engine::~Engine()
 
 void Engine::Run()
 {
+	//for FPS counter
 	float currentTimeToUpdateFPS = 0;
 	float TimeToUpdateFPS = 0.3f;
 	uint32_t counter = 0;
+
+	//GAME LOOP
 	while(!m_gameOver){
 
+		//If no windows exist delete app
 		#ifdef TurnOfWithWindow
-		if(gfx.GetNrOfWindows() <= 0){
-			m_gameOver = true;
-			return;
-		}
+		    if(gfx.GetNrOfWindows() <= 0)
+			{
+			    m_gameOver = true;
+			    return;
+	        }
         #else
 		    
         #endif // TurnOfWithWindow
 
 		dt.restartClock();
 
+		//FPS COUNTER////////////////////////
 		currentTimeToUpdateFPS += (float)dt.dt();
 		counter++;
 		if(currentTimeToUpdateFPS >= TimeToUpdateFPS){
@@ -62,41 +74,42 @@ void Engine::Run()
 			currentTimeToUpdateFPS -= TimeToUpdateFPS;
 			counter = 0;
 		}
+		////////////////////////////
+			
+		if(basicToScene.keyboard->getKeyDown(GLFW_KEY_ESCAPE)){
+			m_gameOver = true;
+		}
+
+		glClearColor(0.1f,0.1f,0.1f,1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_DEPTH_BUFFER_BIT);
+
+		//update
+		basicToScene.mouse->Update();
+		basicToScene.keyboard->update();
+		m_sceneHandler.Update((float)dt.dt());
+
+		//render shadows
+		basicToScene.shadowMap->renderShadow();
+		gfx.setDefaultViewPort();
 
 
-		
-			if(basicToScene.keyboard->getKeyDown(GLFW_KEY_ESCAPE)){
-				m_gameOver = true;
-			}
-			glClearColor(0.1f,0.1f,0.1f,1.0f);
-			glClear(GL_COLOR_BUFFER_BIT);
-			glClear(GL_DEPTH_BUFFER_BIT);
+		//render real object
+		shaderHandler.setCurrentshader("defShaderProgram");
+		basicToScene.shadowMap->updateLightMatrices();
+		m_sceneHandler.Render();
 
-			//update
-			basicToScene.mouse->Update();
-			m_sceneHandler.Update((float)dt.dt());
+		//render IMGUI
+		imGuiManager.render();
 
-			//render
-			//shadows
-			basicToScene.shadowMap->renderShadow();
-			gfx.setDefaultViewPort();
+		//Mouse Shit should be in scenes
+		if(basicToScene.keyboard->getKeyReleased(GLFW_KEY_TAB)){
+			basicToScene.mouse->stickMouse();
+		}
 
-
-			//real object
-			glUseProgram(basicToScene.rm->getShaderProgram("defShaderProgram"));
-			basicToScene.shadowMap->updateLightMatrices();
-			m_sceneHandler.Render();
-
-			imGuiManager.render();
-
-			if(basicToScene.keyboard->getKeyReleased(GLFW_KEY_TAB)){
-				basicToScene.mouse->stickMouse();
-			}
-
-			glfwSwapBuffers(gfx.getCurrentActiveWindow());
-			basicToScene.keyboard->update();
-			glfwPollEvents();
-			gfx.UpdateWindows();
+		glfwSwapBuffers(gfx.getCurrentActiveWindow());
+		glfwPollEvents();
+		gfx.UpdateWindows();
 	}
 }
 
@@ -106,12 +119,16 @@ void Engine::setUpDefaultShaders()
 	uint32_t shadowPixel = basicToScene.rm->getShader("ShadowMapPixelShader.frag");
 	basicToScene.shadowMap->addShaderProgram(basicToScene.rm->createShaderProgram("ShadowMapProgram", shadowVertex, shadowPixel));
 
+	uint32_t SkeletalAnimationVertex = basicToScene.rm->getShader("SkeletalAnimationVertexShader.vert");
+	basicToScene.rm->createShaderProgram("DefSkeletalAnimation", SkeletalAnimationVertex, basicToScene.rm->getShader("BasicPixelShader.frag"));
+	basicToScene.rm->createShaderProgram("DefShadowSkeletalAnimation", basicToScene.rm->getShader("ShadowMapSkeletalAnimation.vert"), shadowPixel);
+	//basicToScene.rm->createShaderProgram("DefShadowSkeletalAnimation", shadowVertex, shadowPixel);
+
 	uint32_t tessellationVertex = basicToScene.rm->getShader("Tesselation.vert");
 	uint32_t tessellationControl = basicToScene.rm->getShader("TessellationControlShader.tesc");
 	uint32_t tessellationEvaluation = basicToScene.rm->getShader("TessellationEvaluationShader.tese");
 
 	basicToScene.rm->createShaderProgram("DefTessellation", tessellationVertex, tessellationControl, tessellationEvaluation, basicToScene.rm->getShader("BasicPixelShader.frag"));
 
-	uint32_t SkeletalAnimationVertex = basicToScene.rm->getShader("SkeletalAnimationVertexShader.vert");
-	basicToScene.rm->createShaderProgram("DefSkeletalAnimation", SkeletalAnimationVertex, basicToScene.rm->getShader("BasicPixelShader.frag"));
+	
 }

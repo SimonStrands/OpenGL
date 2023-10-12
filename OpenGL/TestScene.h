@@ -10,9 +10,13 @@ public:
 	SceneHandlerCalls update(float dt);
 	void render();
 private:
-	GameObject* test;
-	GameObject* box2;
+	GameObject* Plane1;
+	GameObject* Plane2;
+	GameObject* Dancer;
 	GameObject* Sponza;
+
+	GameObject* Sun;
+
 	GameObject* player;
 	std::vector<Light*> l;
 };

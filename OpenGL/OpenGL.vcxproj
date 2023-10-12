@@ -295,6 +295,7 @@
     <None Include="Shaders\BasicPixelShader.frag" />
     <None Include="Shaders\BasicVertexShader.vert" />
     <None Include="Shaders\ShadowMapPixelShader.frag" />
+    <None Include="Shaders\ShadowMapSkeletalAnimation.vert" />
     <None Include="Shaders\ShadowMapVertexShader.vert" />
     <None Include="Shaders\SkeletalAnimationVertexShader.vert" />
     <None Include="Shaders\Tesselation.vert" />

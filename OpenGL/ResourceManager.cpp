@@ -135,7 +135,6 @@ void ResourceManager::loadDef()
     def_pShader = getShader("BasicPixelShader.frag");
 
     uint32_t def_shaderProgram = createShaderProgram("defShaderProgram", def_vShader, def_pShader);
-    glUseProgram(def_shaderProgram);
 
     uint32_t defTexture;
     if(ReadImage("../Textures/Def/defTexture.png", defTexture)){

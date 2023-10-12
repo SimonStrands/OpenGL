@@ -3,11 +3,11 @@
 #include <glm.hpp>
 #include "../glm/gtc/matrix_transform.hpp"
 #include "../glm/gtc/quaternion.hpp"
-#include "Buffer.h"
+#include "ShaderHandler.h"
 
 class Camera{
 public:
-	Camera(glm::vec3 position = glm::vec3(), glm::vec3 rotation = glm::vec3(), float FOV = 45);
+	Camera(ShaderHandler* shaderHandler, glm::vec3 position = glm::vec3(), glm::vec3 rotation = glm::vec3(), float FOV = 45);
 	void init();
 	void setPosition(glm::vec3 newPosition);
 	void setRotation(glm::vec3 rotation);
@@ -24,14 +24,10 @@ public:
 private:
 	void RotationMatrix();
 	glm::vec3 translation;
-	struct cameraBuffer{
-		glm::mat4 p;
-		glm::mat4 v;
-		glm::vec4 camPos;
-	};
 	cameraBuffer cb;
-	uint32_t pv;
+	UniformBuffer pv;
 	glm::vec3 position;
 	glm::vec3 rotation;
 	float FOV;
+	ShaderHandler* shaderHandler;
 };

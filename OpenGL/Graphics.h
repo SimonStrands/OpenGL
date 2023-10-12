@@ -11,14 +11,6 @@
 #include <imgui_impl_opengl3.h>
 #include "Buffer.h"
 
-struct BoneConstantBuffer
-{
-	glm::mat4 poses[60];
-	BoneConstantBuffer(){
-	
-	};
-};
-
 
 class Graphics{
 public:
@@ -34,18 +26,15 @@ public:
 	uint32_t GetNrOfWindows();
 	GLFWwindow* getCurrentActiveWindow();
 	GLFWwindow* getWindowByIndex(int index);
-	glm::vec2 getWindowCurrentWH() const;
-	glm::vec2 getWindowByIndexWH(int index) const;
-	uint32_t getUniformBuffer(std::string bufferName);
+	glm::ivec2 getWindowCurrentWH() const;
+	glm::ivec2 getWindowByIndexWH(int index) const;
+	//uint32_t getUniformBuffer(std::string bufferName);
 private:
 	void setUpImGui();
-	void setUpBuffers();
+	//void setUpBuffers();
 private:
 	uint8_t currentActiveWindow;
 	std::vector<GLFWwindow*> windows;
-	std::vector<glm::vec2> WindowWH;
+	std::vector<glm::ivec2> WindowWH;
 	bool vSynced;
-
-private:
-	std::map<std::string, uint32_t> uniformBuffers;
 };

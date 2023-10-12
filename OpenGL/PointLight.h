@@ -14,5 +14,9 @@ public:
 		this->projectonMatrix = glm::mat4(1);
 		this->lightType = LightType::e_PointLight;
 		this->color = color;
+		this->position = position;
+	}
+	glm::mat4 getLightViewProj(){
+		return glm::mat4(1);
 	}
 };

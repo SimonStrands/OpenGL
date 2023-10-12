@@ -34,6 +34,7 @@ protected:
 	Keyboard* keyboard;
 	Graphics* gfx;
 	ImGuiManager* imGuiManager;
+	ShaderHandler* shaderHandler;
 private:
 	int newSceneID;
 };

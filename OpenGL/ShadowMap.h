@@ -6,15 +6,15 @@
 
 #include "LightBuffer.h"
 #include "GameObject.h"
-#include "Buffer.h"
+#include "ShaderHandler.h"
 #include "ResourceManager.h"
 #include <vector>
 
 class ShadowMap{
 public:
 	//Holds mutliple ShadowMaps one for each light
-	ShadowMap(std::vector<Light*> lights);
-	ShadowMap();
+	ShadowMap(std::vector<Light*> lights, ShaderHandler* shaderHandler);
+	ShadowMap(ShaderHandler* shaderHandler);
 	virtual ~ShadowMap();
 	void addShaderProgram(uint32_t ShadowShaderProgram);
 
@@ -29,22 +29,19 @@ public:
 	void updateLightMatrices();
 	uint32_t getDepthBuffer(int index);
 private:
-	
-	void setUpLight(Light* light, uint32_t index);
-//private:
-public:
 	std::vector<GameObject*> gameObjectsWithShadow;
 	std::vector<Light*> lights;
 
 	std::vector<uint32_t> DepthBufferFBO;
 	uint32_t DepthBufferArray;
 
+	ShaderHandler* shaderHandler;
 	
 	LightBuffer lightBuffer;
-	uint32_t lightCB;
+	//UniformBuffer lightCB;
 
 	ShadowMapBuffer shadowMapConstantBuffer;
-	uint32_t shadowMapCB;
+	//UniformBuffer shadowMapCB;
 
-	uint32_t ShadowShaderProgram;
+	std::vector<uint32_t> ShadowShaderProgram;
 };

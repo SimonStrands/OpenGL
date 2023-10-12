@@ -17,10 +17,6 @@ std::vector<Mesh>& Model::getMeshes()
 
 void Model::DirectRender(GLuint Topology)
 {
-    //if model is animated update the bones to the vertex shader
-    if(this->typeOfModel == TypeOfModel::Animated){
-        //
-    }
 
     for(int i = 0; i < meshes.size(); i++){
 

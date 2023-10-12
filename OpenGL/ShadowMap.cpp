@@ -1,16 +1,19 @@
 #include "ShadowMap.h"
 
-ShadowMap::ShadowMap(std::vector<Light*> lights)
+ShadowMap::ShadowMap(std::vector<Light*> lights, ShaderHandler* shaderHandler)
 {
 	setLights(lights);
-	shadowMapCB = CreateUniformBuffer(shadowMapConstantBuffer);
-	lightCB = CreateUniformBuffer(lightBuffer);
+	this->shaderHandler = shaderHandler;
 }
 
-ShadowMap::ShadowMap()
+ShadowMap::ShadowMap(ShaderHandler* shaderHandler)
 {
-	shadowMapCB = CreateUniformBuffer(shadowMapConstantBuffer);
-	lightCB = CreateUniformBuffer(lightBuffer);
+	this->shaderHandler = shaderHandler;
+}
+
+ShadowMap::~ShadowMap()
+{
+	clean();
 }
 
 void ShadowMap::clean()
@@ -101,8 +104,8 @@ void ShadowMap::addGameObject(GameObject* gameObject)
 
 void ShadowMap::renderShadow()
 {
-	glUseProgram(ShadowShaderProgram);
-
+	shaderHandler->setCurrentshader(ShadowShaderProgram[0]);//do I need this?
+	
 	for(int i = 0; i < lights.size(); i++){
 		
 		if(lights[i]->lightType ==  LightType::e_DirectionlLight){
@@ -111,8 +114,11 @@ void ShadowMap::renderShadow()
 
 			lightBuffer.projection = dl->getProjection();
 			lightBuffer.view = dl->getLightView();
-			UpdateUniformBuffer(lightBuffer, lightCB);
-			setUniform("LightData", lightCB, 5);
+
+			//UpdateUniformBuffer(lightBuffer, lightCB);
+			//setUniform("LightData", lightCB, 5);
+
+			shaderHandler->updateUniformBuffer("LightData", lightBuffer);
 
 			glViewport(0, 0, (GLsizei)dl->WidthHeight.x, (GLsizei)dl->WidthHeight.y);
 			glBindFramebuffer(GL_FRAMEBUFFER, DepthBufferFBO[i]);
@@ -127,8 +133,10 @@ void ShadowMap::renderShadow()
 
 			lightBuffer.projection = sl->getProjection();
 			lightBuffer.view = sl->getLightView();
-			UpdateUniformBuffer(lightBuffer, lightCB);
-			setUniform("LightData", lightCB, 5);
+			//UpdateUniformBuffer(lightBuffer, lightCB);
+			//setUniform("LightData", lightCB, 5);
+
+			shaderHandler->updateUniformBuffer("LightData", lightBuffer);
 
 			glViewport(0, 0, (GLsizei)sl->WidthHeight.x, (GLsizei)sl->WidthHeight.y);
 			glBindFramebuffer(GL_FRAMEBUFFER, DepthBufferFBO[i]);
@@ -141,15 +149,9 @@ void ShadowMap::renderShadow()
 	}
 }
 
-ShadowMap::~ShadowMap()
-{
-	clean();
-	//delete shadowMapCB
-}
-
 void ShadowMap::addShaderProgram(uint32_t ShadowShaderProgram)
 {
-	this->ShadowShaderProgram = ShadowShaderProgram;
+	this->ShadowShaderProgram.push_back(ShadowShaderProgram);
 }
 
 void ShadowMap::updateLightMatrices()
@@ -161,8 +163,10 @@ void ShadowMap::updateLightMatrices()
 		shadowMapConstantBuffer.lightColors[i] = glm::vec4(lights[i]->color, 0);
 		shadowMapConstantBuffer.lightViewProjection[i] = lights[i]->getLightViewProj();
 	}
-	UpdateUniformBuffer(shadowMapConstantBuffer, shadowMapCB);
-	setUniform("ShadowData", shadowMapCB, 3);
+	//UpdateUniformBuffer(shadowMapConstantBuffer, shadowMapCB);
+	//setUniform("ShadowData", shadowMapCB, 3);
+
+	shaderHandler->updateUniformBuffer("ShadowMap", shadowMapConstantBuffer);
 }
 
 uint32_t ShadowMap::getDepthBuffer(int index)

@@ -376,6 +376,9 @@
     <None Include="Shaders\SkeletalAnimationVertexShader.vert">
       <Filter>Resource Files\Shaders\SkeletalAnimation</Filter>
     </None>
+    <None Include="Shaders\ShadowMapSkeletalAnimation.vert">
+      <Filter>Resource Files\Shaders\ShadowShader</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ConstantBufferBindings.txt">

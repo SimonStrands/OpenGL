@@ -86,7 +86,7 @@ uint32_t CreateSSBO(T data, const GLuint index)
     uint32_t ssbo;
     glGenBuffers(1, &ssbo);
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
-    glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(data), data​, GL_DYNAMIC_COPY); //sizeof(data) only works for statically sized C/C++ arrays.
+    glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(data), NULL, GL_DYNAMIC_COPY);
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, index, ssbo);
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0); // unbind
     return ssbo;
@@ -96,9 +96,7 @@ template <typename T>
 void UpdateSSBO(const T &data, const uint32_t buff)
 {
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, buff);
-    GLvoid* p = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY);
-    memcpy(p, &data, sizeof(data))
-    glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+    glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeof(T), data);
 }
 
 void setUniform(std::string uniformName, const uint32_t uniformBuffer, GLuint bindingIndex = 0);

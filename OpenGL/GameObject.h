@@ -2,11 +2,10 @@
 #include <glm.hpp>
 #include "ComponentList.h"
 #include "AnimatorModel.h"
-#include "ResourceManager.h"
-#include "Graphics.h"
+#include "ShaderHandler.h"
 
 struct DefToGameObject{
-	Graphics* gfx;
+	ShaderHandler* shaderHandler;
 	ResourceManager* rm;
 };
 
@@ -24,6 +23,7 @@ public:
 	void addComponent(const std::string& componentName, Components* component);
 	void addBehavior(const std::string& behaviorName, Behavior* behavior, std::vector<std::pair<std::string, void*>>* variables = nullptr);
 	void update(float dt);
+	bool hasAnimation();
 
 	template <typename T>
 	T* getComponent(const std::string& componentName){
@@ -34,8 +34,7 @@ private:
 	Model* model;
 	uint32_t shaderProgram;
 
-	ResourceManager* rm;
-	Graphics* gfx;
+	ShaderHandler* shaderHandler;
 
 	std::map<std::string, Components*> components;
 };

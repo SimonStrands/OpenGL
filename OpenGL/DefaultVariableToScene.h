@@ -3,7 +3,7 @@
 #include "ShadowMap.h"
 #include "Keyboard.h"
 #include "Mouse.h"
-#include "ResourceManager.h"
+#include "ShaderHandler.h"
 #include "ImGuiManager.h"
 
 struct DefaultVariableToScene{
@@ -14,4 +14,5 @@ struct DefaultVariableToScene{
 	ShadowMap* shadowMap;
 	Graphics* gfx;
 	ImGuiManager* imGuiManager;
+	ShaderHandler* shaderHandler;
 };

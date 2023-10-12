@@ -3,10 +3,9 @@
 GameObject::GameObject(DefToGameObject& def, glm::vec3 Position, glm::vec3 Rotation, glm::vec3 Scale):
 	model(nullptr)
 {
-	rm = def.rm;
-	gfx = def.gfx;
+	shaderHandler = def.shaderHandler;
 
-	shaderProgram = rm->getShaderProgram("defShaderProgram");
+	shaderProgram = def.rm->getShaderProgram("defShaderProgram");
 	components.insert(std::pair<std::string, Components*>("Transform", new Transform()));
 }
 
@@ -26,8 +25,9 @@ void GameObject::SetShaderProgram(uint32_t shaderProgram)
 
 void GameObject::directRender()
 {
-	GLTest(glUseProgram(shaderProgram));
-	model->setTransform(*(Transform*)components["Transform"]);
+	shaderHandler->setCurrentshader(shaderProgram);
+
+	shaderHandler->updateUniformBuffer("Transform", getComponent<Transform>("Transform")->toMat4());
 	if(model != nullptr){
 		if(model->GetModelType() == TypeOfModel::Animated){
 			AnimationComponent* animComp = getComponent<AnimationComponent>("AnimationComponent");
@@ -37,11 +37,7 @@ void GameObject::directRender()
 					animComp->animationName,
 				poses
 				);
-			UpdateUniformBuffer(
-				poses,
-				gfx->getUniformBuffer("SkeletalPose")
-			);
-			setUniform("Skeleton", gfx->getUniformBuffer("SkeletalPose"), 4);
+			shaderHandler->updateUniformBuffer("Skeleton", poses);
 		}
 		model->DirectRender();
 	}
@@ -50,8 +46,23 @@ void GameObject::directRender()
 
 void GameObject::directRenderShadow()
 {
-	model->setTransform(*(Transform*)components["Transform"]);
+	shaderHandler->updateUniformBuffer("Transform", getComponent<Transform>("Transform")->toMat4());
 	if(model != nullptr){
+		if(hasAnimation()){
+			shaderHandler->setCurrentshader("DefShadowSkeletalAnimation");
+
+			AnimationComponent* animComp = getComponent<AnimationComponent>("AnimationComponent");
+			BoneConstantBuffer poses;
+			((AnimatedModel*)model)->getPose(
+					animComp->time,
+					animComp->animationName,
+				poses
+				);
+			shaderHandler->updateUniformBuffer("Skeleton", poses);
+		}
+		else{
+			shaderHandler->setCurrentshader("ShadowMapProgram");
+		}
 		model->DirectRenderShadow();
 	}
 }
@@ -112,4 +123,9 @@ void GameObject::update(float dt)
 
 	}
 	
+}
+
+bool GameObject::hasAnimation()
+{
+	return model != nullptr && model->GetModelType() == TypeOfModel::Animated;
 }
