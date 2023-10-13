@@ -43,6 +43,25 @@ layout (std140, binding = 3) uniform ShadowData
 	int nrOfLight;
 };
 
+float shadowLevel(float bias, int lightIndex, vec3 shadowMapChoords){
+    const int shadowSoftness = 5;
+    const vec2 pixelSize = vec2(1,1) / textureSize(ShadowMaps, lightIndex).xy;
+    float shadowReturn = 0;
+    
+    for(int y = -shadowSoftness; y < shadowSoftness; y++){
+        for(int x = -shadowSoftness; x < shadowSoftness; x++){
+            float sm = texture(ShadowMaps, vec3(shadowMapChoords.xy + vec2(x,y) * pixelSize, lightIndex)).r;
+
+            if(sm + bias < shadowMapChoords.z){
+                shadowReturn += 1.0;
+            }
+        }
+    }
+
+    //return shadowReturn / pow((shadowSoftness * 2 + 1), 2);
+    return shadowReturn / shadowSoftness;
+}
+
 void main(){ 
     
     vec3 newNormal = o_normal;
@@ -80,17 +99,21 @@ void main(){
         double SM = texture(ShadowMaps, vec3(shadowMapCoords.xy, i)).r;
          
         //float bias = 0.00001;
-        float bias = max(0.05 * (1.0 - dot(newNormal, lightDir)), 0.005);;
-
+        float bias = max(0.05 * (1.0 - dot(newNormal, lightDir)), 0.005);
+        
+        float shadow = 0.0;
+        
           
         if (lightPos[i].w == 1 ||
-                (SM + bias > shadowMapCoords.z &&
                 shadowMapCoords.z <= 1.0f &&//E
 				shadowMapCoords.x < 1 && shadowMapCoords.x > 0 &&
 				shadowMapCoords.y < 1 && shadowMapCoords.y > 0 &&
-                dot(o_normal.xyz, lightDir.xyz) > -0.1)
-                )   
+                dot(o_normal.xyz, lightDir.xyz) > -0.1)  
         {
+            if(lightPos[i].w != 1){
+                shadow = shadowLevel(bias, i, shadowMapCoords.xyz);
+            }
+
             vec3 defuse_light;
             float ammount_diffuse = max(dot(newNormal, lightDir), 0.0f);
             defuse_light = ammount_diffuse * Kd.xyz * lightColors[i].xyz;
@@ -99,7 +122,7 @@ void main(){
             float spec = pow(max(dot(viewDir, reflectDir), 0.0), Ks.w + 0.000001);
             vec3 specular = Ks.xyz * spec;
             
-            PixelLight += clamp(ambientLight + defuse_light, 0.0, 1.0) + specular;
+            PixelLight += clamp(ambientLight + defuse_light * (1.0 - shadow), 0.0, 1.0) + specular * (1.0 - shadow);
         }
         else{
             PixelLight += ambientLight;

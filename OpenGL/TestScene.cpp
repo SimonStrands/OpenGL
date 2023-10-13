@@ -37,7 +37,7 @@ void TestScene::init()
 	Dancer->addModel(basic.rm->getModel("Objects/sillydance2.fbx"));
 	Dancer->SetShaderProgram(basic.rm->getShaderProgram("DefSkeletalAnimation"));
 
-	//Sponza->addModel(basic.rm->getModel("Objects/sponza.obj"));
+	Sponza->addModel(basic.rm->getModel("Objects/sponza.obj"));
 	
 	//basic.gfx->enableWireframeMode(true);
 	
@@ -53,9 +53,9 @@ void TestScene::init()
 	Plane1->getComponent<Transform>("Transform")->scale = glm::vec3(20,20,1);
 	basic.shadowMap->addGameObject(Plane1);
 	basic.shadowMap->addGameObject(Plane2);
-	//basic.shadowMap->addGameObject(Dancer);
-	//basic.shadowMap->addGameObject(Sponza);
-	//Sponza->getMaterial().d = 1;
+	basic.shadowMap->addGameObject(Dancer);
+	basic.shadowMap->addGameObject(Sponza);
+	Sponza->getMaterial().d = 1;
 	
 	
 	player = new GameObject(defToObj);
@@ -70,7 +70,7 @@ void TestScene::init()
 	basic.imGuiManager->addGameObject(Plane1, "Plane1");
 	basic.imGuiManager->addGameObject(Plane2, "Plane2");
 	basic.imGuiManager->addGameObject(Dancer, "StormTrooper");
-	//basic.imGuiManager->addGameObject(Sponza, "Sponza");
+	basic.imGuiManager->addGameObject(Sponza, "Sponza");
 
 	//l.push_back(new SpotLight(glm::vec3(0,5,0), glm::vec3(0,0,0), glm::vec2(2000, 2000), glm::vec3(1,1,1), 90));
 	l.push_back(new DirectionalLight(glm::vec3(0,5,0), glm::vec3(0,0,0), glm::vec2(2000, 2000), glm::vec3(1,1,1)));
@@ -112,7 +112,7 @@ void TestScene::render()
 {
 	Plane1->directRender();
 	Plane2->directRender();
-	//Dancer->directRender();
-	//Sponza->directRender();
+	Dancer->directRender();
+	Sponza->directRender();
 	Sun->directRender();
 }
