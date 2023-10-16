@@ -192,6 +192,9 @@
     <ClCompile Include="ShaderHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GameObjectHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -349,6 +352,9 @@
     </ClInclude>
     <ClInclude Include="ShaderHandler.h">
       <Filter>Header Files\Engine\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObjectHandler.h">
+      <Filter>Header Files\Engine\Objects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

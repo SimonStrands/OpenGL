@@ -1,13 +1,14 @@
 #include "DirectionalLight.h"
 
-DirectionalLight::DirectionalLight(glm::vec3 position, glm::vec3 rotation, glm::vec2 WH, glm::vec3 color, glm::vec2 scale):
+DirectionalLight::DirectionalLight(glm::vec3 position, glm::vec3 rotation, glm::vec2 WH, glm::vec3 color, glm::vec2 scale, float softness):
 	rotation(rotation),
 	WidthHeight(WH)
 {
 	this->position = position;
 	this->color = color;
+	this->softness = softness;
 	this->lightType = LightType::e_DirectionlLight;
-	projectonMatrix = glm::transpose(glm::orthoLH(-(WH.x/2.f), (WH.x/2.f), -(WH.y/2.f), (WH.y/2.f), 0.1f, 2000.f));
+	projectonMatrix = glm::transpose(glm::orthoLH(-(WH.x/2.f) * scale.x, (WH.x/2.f) * scale.x, -(WH.y/2.f) * scale.y, (WH.y/2.f) * scale.y, 0.1f, 2000.f));
 }
 
 glm::mat4 DirectionalLight::getLightViewProj()

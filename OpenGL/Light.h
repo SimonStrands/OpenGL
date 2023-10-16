@@ -9,6 +9,7 @@ class Light{
 public:
 	glm::vec3 position;
 	glm::vec3 color;
+	float softness = 0;//not used in pointLight
 	LightType lightType;
 public:
 	virtual glm::mat4 getLightViewProj() = 0;

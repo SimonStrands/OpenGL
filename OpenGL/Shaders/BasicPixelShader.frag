@@ -44,10 +44,18 @@ layout (std140, binding = 3) uniform ShadowData
 };
 
 float shadowLevel(float bias, int lightIndex, vec3 shadowMapChoords){
-    const int shadowSoftness = 5;
+    const int shadowSoftness = int(lightColors[lightIndex].w);
     const vec2 pixelSize = vec2(1,1) / textureSize(ShadowMaps, lightIndex).xy;
     float shadowReturn = 0;
     
+    if(shadowSoftness <= 0)
+    {
+        float sm = texture(ShadowMaps, vec3(shadowMapChoords.xy, lightIndex)).r;
+        if(sm + bias < shadowMapChoords.z){
+            shadowReturn = 1.0;
+        }
+        return shadowReturn;
+    }
     for(int y = -shadowSoftness; y < shadowSoftness; y++){
         for(int x = -shadowSoftness; x < shadowSoftness; x++){
             float sm = texture(ShadowMaps, vec3(shadowMapChoords.xy + vec2(x,y) * pixelSize, lightIndex)).r;
@@ -58,12 +66,22 @@ float shadowLevel(float bias, int lightIndex, vec3 shadowMapChoords){
         }
     }
 
-    //return shadowReturn / pow((shadowSoftness * 2 + 1), 2);
     return shadowReturn / shadowSoftness;
 }
 
 void main(){ 
     
+    //const int T = int(lightColors[0].w);
+    //if(T <= 0){
+    //    finalPixel = vec4(0,1,0,1);
+    //    return;
+    //}
+    //else{
+    //    finalPixel = vec4(1,0,0,1);
+    //    return;
+    //}
+
+
     vec3 newNormal = o_normal;
     if((int(Ke.w) & 8) != 0 && int(Kd.w) == 0){
         mat3 TBN = mat3(
@@ -98,11 +116,9 @@ void main(){
         
         double SM = texture(ShadowMaps, vec3(shadowMapCoords.xy, i)).r;
          
-        //float bias = 0.00001;
         float bias = max(0.05 * (1.0 - dot(newNormal, lightDir)), 0.005);
         
         float shadow = 0.0;
-        
           
         if (lightPos[i].w == 1 ||
                 shadowMapCoords.z <= 1.0f &&//E

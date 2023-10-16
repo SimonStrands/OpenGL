@@ -8,7 +8,7 @@ Engine::Engine():
 	dt.restartClock();
 	
 	basicToScene.rm = new ResourceManager();
-
+	basicToScene.gh = &gh;
 	basicToScene.mouse = new Mouse(gfx.getCurrentActiveWindow());
 	basicToScene.keyboard = new Keyboard(gfx.getCurrentActiveWindow());
 
@@ -25,10 +25,11 @@ Engine::Engine():
 	imGuiManager.init();
 	
 	m_sceneHandler.setBasicDefaultVariables(basicToScene);
+	DefToGameObject t = {&this->shaderHandler, basicToScene.rm};
+	gh.setDefToGameObject(t);
 	basicToScene.camera->init();
 	m_sceneHandler.sceneInit();
 	
-	//Graphics Creates Window on it's own first
 }
 
 Engine::~Engine()
@@ -88,6 +89,7 @@ void Engine::Run()
 		basicToScene.mouse->Update();
 		basicToScene.keyboard->update();
 		m_sceneHandler.Update((float)dt.dt());
+		gh.update((float)dt.dt());
 
 		//render shadows
 		basicToScene.shadowMap->renderShadow();
@@ -98,6 +100,7 @@ void Engine::Run()
 		shaderHandler.setCurrentshader("defShaderProgram");
 		basicToScene.shadowMap->updateLightMatrices();
 		m_sceneHandler.Render();
+		gh.render();
 
 		//render IMGUI
 		imGuiManager.render();

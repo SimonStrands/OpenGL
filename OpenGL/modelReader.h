@@ -8,6 +8,26 @@ class Model;
 class Mesh;
 class AnimatedModel;
 
-Mesh loadMesh(const aiMesh* pMesh);
-Mesh loadAnimatedMesh(const aiMesh* pMesh, std::map<std::string, glm::mat4>& offsetMatrices);
-Model* loadModel(const std::string& modelFile, ResourceManager* rm);
+enum VerteciesType{
+	animationVertecies,
+	normalVertecies
+};
+
+struct EngineTextureSave{
+	std::string fileName;
+	MaterialFlags TextureType;
+};
+
+//load Model from fbx, obj and so forth
+Mesh loadMeshFromFile(const aiMesh* pMesh);
+Model* loadModelFromFile(const std::string& modelFile, ResourceManager* rm);
+
+
+Mesh loadMeshFromEngine(const aiMesh* pMesh);
+Model* loadModelFromEngine(const std::string& modelFile, ResourceManager* rm);
+
+void createModelToEngine(
+	std::vector<Vertex> vertecies,
+	std::vector<uint32_t> indecies,
+	std::vector<EngineTextureSave> textures
+	);

@@ -138,7 +138,6 @@ bool readSkeleton(buildBone& joint, aiNode* node, std::unordered_map<std::string
 	return false;
 }
 
-#define MAXNUMBEROFBONESPERVERTEX 3
 
 void loadBoneDataToVertecies(std::vector<AnimationVertex>& vertecies, const aiMesh* pMesh, std::unordered_map<std::string, std::pair<int, glm::mat4>>& offsetMatrices)
 {
@@ -278,7 +277,7 @@ void loadMaterial(const aiScene* pScene, std::vector<Material>& material, Resour
     }
 }
 
-Mesh loadMesh(const aiMesh* pMesh)
+Mesh loadMeshFromFile(const aiMesh* pMesh)
 {
     std::vector<Vertex> vertex;
     std::vector<uint32_t> indecies;
@@ -423,7 +422,7 @@ void buildTheSkeleton(std::vector<Bone>& skeleton, buildBone rootBone, int paren
     }
 }
 
-Model* loadModel(const std::string& modelFile, ResourceManager* rm)
+Model* loadModelFromFile(const std::string& modelFile, ResourceManager* rm)
 {
     Assimp::Importer importer;
     const aiScene* pScene = importer.ReadFile(modelFile.c_str(),
@@ -459,7 +458,7 @@ Model* loadModel(const std::string& modelFile, ResourceManager* rm)
             theReturnModel->getMeshes().push_back(loadAnimatedMesh(pScene->mMeshes[i], boneInfo));
         }
         else{
-            theReturnModel->getMeshes().push_back(loadMesh(pScene->mMeshes[i]));
+            theReturnModel->getMeshes().push_back(loadMeshFromFile(pScene->mMeshes[i]));
         }
         theReturnModel->getMeshes()[theReturnModel->getMeshes().size() - 1].material = materials[pScene->mMeshes[i]->mMaterialIndex];
         theReturnModel->getMeshes()[theReturnModel->getMeshes().size() - 1].mcb = CreateUniformBuffer(mcb[pScene->mMeshes[i]->mMaterialIndex]);
@@ -474,4 +473,38 @@ Model* loadModel(const std::string& modelFile, ResourceManager* rm)
         buildTheSkeleton(((AnimatedModel*)theReturnModel)->getSkeleton(), bone, -1);
     }
     return theReturnModel;
+}
+
+Mesh loadMeshFromEngine(const aiMesh* pMesh)
+{
+    return Mesh();
+}
+
+Model* loadModelFromEngine(const std::string& modelFile, ResourceManager* rm)
+{
+    return nullptr;
+}
+
+void createModelToEngine(std::vector<Vertex> vertecies, std::vector<uint32_t> indecies, std::vector<EngineTextureSave> textures)
+{
+    std::ofstream file("tada.OEM", std::ios::out | std::ios::binary);
+    file.write((char*)VerteciesType::normalVertecies, sizeof(VerteciesType));
+    file.write((char*)((uint32_t)vertecies.size()), sizeof(uint32_t));
+    file.write((char*)((uint32_t)indecies.size()), sizeof(uint32_t));
+
+    file.write((char*)vertecies.data(), sizeof(Vertex) * vertecies.size());
+    file.write((char*)indecies.data(), sizeof(Vertex) * indecies.size());
+
+    file.write((char*)((uint32_t)textures.size()), sizeof(uint32_t));
+
+    //each texture
+    for(int i = 0; i < textures.size(); i++){
+        uint32_t fileNameSize = (uint32_t)textures[i].fileName.size();
+        file.write(textures[i].fileName.c_str(), fileNameSize);
+        file.write((char*)textures[i].TextureType, sizeof(MaterialFlags));
+    }
+    file.close();
+    if(!file.good()){
+        std::cerr << "something went wrong while writing" << std::endl;
+    }
 }

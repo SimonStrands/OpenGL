@@ -21,7 +21,10 @@ ResourceManager::~ResourceManager()
 Model* ResourceManager::getModel(const std::string& FileName)
 {
     if(Models.find(FileName) == Models.end()){
-        Model* temp = loadModel(FileName, this);
+
+        //check if Engine model has it
+
+        Model* temp = loadModelFromFile("../Objects/" + FileName, this);
         if(temp == nullptr){
             std::cout << "couldn't load model" << std::endl;
         }

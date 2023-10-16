@@ -35,6 +35,7 @@ protected:
 	Graphics* gfx;
 	ImGuiManager* imGuiManager;
 	ShaderHandler* shaderHandler;
+	GameObjectHandler *gh;
 private:
 	int newSceneID;
 };

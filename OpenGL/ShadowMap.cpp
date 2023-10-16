@@ -115,9 +115,6 @@ void ShadowMap::renderShadow()
 			lightBuffer.projection = dl->getProjection();
 			lightBuffer.view = dl->getLightView();
 
-			//UpdateUniformBuffer(lightBuffer, lightCB);
-			//setUniform("LightData", lightCB, 5);
-
 			shaderHandler->updateUniformBuffer("LightData", lightBuffer);
 
 			glViewport(0, 0, (GLsizei)dl->WidthHeight.x, (GLsizei)dl->WidthHeight.y);
@@ -133,8 +130,6 @@ void ShadowMap::renderShadow()
 
 			lightBuffer.projection = sl->getProjection();
 			lightBuffer.view = sl->getLightView();
-			//UpdateUniformBuffer(lightBuffer, lightCB);
-			//setUniform("LightData", lightCB, 5);
 
 			shaderHandler->updateUniformBuffer("LightData", lightBuffer);
 
@@ -160,11 +155,9 @@ void ShadowMap::updateLightMatrices()
     glBindTexture(GL_TEXTURE_2D_ARRAY, DepthBufferArray);
 	for(int i = 0; i < lights.size(); i++){
 		shadowMapConstantBuffer.lightPos[i] = glm::vec4(lights[i]->position, lights[i]->lightType);
-		shadowMapConstantBuffer.lightColors[i] = glm::vec4(lights[i]->color, 0);
+		shadowMapConstantBuffer.lightColors[i] = glm::vec4(lights[i]->color, lights[i]->softness);
 		shadowMapConstantBuffer.lightViewProjection[i] = lights[i]->getLightViewProj();
 	}
-	//UpdateUniformBuffer(shadowMapConstantBuffer, shadowMapCB);
-	//setUniform("ShadowData", shadowMapCB, 3);
 
 	shaderHandler->updateUniformBuffer("ShadowMap", shadowMapConstantBuffer);
 }

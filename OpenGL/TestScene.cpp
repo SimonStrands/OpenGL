@@ -10,12 +10,6 @@ TestScene::TestScene()
 
 TestScene::~TestScene()
 {
-	delete Plane1;
-	delete Plane2;
-	delete player;
-	delete Sponza;
-	delete Dancer;
-	delete Sun;
 }
 
 void TestScene::init()
@@ -23,21 +17,21 @@ void TestScene::init()
 	gfx->vSync(false);
 	basic.camera->setPosition(glm::vec3(0,5,0));
 	basic.camera->setRotation(glm::vec3(0,0,0));
-	Plane1 = new GameObject(defToObj);
-	Plane2 = new GameObject(defToObj);
-	Dancer = new GameObject(defToObj);
-	Sponza = new GameObject(defToObj);
-	Sun = new GameObject(defToObj);
-	Sun->addModel(basic.rm->getModel("Objects/Sun.fbx"));
+	Plane1 = gh->createGameObject();
+	Plane2 = gh->createGameObject();
+	Dancer = gh->createGameObject();
+	Sponza = gh->createGameObject();
+	Sun = gh->createGameObject();
+	Sun->addModel(basic.rm->getModel("Sun.fbx"));
 	Sun->getMaterial().Ka = glm::vec3(1,1,1);
 
-	Plane1->addModel(basic.rm->getModel("Objects/Plane.fbx"));
-	Plane2->addModel(basic.rm->getModel("Objects/Plane.fbx"));
+	Plane1->addModel(basic.rm->getModel("Plane.fbx"));
+	Plane2->addModel(basic.rm->getModel("Plane.fbx"));
 
-	Dancer->addModel(basic.rm->getModel("Objects/sillydance2.fbx"));
+	Dancer->addModel(basic.rm->getModel("sillydance2.fbx"));
 	Dancer->SetShaderProgram(basic.rm->getShaderProgram("DefSkeletalAnimation"));
 
-	Sponza->addModel(basic.rm->getModel("Objects/sponza.obj"));
+	Sponza->addModel(basic.rm->getModel("sponza.obj"));
 	
 	//basic.gfx->enableWireframeMode(true);
 	
@@ -58,7 +52,7 @@ void TestScene::init()
 	Sponza->getMaterial().d = 1;
 	
 	
-	player = new GameObject(defToObj);
+	player = gh->createGameObject();
 	std::vector<std::pair<std::string, void*>> playerComponents;
 	playerComponents.push_back(std::pair("cam", basic.camera));
 	playerComponents.push_back(std::pair("mouse", basic.mouse));
@@ -73,7 +67,7 @@ void TestScene::init()
 	basic.imGuiManager->addGameObject(Sponza, "Sponza");
 
 	//l.push_back(new SpotLight(glm::vec3(0,5,0), glm::vec3(0,0,0), glm::vec2(2000, 2000), glm::vec3(1,1,1), 90));
-	l.push_back(new DirectionalLight(glm::vec3(0,5,0), glm::vec3(0,0,0), glm::vec2(2000, 2000), glm::vec3(1,1,1)));
+	l.push_back(new DirectionalLight(glm::vec3(0,5,0), glm::vec3(0,0,0), glm::vec2(500, 500), glm::vec3(1,1,1), glm::vec2(2,2),0));
 	//l.push_back(new PointLight(glm::vec3(0,5,0)));
 	this->basic.shadowMap->setLights(l);
 	basic.imGuiManager->addLight(l[0], "DirectionalLight");
@@ -89,7 +83,7 @@ SceneHandlerCalls TestScene::update(float dt)
 	Sun->getComponent<Transform>("Transform")->position = l[0]->position;
 
 	basic.camera->Update();
-	player->update(dt);
+	//player->update(dt);
 
 	if(basic.keyboard->getKeyDown('N')){
 		this->MainCamera->setProjection(l[0]->getProjection());
@@ -101,7 +95,7 @@ SceneHandlerCalls TestScene::update(float dt)
 		this->MainCamera->setProjection(glm::transpose(glm::perspectiveFovLH(glm::radians(45.f), 16.f, 9.f, 0.1f, 2000.f)));
 	}
 
-	Dancer->update(dt);
+	//Dancer->update(dt);
 	//test->getComponent<Transform>("Transform")->rotation.x += 1 * dt;
 	
 
@@ -110,9 +104,9 @@ SceneHandlerCalls TestScene::update(float dt)
 
 void TestScene::render()
 {
-	Plane1->directRender();
-	Plane2->directRender();
-	Dancer->directRender();
-	Sponza->directRender();
-	Sun->directRender();
+	//Plane1->directRender();
+	//Plane2->directRender();
+	//Dancer->directRender();
+	//Sponza->directRender();
+	//Sun->directRender();
 }

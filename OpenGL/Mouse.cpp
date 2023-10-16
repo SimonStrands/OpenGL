@@ -20,8 +20,8 @@ void Mouse::Update()
     if(mouseStuck){
         double xpos, ypos;
         glfwGetCursorPos(this->wnd, &xpos, &ypos);
-        mouseDelta.x = xpos - (1024/2);
-        mouseDelta.y = ypos - (768/2);
+        mouseDelta.x = (float)xpos - (1024.f/2.f);
+        mouseDelta.y = (float)ypos - (768.f/2.f);
         glfwSetCursorPos(this->wnd, (double)(1024/2), (double)(768/2));
     }
     else{

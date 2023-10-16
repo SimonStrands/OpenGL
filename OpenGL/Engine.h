@@ -24,6 +24,7 @@ private:
 	DeltaTime dt;
 	DefaultVariableToScene basicToScene;
 	ImGuiManager imGuiManager;
+	GameObjectHandler gh;
 	ShaderHandler shaderHandler;
 	//renderer
 };

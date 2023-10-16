@@ -5,6 +5,7 @@
 #include "Mouse.h"
 #include "ShaderHandler.h"
 #include "ImGuiManager.h"
+#include "GameObjectHandler.h"
 
 struct DefaultVariableToScene{
 	Camera* camera;
@@ -15,4 +16,5 @@ struct DefaultVariableToScene{
 	Graphics* gfx;
 	ImGuiManager* imGuiManager;
 	ShaderHandler* shaderHandler;
+	GameObjectHandler* gh;
 };

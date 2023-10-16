@@ -1,4 +1,1 @@
--change unsigned int to uint32_t
--change transform uniform into SSBO
--shadow should get skeletal animatioon
 -delete shader and other bufferrs
