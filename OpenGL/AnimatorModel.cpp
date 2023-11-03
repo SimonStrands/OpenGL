@@ -36,6 +36,7 @@ void AnimatedModel::DirectRender(GLuint Topology)
 
         materialConstBuffer a;
         a = meshes[i].material;
+        //TODO : change this right here
         UpdateUniformBuffer(a, meshes[i].mcb);
         setUniform("Material", meshes[i].mcb, 2);
 
