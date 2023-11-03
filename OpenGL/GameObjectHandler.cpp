@@ -41,7 +41,7 @@ GameObject* GameObjectHandler::addGameObject(GameObject* gameObject, std::string
     return gameObject;
 }
 
-GameObject* GameObjectHandler::getGameObject(const std::string& name)
+GameObject* GameObjectHandler::getGameObject(const std::string name)
 {
     if(m_gameObjectMap.count(name) < 1){
         std::cerr << "Error: cannot find object " << name << std::endl;
@@ -63,7 +63,7 @@ GameObject* GameObjectHandler::dubbblicateGameObject(GameObject* gameObject, std
 {
     createNameID(name);
 
-    GameObject* t = new GameObject(*gameObject);
+    GameObject* t = new GameObject(gameObject);
     m_gameObjectMap.insert(std::pair(name, t));
     m_gameObjectVector.push_back(t);
     m_gameObjectShouldRenderShadow.push_back(rendershadow);

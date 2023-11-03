@@ -2,14 +2,15 @@
 
 Player::Player()
 {
+	size = sizeof(Player);
 }
 
 void Player::init()
 {
-	cam = (Camera*)variables.find("cam")->second;
-	mouse = (Mouse*)variables.find("mouse")->second;
-	transform = (Transform*)variables.find("Transform")->second;
-	keyboard = (Keyboard*)variables.find("keyboard")->second;
+	cam = getVariable<Camera>("cam");
+	mouse = getVariable<Mouse>("mouse");;
+	transform = getVariable<Transform>("Transform");
+	keyboard = getVariable<Keyboard>("keyboard");
 	transform->position.z = 5;
 	transform->position.y = 8;
 }

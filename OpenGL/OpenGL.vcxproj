@@ -213,6 +213,7 @@
     <ClCompile Include="Buffer.cpp" />
     <ClCompile Include="BufferCreator.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="ComponentList.cpp" />
     <ClCompile Include="DeltaTime.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="Engine.cpp" />
@@ -229,6 +230,7 @@
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="modelReader.cpp" />
     <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="PerformanceScene.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Scene.cpp" />
@@ -236,6 +238,7 @@
     <ClCompile Include="ShaderHandler.cpp" />
     <ClCompile Include="ShadowMap.cpp" />
     <ClCompile Include="SpotLight.cpp" />
+    <ClCompile Include="TestBehavior.cpp" />
     <ClCompile Include="TestScene.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -278,6 +281,7 @@
     <ClInclude Include="Model.h" />
     <ClInclude Include="modelReader.h" />
     <ClInclude Include="Mouse.h" />
+    <ClInclude Include="PerformanceScene.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="ResourceManager.h" />
@@ -288,6 +292,7 @@
     <ClInclude Include="ShadowMap.h" />
     <ClInclude Include="SpotLight.h" />
     <ClInclude Include="STBI_Image.h" />
+    <ClInclude Include="TestBeahvior.h" />
     <ClInclude Include="TestScene.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Buffer.h" />

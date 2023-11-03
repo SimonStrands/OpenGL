@@ -3,6 +3,8 @@
 
 //Vertex with UV
 struct Vertex{
+	Vertex(){
+	}
 	Vertex(glm::vec3 pos, glm::vec2 UV, glm::vec3 normals, glm::vec3 tangent, glm::vec3 bitangent):
 		m_position(pos), m_texChoords(UV), m_normals(normals), m_tangent(tangent), m_bitangent(bitangent)
 	{

@@ -6,16 +6,27 @@ GameObject::GameObject(DefToGameObject& def, glm::vec3 Position, glm::vec3 Rotat
 	shaderHandler = def.shaderHandler;
 
 	shaderProgram = def.rm->getShaderProgram("defShaderProgram");
-	components.insert(std::pair<std::string, Components*>("Transform", new Transform()));
+	compList.addComponent("Transform", new Transform());
+}
+
+//does not copy Behaviors
+GameObject::GameObject(GameObject* GameObject)
+{
+	this->shaderHandler = GameObject->shaderHandler;
+	this->model = GameObject->model;
+	this->shaderProgram = GameObject->shaderProgram;
+
+	//compList.insert(std::pair<std::string, Components*>("Transform", new Transform()));
+	this->compList = GameObject->compList;
+	//for (auto const& [key, val] : GameObject->compList)
+	//{
+	//	std::cout << sizeof(*val) << std::endl;
+	//	this->compList.insert(std::pair(key, new Components(*val)));
+	//}
 }
 
 GameObject::~GameObject()
 {
-	for (auto const& [key, val] : components)
-    {
-		std::cout << key << std::endl;
-        delete val;
-    }
 }
 
 void GameObject::SetShaderProgram(uint32_t shaderProgram)
@@ -100,26 +111,22 @@ Material& GameObject::getMaterial(int index)
 	return model->getMeshes()[index].material;
 }
 
-void GameObject::addComponent(const std::string& componentName, Components* component)
-{
-	this->components.insert(std::pair(componentName, component));
-}
 
-void GameObject::addBehavior(const std::string& behaviorName, Behavior* behavior, std::vector<std::pair<std::string, void*>>* variables)
+void GameObject::addBehavior(const std::string behaviorName, Behavior* behavior, std::vector<std::pair<std::string, TLVarieble>>* variables)
 {
-	if(components.find("BehaviorList") == components.end()){
-		components.insert(std::pair("BehaviorList", new BehaviorList()));
+	if(!compList.hasComponent("BehaviorList")){
+		compList.addComponent("BehaviorList", new BehaviorList());
 	}
-	((BehaviorList*)components.find("BehaviorList")->second)->addBehavior(behavior, behaviorName, variables);
+	compList.getComponent<BehaviorList>("BehaviorList")->addBehavior(behavior, behaviorName, variables);
 }
 
 void GameObject::update(float dt)
 {
-	if(components.find("BehaviorList") != components.end()){
-		((BehaviorList*)components.find("BehaviorList")->second)->update(dt);
+	if(compList.hasComponent("BehaviorList")){
+		compList.getComponent<BehaviorList>("BehaviorList")->update(dt);
 	}
-	if(components.find("AnimationComponent") != components.end()){
-		getComponent<AnimationComponent>("AnimationComponent")->update(dt);
+	if(compList.hasComponent("AnimationComponent")){
+		compList.getComponent<AnimationComponent>("AnimationComponent")->update(dt);
 
 	}
 	

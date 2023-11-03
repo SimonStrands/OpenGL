@@ -1,6 +1,7 @@
 #pragma once
 #include "Scene.h"
 #include "Player.h"
+#include "TestBeahvior.h"
 
 class TestScene : public Scene{
 public:
@@ -16,6 +17,7 @@ private:
 	GameObject* Sponza;
 
 	GameObject* Sun;
+	GameObject* Sun2;
 
 	GameObject* player;
 	std::vector<Light*> l;

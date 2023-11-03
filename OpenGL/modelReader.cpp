@@ -2,6 +2,8 @@
 #include "ResourceManager.h"
 #include <unordered_map>
 #include "../glm/gtc/type_ptr.hpp"
+#include <iterator>
+#include <algorithm>
 
 static glm::quat AssimpToOpenGL(const aiQuaternion& aVec4)
 {
@@ -137,7 +139,6 @@ bool readSkeleton(buildBone& joint, aiNode* node, std::unordered_map<std::string
 	}
 	return false;
 }
-
 
 void loadBoneDataToVertecies(std::vector<AnimationVertex>& vertecies, const aiMesh* pMesh, std::unordered_map<std::string, std::pair<int, glm::mat4>>& offsetMatrices)
 {
@@ -325,11 +326,11 @@ Mesh loadMeshFromFile(const aiMesh* pMesh)
         indecies.push_back(pMesh->mFaces[i].mIndices[2]);
     }
 
-
     uint32_t vertexArray = CreateVertexArray();
     uint32_t vertexBuffer = CreateVertexBuffer(vertex);
     uint32_t indeciesBuffer = CreateIndeciesBuffer(indecies);
-    Mesh theMesh = Mesh(
+
+    return Mesh(
         0, 
         pMesh->mNumVertices, 
         vertexBuffer, 
@@ -337,9 +338,7 @@ Mesh loadMeshFromFile(const aiMesh* pMesh)
         indeciesBuffer,
         vertexArray,
         TypeOfMesh::Default
-    );
-
-    return theMesh;
+    );;
 }
 
 Mesh loadAnimatedMesh(const aiMesh* pMesh, std::unordered_map<std::string, std::pair<int, glm::mat4>>& offsetMatrices)
@@ -424,6 +423,9 @@ void buildTheSkeleton(std::vector<Bone>& skeleton, buildBone rootBone, int paren
 
 Model* loadModelFromFile(const std::string& modelFile, ResourceManager* rm)
 {
+    if(modelFile.substr(modelFile.find_last_of(".") + 1) == "OEM") {
+        return loadModelFromEngine(modelFile, rm);
+    }
     Assimp::Importer importer;
     const aiScene* pScene = importer.ReadFile(modelFile.c_str(),
         aiProcessPreset_TargetRealtime_Fast | aiProcess_FlipUVs
@@ -472,39 +474,119 @@ Model* loadModelFromFile(const std::string& modelFile, ResourceManager* rm)
         ((AnimatedModel*)theReturnModel)->getSkeleton().resize(boneInfo.size());
         buildTheSkeleton(((AnimatedModel*)theReturnModel)->getSkeleton(), bone, -1);
     }
-    return theReturnModel;
-}
 
-Mesh loadMeshFromEngine(const aiMesh* pMesh)
-{
-    return Mesh();
+
+    return theReturnModel;
 }
 
 Model* loadModelFromEngine(const std::string& modelFile, ResourceManager* rm)
 {
-    return nullptr;
+    uint32_t nrOfMaterials, nrOfTextures, sizeofString, nrOfMeshes, materialIndex;
+    VerteciesType vertexType;
+    Model* model = new Model();
+    std::vector<Material> materials;
+    std::vector<materialConstBuffer> mcb;
+
+    std::ifstream file(modelFile, std::ios::in | std::ios::binary);
+
+    if(!file.is_open()){
+        std::cout << "couldn't open file" << std::endl;
+        return nullptr;
+    }
+
+    file.read((char*)&nrOfMaterials, sizeof(uint32_t));//nrOfMaterials
+    materials.resize(nrOfMaterials);
+
+    //for every material
+    for(int m = 0; m < nrOfMaterials; m++){
+        file.read((char*)&materials[m].materialFlags, sizeof(MaterialFlags));
+
+        file.read((char*)&nrOfTextures, sizeof(uint32_t));
+
+        std::vector<MaterialFlags> materialFlags;
+        readVectorFromFile(file, materialFlags);
+        for(int i = 0; i < nrOfTextures; i++){
+
+            std::string filename;
+            readStringFromFile(file, filename);
+
+            switch(materialFlags[i]){
+            case MaterialFlags::Albedo:
+                materials[m].Albedo = rm->getTexture(filename);
+                break;
+            case MaterialFlags::AmbientOcclusion:
+                materials[m].AmbientOcclusion = rm->getTexture(filename);
+                break;
+            case MaterialFlags::HeightMap:
+                materials[m].HeightMap = rm->getTexture(filename);
+                break;
+            case MaterialFlags::NormalMap:
+                materials[m].NormalMap = rm->getTexture(filename);
+                break;
+            default:
+                std::cout << "error something wong" << std::endl;
+                break;
+            }
+        }
+        file.read((char*)&materials[m].Ns, sizeof(float));
+
+        file.read((char*)&materials[m].Ka, sizeof(glm::fvec3));
+        file.read((char*)&materials[m].Kd, sizeof(glm::fvec3));
+        file.read((char*)&materials[m].Ks, sizeof(glm::fvec3));
+        file.read((char*)&materials[m].Ke, sizeof(glm::fvec3));
+
+        file.read((char*)&materials[m].Ni, sizeof(float));
+        file.read((char*)&materials[m].d, sizeof(float));
+
+        file.read((char*)&materials[m].tessellate, sizeof(bool));
+        file.read((char*)&materials[m].tessellationLevel, sizeof(float));
+    }
+
+    mcb.resize(materials.size());
+    for(int i = 0; i < mcb.size(); i++){
+        mcb[i] = materials[i];//special operator
+    }
+
+    file.read((char*)&vertexType, sizeof(vertexType));
+    file.read((char*)&nrOfMeshes, sizeof(uint32_t));
+
+    if(vertexType == VerteciesType::normalVertecies){
+        for(int i = 0; i < nrOfMeshes; i++){
+            uint32_t vertexArray = CreateVertexArray();
+            std::vector<Vertex> vertecies;
+            std::vector<uint32_t> indecies;
+            
+            readVectorFromFile(file, vertecies);
+            readVectorFromFile(file, indecies);
+            uint32_t vertexBuffer = CreateVertexBuffer(vertecies);
+            uint32_t indeciesBuffer = CreateIndeciesBuffer(indecies);
+            file.read((char*)&materialIndex, sizeof(uint32_t));
+            Mesh mesh(
+                materialIndex,
+                vertecies.size(),
+                vertexBuffer,
+                indecies.size(),
+                indeciesBuffer,
+                vertexArray,
+                TypeOfMesh::Default
+            );
+            mesh.material = materials[materialIndex];
+            mesh.mcb = CreateUniformBuffer(mcb[materialIndex]);
+            model->getMeshes().push_back(mesh);
+        }
+    }
+    else{
+        std::cout << "haven't taken care of this yet" << std::endl;
+    }
+
+    return model;
 }
 
-void createModelToEngine(std::vector<Vertex> vertecies, std::vector<uint32_t> indecies, std::vector<EngineTextureSave> textures)
+void readStringFromFile(std::ifstream& file, std::string& str)
 {
-    std::ofstream file("tada.OEM", std::ios::out | std::ios::binary);
-    file.write((char*)VerteciesType::normalVertecies, sizeof(VerteciesType));
-    file.write((char*)((uint32_t)vertecies.size()), sizeof(uint32_t));
-    file.write((char*)((uint32_t)indecies.size()), sizeof(uint32_t));
-
-    file.write((char*)vertecies.data(), sizeof(Vertex) * vertecies.size());
-    file.write((char*)indecies.data(), sizeof(Vertex) * indecies.size());
-
-    file.write((char*)((uint32_t)textures.size()), sizeof(uint32_t));
-
-    //each texture
-    for(int i = 0; i < textures.size(); i++){
-        uint32_t fileNameSize = (uint32_t)textures[i].fileName.size();
-        file.write(textures[i].fileName.c_str(), fileNameSize);
-        file.write((char*)textures[i].TextureType, sizeof(MaterialFlags));
-    }
-    file.close();
-    if(!file.good()){
-        std::cerr << "something went wrong while writing" << std::endl;
-    }
+    uint32_t stringSize;
+    file.read((char*)&stringSize, sizeof(uint32_t));
+    str.resize(stringSize);
+    file.read((char*)&str[0], stringSize);
 }
+

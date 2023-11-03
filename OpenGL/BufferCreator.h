@@ -11,7 +11,6 @@ uint32_t CreateVertexBuffer(std::vector<T>& vertecies, GLenum type = GL_FLOAT){
     GLTest(glBindBuffer(GL_ARRAY_BUFFER, buffer));
     GLTest(glBufferData(GL_ARRAY_BUFFER, sizeof(T) * vertecies.size(), vertecies.data(), GL_STATIC_DRAW));
     
-    
     GLTest(glEnableVertexAttribArray(0));
     GLTest(glVertexAttribPointer(0, 3, type, GL_FALSE, sizeof(T), 0));
     GLTest(glEnableVertexAttribArray(1));

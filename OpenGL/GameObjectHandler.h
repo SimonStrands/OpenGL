@@ -13,7 +13,7 @@ public:
 	GameObject* addGameObject(GameObject* gameObject, std::string name = "", bool renderShadow = true);
 	//GameObject* addStaticGameObject(GameObject* gameObject, std::string name = "");
 
-	GameObject* getGameObject(const std::string& name);
+	GameObject* getGameObject(const std::string name);
 	GameObject* getGameObject(const int index);
 
 	GameObject* dubbblicateGameObject(GameObject* gameObject, std::string name = "", bool rendershadow = true);
@@ -27,6 +27,7 @@ public:
 
 	void update(float dt);
 	void render();
+	void renderShadow();
 
 private:
 	void createNameID(std::string &name);

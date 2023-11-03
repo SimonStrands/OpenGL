@@ -1,6 +1,8 @@
 #include "TestScene.h"
 #include <iostream>
 
+#include <chrono>
+
 
 TestScene::TestScene()
 {
@@ -18,21 +20,21 @@ void TestScene::init()
 	basic.camera->setPosition(glm::vec3(0,5,0));
 	basic.camera->setRotation(glm::vec3(0,0,0));
 	Plane1 = gh->createGameObject();
-	Plane2 = gh->createGameObject();
 	Dancer = gh->createGameObject();
 	Sponza = gh->createGameObject();
-	Sun = gh->createGameObject();
-	Sun->addModel(basic.rm->getModel("Sun.fbx"));
+	Sponza->addModel(basic.rm->getModel("sponza.obj.OEM"));
+
+	Sun = gh->createGameObject("", false);
+	
+	Sun->addModel(basic.rm->getModel("sun.fbx"));
 	Sun->getMaterial().Ka = glm::vec3(1,1,1);
+	//Sun2 = gh->dubbblicateGameObject(Sun, "", false);
 
 	Plane1->addModel(basic.rm->getModel("Plane.fbx"));
-	Plane2->addModel(basic.rm->getModel("Plane.fbx"));
 
 	Dancer->addModel(basic.rm->getModel("sillydance2.fbx"));
 	Dancer->SetShaderProgram(basic.rm->getShaderProgram("DefSkeletalAnimation"));
 
-	Sponza->addModel(basic.rm->getModel("sponza.obj"));
-	
 	//basic.gfx->enableWireframeMode(true);
 	
 	//add the heightmap to material
@@ -40,10 +42,15 @@ void TestScene::init()
 	Plane1->getMaterial(0).materialFlags = MaterialFlags(Plane1->getMaterial(0).materialFlags | MaterialFlags::HeightMap);
 	Plane1->SetShaderProgram(basic.rm->getShaderProgram("DefTessellation"));
 
-	Plane2->getMaterial().HeightMap = basic.rm->getTexture("C:/Users/Simon/Desktop/UnityPrefab/Materials/ChiseledCobble/chiseled-cobble_height2.png");
-	Plane2->getMaterial(0).materialFlags = MaterialFlags(Plane1->getMaterial(0).materialFlags | MaterialFlags::HeightMap);
-	Plane2->SetShaderProgram(basic.rm->getShaderProgram("DefTessellation"));
+	std::vector<std::pair<std::string, TLVarieble>> planebehavior;
+	planebehavior.push_back(std::pair("Transform", Plane1->getComponent<Transform>("Transform")));
+	Plane1->addBehavior("TestBehavior", new TestBehavior(), &planebehavior);
+
 	
+
+	Plane2 = gh->dubbblicateGameObject(0);
+
+
 	Plane1->getComponent<Transform>("Transform")->scale = glm::vec3(20,20,1);
 	basic.shadowMap->addGameObject(Plane1);
 	basic.shadowMap->addGameObject(Plane2);
@@ -53,13 +60,12 @@ void TestScene::init()
 	
 	
 	player = gh->createGameObject();
-	std::vector<std::pair<std::string, void*>> playerComponents;
-	playerComponents.push_back(std::pair("cam", basic.camera));
-	playerComponents.push_back(std::pair("mouse", basic.mouse));
-	playerComponents.push_back(std::pair("keyboard", basic.keyboard));
-	playerComponents.push_back(std::pair("Transform", player->getComponent<Transform>("Transform")));
+	std::vector<std::pair<std::string, TLVarieble>> playerComponents;
+	playerComponents.push_back(std::pair("cam", TLVarieble(basic.camera)));
+	playerComponents.push_back(std::pair("mouse", TLVarieble(basic.mouse)));
+	playerComponents.push_back(std::pair("keyboard", TLVarieble(basic.keyboard)));
+	playerComponents.push_back(std::pair("Transform", TLVarieble(player->getComponent<Transform>("Transform"))));
 	player->addBehavior("playerUpdate", new Player(), &playerComponents);
-	
 	
 	basic.imGuiManager->addGameObject(Plane1, "Plane1");
 	basic.imGuiManager->addGameObject(Plane2, "Plane2");
@@ -68,9 +74,10 @@ void TestScene::init()
 
 	//l.push_back(new SpotLight(glm::vec3(0,5,0), glm::vec3(0,0,0), glm::vec2(2000, 2000), glm::vec3(1,1,1), 90));
 	l.push_back(new DirectionalLight(glm::vec3(0,5,0), glm::vec3(0,0,0), glm::vec2(500, 500), glm::vec3(1,1,1), glm::vec2(2,2),0));
-	//l.push_back(new PointLight(glm::vec3(0,5,0)));
+	l.push_back(new PointLight(glm::vec3(0,5,0)));
 	this->basic.shadowMap->setLights(l);
 	basic.imGuiManager->addLight(l[0], "DirectionalLight");
+	basic.imGuiManager->addLight(l[1], "PointLight");
 	//basic.imGuiManager->addLight(l[1], "DirectionalLight");
 	
 }
@@ -81,6 +88,7 @@ SceneHandlerCalls TestScene::update(float dt)
 	//std::cout << "update()" << std::endl;
 
 	Sun->getComponent<Transform>("Transform")->position = l[0]->position;
+	//Sun2->getComponent<Transform>("Transform")->position = l[1]->position;
 
 	basic.camera->Update();
 	//player->update(dt);
