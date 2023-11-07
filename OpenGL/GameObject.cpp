@@ -34,7 +34,7 @@ void GameObject::SetShaderProgram(uint32_t shaderProgram)
 	this->shaderProgram = shaderProgram;
 }
 
-void GameObject::directRender()
+void GameObject::directRender(GLint Topology)
 {
 	shaderHandler->setCurrentshader(shaderProgram);
 
@@ -50,7 +50,7 @@ void GameObject::directRender()
 				);
 			shaderHandler->updateUniformBuffer("Skeleton", poses);
 		}
-		model->DirectRender();
+		model->DirectRender(Topology);
 	}
 	
 }

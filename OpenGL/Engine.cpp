@@ -2,7 +2,7 @@
 #include "ErrorHelper.h"
 
 Engine::Engine():
-	m_sceneHandler(new TestScene()),
+	m_sceneHandler(new FurRenderScene()),
 	m_gameOver(false)
 {
 	dt.restartClock();
@@ -90,6 +90,7 @@ void Engine::Run()
 		basicToScene.keyboard->update();
 		m_sceneHandler.Update((float)dt.dt());
 		gh.update((float)dt.dt());
+		basicToScene.camera->Update();
 
 		//render shadows
 		basicToScene.shadowMap->renderShadow();

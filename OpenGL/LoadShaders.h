@@ -29,4 +29,6 @@ bool loadPShader(const std::string& name, uint32_t &pixelShader);
 
 uint32_t attachShaders(uint32_t vertexShader, uint32_t pixelShader);
 
+uint32_t attachShaders(uint32_t vertexShader, uint32_t pixelShader, uint32_t geometry);
+
 uint32_t attachShaders( uint32_t vertex, uint32_t control, uint32_t evaluation, uint32_t pixel);

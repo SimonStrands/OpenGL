@@ -22,6 +22,7 @@ public:
 
 	//create more here later if we need hull, displacement and more
 	uint32_t createShaderProgram(const std::string& ShaderProgramName, uint32_t vertex, uint32_t pixel);
+	uint32_t createShaderProgram(const std::string& ShaderProgramName, uint32_t vertex, uint32_t pixel, uint32_t geometry);
 	uint32_t createShaderProgram(const std::string& ShaderProgramName, uint32_t vertex, uint32_t control, uint32_t evaluation, uint32_t pixel);
 
 private:

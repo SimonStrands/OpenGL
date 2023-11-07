@@ -15,10 +15,6 @@ layout(binding = 2)uniform sampler2D HeightMapTexture;
 layout(binding = 3)uniform sampler2D NormalMapTexture;
 layout(binding = 4)uniform sampler2DArray ShadowMaps;
 
-//DEBUG SHIT
-const vec3 c_lightColor = vec3(1,1,1);
-const vec4 c_lightPos = vec4(0,20,0,0);//w is what kind of light it is
-
 layout (std140, binding = 0) uniform Matrices
 {
     mat4 projection;

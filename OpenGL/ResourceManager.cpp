@@ -59,6 +59,11 @@ uint32_t ResourceManager::getShader(const std::string& ShaderFile)
                 std::cout << "couldn't create shader" << std::endl;
             }
         }
+        else if(extension == "geom"){
+            if(!loadGShader(ShaderFile, newShader)){
+                std::cout << "couldn't create shader" << std::endl;
+            }
+        }
         
         else{
             std::cout << "doesn't support " << extension << " extension yet" << std::endl;
@@ -97,6 +102,13 @@ uint32_t ResourceManager::getTexture(const std::string& FileName)
 uint32_t ResourceManager::createShaderProgram(const std::string& ShaderProgramName, uint32_t vertex, uint32_t pixel)
 {
     uint32_t shaderProgram = attachShaders(vertex, pixel);
+    ShaderProgram.insert(std::make_pair(ShaderProgramName, shaderProgram));
+    return shaderProgram;
+}
+
+uint32_t ResourceManager::createShaderProgram(const std::string& ShaderProgramName, uint32_t vertex, uint32_t pixel, uint32_t geometry)
+{
+    uint32_t shaderProgram = attachShaders(vertex, pixel, geometry);
     ShaderProgram.insert(std::make_pair(ShaderProgramName, shaderProgram));
     return shaderProgram;
 }

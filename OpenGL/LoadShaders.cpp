@@ -149,6 +149,18 @@ uint32_t attachShaders(uint32_t vertexShader, uint32_t pixelShader)
 	return p;
 }
 
+uint32_t attachShaders(uint32_t vertexShader, uint32_t pixelShader, uint32_t geometry)
+{	
+	uint32_t p = glCreateProgram();
+	GLTest(glAttachShader(p, vertexShader));
+	GLTest(glAttachShader(p, pixelShader));
+	GLTest(glAttachShader(p, geometry));
+    GLTest(glLinkProgram(p));
+    GLTest(glValidateProgram(p));
+
+	return p;
+}
+
 uint32_t attachShaders(uint32_t vertex, uint32_t control, uint32_t evaluation, uint32_t pixel)
 {
 	uint32_t p = glCreateProgram();
@@ -158,10 +170,6 @@ uint32_t attachShaders(uint32_t vertex, uint32_t control, uint32_t evaluation, u
 	GLTest(glAttachShader(p, evaluation));
     GLTest(glLinkProgram(p));
     GLTest(glValidateProgram(p));
-
-	//should probably not do this here later
-    //glDeleteShader(vertexShader);
-    //glDeleteShader(pixelShader);
 
 	return p;
 }
