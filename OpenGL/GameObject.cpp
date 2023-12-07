@@ -55,6 +55,26 @@ void GameObject::directRender(GLint Topology)
 	
 }
 
+void GameObject::instanceRender(uint32_t nrOfInstances, GLint Topology)
+{
+	shaderHandler->setCurrentshader(shaderProgram);
+
+	shaderHandler->updateUniformBuffer("Transform", getComponent<Transform>("Transform")->toMat4());
+	if(model != nullptr){
+		if(model->GetModelType() == TypeOfModel::Animated){
+			AnimationComponent* animComp = getComponent<AnimationComponent>("AnimationComponent");
+			BoneConstantBuffer poses;
+			((AnimatedModel*)model)->getPose(
+					animComp->time,
+					animComp->animationName,
+				poses
+				);
+			shaderHandler->updateUniformBuffer("Skeleton", poses);
+		}
+		model->InstanceRender(Topology, nrOfInstances);
+	}
+}
+
 void GameObject::directRenderShadow()
 {
 	shaderHandler->updateUniformBuffer("Transform", getComponent<Transform>("Transform")->toMat4());

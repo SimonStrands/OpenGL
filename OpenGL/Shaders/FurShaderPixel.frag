@@ -2,10 +2,10 @@
 
 layout(location = 0) out vec4 finalPixel;
 
-in vec4 i_fragPos;
-in vec2 i_uv;
-in vec3 i_normal;
-in float i_lvl;
+in vec4 o_fragPos;
+in vec2 o_uv;
+in vec3 o_normal;
+in float o_lvl;
 
 layout(binding = 0)uniform sampler2D ambientTexture;
 layout(binding = 1)uniform sampler2D AOTexture;
@@ -47,13 +47,12 @@ float rand(ivec2 co)
     return r;
 }
 
-const int nrOfLayers = 48;
+const int nrOfLayers = 100;
 const float ph = 1.0/nrOfLayers;
 const vec2 size = vec2(1000.0,1000.0);
 
 void main(){    
-    
-    vec2 space = vec2(i_uv * size);
+    vec2 space = vec2(o_uv * size);
     ivec2 co = ivec2(space);
     
     vec2 localSpace = fract(space) * 2 - 1;
@@ -62,11 +61,12 @@ void main(){
     
     float height = rand(co);//random value between 0-1  
     
-    if(height < i_lvl * ph || distanceFromCenter > (height - i_lvl * ph))// 0-1 < 0-2 * 0.3333
+    //if(height < o_lvl * ph || distanceFromCenter > (height - (o_lvl) * ph) * 1.2)
+    if(height < o_lvl * ph)
     {
         discard;
     }
-    float green = ph * i_lvl;
+    float green = ph * o_lvl;
     finalPixel = vec4(0,green,0,1);
     
     return;

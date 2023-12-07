@@ -30,6 +30,10 @@ Engine::Engine():
 	basicToScene.camera->init();
 	m_sceneHandler.sceneInit();
 	
+	GLint maxOutputVertices;
+	glGetIntegerv(GL_MAX_GEOMETRY_OUTPUT_VERTICES, &maxOutputVertices);
+
+	std::cout << maxOutputVertices << std::endl;
 }
 
 Engine::~Engine()

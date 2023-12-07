@@ -17,6 +17,7 @@ public:
 	virtual ~GameObject();
 	void SetShaderProgram(uint32_t shaderProgram);
 	void directRender(GLint Topology = GL_TRIANGLES);
+	void instanceRender(uint32_t nrOfInstances, GLint Topology = GL_TRIANGLES);
 	void directRenderShadow();
 	void addModel(Model* model);
 	void setMaterial(Material mat, int index = -1);

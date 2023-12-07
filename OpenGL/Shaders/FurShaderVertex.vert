@@ -9,6 +9,7 @@ layout(location = 4) in vec3 bitangent;
 out vec4 o_fragPos;
 out vec2 o_uv;
 out vec3 o_normal;
+out float o_lvl;
 
 layout (std140, binding = 0) uniform Matrices
 {
@@ -22,11 +23,19 @@ layout (std140, binding = 1) uniform Transform
     mat4 transform;
 };
 
+const float layerdiff = 0.01;
+const int nrOfLayers = 100;
+
 void main()
 {
 	mat4 MVP = (transform * view) * projection;
-	gl_Position = vec4(position.xyz, 1.0) * MVP;
-	o_fragPos = (vec4(position.xyz, 1.0) * (transform));
+	//may swap positions
+
+	vec4 nposition = vec4(position, 1) + (vec4(-normal, 0) * (gl_InstanceID * layerdiff));
+	o_lvl = nrOfLayers - gl_InstanceID;
+
+	gl_Position = nposition * MVP;
+	o_fragPos = (nposition * (transform));
 	o_normal = normalize((vec4(normal, 0.0) * transform).xyz);
 	o_uv = uv;
 }

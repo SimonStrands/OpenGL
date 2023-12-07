@@ -30,6 +30,7 @@ public:
 	virtual ~Model();
 	std::vector<Mesh> &getMeshes();
 	virtual void DirectRender(GLuint Topology = GL_TRIANGLES);
+	virtual void InstanceRender(GLuint Topology = GL_TRIANGLES, uint32_t nrOfInstances = 1);
 	void DirectRenderShadow();
 	void setTransform(Transform transform);
 	TypeOfModel GetModelType() const;

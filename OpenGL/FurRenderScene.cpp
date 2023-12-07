@@ -11,7 +11,7 @@ FurRenderScene::~FurRenderScene()
 
 void FurRenderScene::init()
 {
-	rm->createShaderProgram("test", rm->getShader("FurShaderVertex.vert"), rm->getShader("FurShaderPixel.frag"), rm->getShader("FurShaderGeometry.geom"));
+	rm->createShaderProgram("test", rm->getShader("FurShaderVertex.vert"), rm->getShader("FurShaderPixel.frag"));
 
 
 	gfx->vSync(false);
@@ -20,6 +20,8 @@ void FurRenderScene::init()
 	FurPlane = new GameObject(defToObj);
 	FurPlane->addModel(rm->getModel("Plane.fbx"));
 	FurPlane->getComponent<Transform>("Transform")->rotation.y = 1.57;
+	FurPlane->getComponent<Transform>("Transform")->scale.x = 100;
+	FurPlane->getComponent<Transform>("Transform")->scale.y = 100;
 	FurPlane->SetShaderProgram(rm->getShaderProgram("test"));
 
 	plane2 = gh->createGameObject();
@@ -48,11 +50,10 @@ SceneHandlerCalls FurRenderScene::update(float dt)
 {
 	SceneHandlerCalls theReturn = SceneHandlerCalls::NOTHING;
 
-
 	return theReturn;
 }
 
 void FurRenderScene::render()
 {
-	FurPlane->directRender();
+	FurPlane->instanceRender(100);
 }

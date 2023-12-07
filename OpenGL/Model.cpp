@@ -46,6 +46,32 @@ void Model::DirectRender(GLuint Topology)
 	}
 }
 
+void Model::InstanceRender(GLuint Topology, uint32_t nrOfInstances)
+{
+     for(int i = 0; i < meshes.size(); i++){
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, meshes[i].material.Albedo);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, meshes[i].material.AmbientOcclusion);
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, meshes[i].material.HeightMap);
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, meshes[i].material.NormalMap);
+
+        materialConstBuffer a;
+        a = meshes[i].material;
+        UpdateUniformBuffer(a, meshes[i].mcb);
+        setUniform("Material", meshes[i].mcb, 2);
+
+		GLTest(glBindVertexArray(meshes[i].m_vertexarray));
+		GLTest(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshes[i].m_indeciesBuffer));
+
+
+        glDrawElementsInstanced(Topology, meshes[i].m_nrOfIndecies, GL_UNSIGNED_INT, nullptr, nrOfInstances);     
+	}
+}
+
 void Model::DirectRenderShadow()
 {
     for (int i = 0; i < meshes.size(); i++) 

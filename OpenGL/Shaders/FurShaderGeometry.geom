@@ -1,5 +1,5 @@
-#version 420 core
-
+#version 460 core
+/*
 in vec4 o_fragPos[];
 in vec2 o_uv[];
 in vec3 o_normal[];
@@ -10,7 +10,7 @@ out vec3 i_normal;
 out float i_lvl;
 
 layout(triangles) in;
-layout (triangle_strip, max_vertices = 144) out;
+layout (triangle_strip, max_vertices = 300) out;
 //layout (triangle_strip, max_vertices = 150) out;
 
 layout (std140, binding = 0) uniform Matrices
@@ -45,3 +45,4 @@ void main()
         EndPrimitive();
     }
 }
+*/
