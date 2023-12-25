@@ -213,6 +213,7 @@
     <ClCompile Include="Buffer.cpp" />
     <ClCompile Include="BufferCreator.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Chunk.cpp" />
     <ClCompile Include="ComponentList.cpp" />
     <ClCompile Include="DeltaTime.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
@@ -230,6 +231,7 @@
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="modelReader.cpp" />
     <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="OctTree.cpp" />
     <ClCompile Include="PerformanceScene.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
@@ -259,6 +261,7 @@
     <ClInclude Include="Behavior.h" />
     <ClInclude Include="BufferCreator.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Chunk.h" />
     <ClInclude Include="ComponentList.h" />
     <ClInclude Include="Components.h" />
     <ClInclude Include="DefaultVariableToScene.h" />
@@ -281,6 +284,7 @@
     <ClInclude Include="Model.h" />
     <ClInclude Include="modelReader.h" />
     <ClInclude Include="Mouse.h" />
+    <ClInclude Include="OctTree.h" />
     <ClInclude Include="PerformanceScene.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PointLight.h" />
@@ -297,6 +301,7 @@
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Buffer.h" />
     <ClInclude Include="Vertex.h" />
+    <ClInclude Include="VoxelWorld.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\BasicPixelShader.frag" />

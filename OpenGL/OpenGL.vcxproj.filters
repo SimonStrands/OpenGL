@@ -79,6 +79,9 @@
     <Filter Include="Header Files\Engine\Shader">
       <UniqueIdentifier>{c0a06e55-624c-4f60-a8ac-a24173b70c0d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Voxel">
+      <UniqueIdentifier>{1022d2f4-c42b-499c-8000-f11f319f9a83}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -202,6 +205,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ComponentList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OctTree.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Chunk.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -370,6 +379,15 @@
     </ClInclude>
     <ClInclude Include="PerformanceScene.h">
       <Filter>Header Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="VoxelWorld.h">
+      <Filter>Header Files\Voxel</Filter>
+    </ClInclude>
+    <ClInclude Include="Chunk.h">
+      <Filter>Header Files\Voxel</Filter>
+    </ClInclude>
+    <ClInclude Include="OctTree.h">
+      <Filter>Header Files\Voxel</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
