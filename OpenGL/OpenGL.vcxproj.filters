@@ -79,6 +79,18 @@
     <Filter Include="Header Files\Engine\Shader">
       <UniqueIdentifier>{c0a06e55-624c-4f60-a8ac-a24173b70c0d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\RayTracingEngine">
+      <UniqueIdentifier>{c7670072-f429-4e00-b73b-2561672aed42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\RayTracingEngine\RayTracingObject">
+      <UniqueIdentifier>{2cacad1c-2365-48ba-a55f-c48d53dc6b9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\RayTracing">
+      <UniqueIdentifier>{7d52da72-9eca-4af1-96b0-4d1df7df2426}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders\RayTracing\QuadDraw">
+      <UniqueIdentifier>{0107de2a-f4e2-4022-8d60-3828d23e8468}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -202,6 +214,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ComponentList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RayTracingObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RaySphere.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DrawQuad.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RayTracer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -371,6 +395,18 @@
     <ClInclude Include="PerformanceScene.h">
       <Filter>Header Files\Game</Filter>
     </ClInclude>
+    <ClInclude Include="RayTracingObject.h">
+      <Filter>Header Files\RayTracingEngine\RayTracingObject</Filter>
+    </ClInclude>
+    <ClInclude Include="RaySphere.h">
+      <Filter>Header Files\RayTracingEngine\RayTracingObject</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawQuad.h">
+      <Filter>Header Files\RayTracingEngine\RayTracingObject</Filter>
+    </ClInclude>
+    <ClInclude Include="RayTracer.h">
+      <Filter>Header Files\RayTracingEngine\RayTracingObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\BasicVertexShader.vert">
@@ -399,6 +435,15 @@
     </None>
     <None Include="Shaders\ShadowMapSkeletalAnimation.vert">
       <Filter>Resource Files\Shaders\ShadowShader</Filter>
+    </None>
+    <None Include="Shaders\DrawQuadFrag.frag">
+      <Filter>Resource Files\Shaders\RayTracing\QuadDraw</Filter>
+    </None>
+    <None Include="Shaders\DrawQuadVertex.vert">
+      <Filter>Resource Files\Shaders\RayTracing\QuadDraw</Filter>
+    </None>
+    <None Include="RayTracingComp.comp">
+      <Filter>Resource Files\Shaders\RayTracing</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

@@ -216,6 +216,7 @@
     <ClCompile Include="ComponentList.cpp" />
     <ClCompile Include="DeltaTime.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
+    <ClCompile Include="DrawQuad.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameObjectHandler.cpp" />
@@ -232,6 +233,9 @@
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="PerformanceScene.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="RaySphere.cpp" />
+    <ClCompile Include="RayTracer.cpp" />
+    <ClCompile Include="RayTracingObject.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneHandler.cpp" />
@@ -265,6 +269,7 @@
     <ClInclude Include="Defines.h" />
     <ClInclude Include="DeltaTime.h" />
     <ClInclude Include="DirectionalLight.h" />
+    <ClInclude Include="DrawQuad.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="ErrorHelper.h" />
     <ClInclude Include="GameObject.h" />
@@ -284,6 +289,9 @@
     <ClInclude Include="PerformanceScene.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PointLight.h" />
+    <ClInclude Include="RaySphere.h" />
+    <ClInclude Include="RayTracer.h" />
+    <ClInclude Include="RayTracingObject.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneHandler.h" />
@@ -299,8 +307,11 @@
     <ClInclude Include="Vertex.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="RayTracingComp.comp" />
     <None Include="Shaders\BasicPixelShader.frag" />
     <None Include="Shaders\BasicVertexShader.vert" />
+    <None Include="Shaders\DrawQuadFrag.frag" />
+    <None Include="Shaders\DrawQuadVertex.vert" />
     <None Include="Shaders\ShadowMapPixelShader.frag" />
     <None Include="Shaders\ShadowMapSkeletalAnimation.vert" />
     <None Include="Shaders\ShadowMapVertexShader.vert" />

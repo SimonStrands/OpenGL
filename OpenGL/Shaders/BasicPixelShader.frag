@@ -147,25 +147,4 @@ void main(){
     finalPixel = vec4(PixelLight * color.xyz, color.a);
     
 
-    //vec3 PixelLight = vec3(0,0,0); 
-    //vec4 color = texture(ambientTexture, o_uv);
-    //
-    //vec3 viewDir = normalize(cameraPos.xyz - o_fragPos.xyz);
-    //vec3 lightDir = normalize(c_lightPos.xyz - o_fragPos.xyz);
-    //float dist = length(c_lightPos.xyz - o_fragPos.xyz);
-    //
-    //vec3 ambientLight = Ka.xyz * c_lightColor;
-    //
-    //vec3 defuse_light;
-    //float ammount_diffuse = max(dot(o_normal, lightDir), 0.0f);
-    //defuse_light = ammount_diffuse * Kd.xyz * c_lightColor;
-    //
-    //vec3 reflectDir = reflect(-lightDir, o_normal);
-    //float spec = pow(max(dot(viewDir, reflectDir), 0.0), Ks.w + 0.000001);
-    //vec3 specular = Ks.xyz * spec;
-    //
-    //PixelLight = clamp(ambientLight + defuse_light, 0.0, 1.0) + specular;
-    //
-    //
-    //finalPixel = vec4(PixelLight * color.xyz, color.a);
 }
